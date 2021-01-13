@@ -113,13 +113,15 @@ after running it you need to scan the qr
 | :-------------: | :-----------------------------: |
 |       ✅        | Sticker With Image              |
 |       ✅        | Sticker With Gif                |
-|       ✅        | Sticker With Image Url          |                   |
+|       ✅        | Sticker With Image Url          |                   
 |       ✅        | Sticker With Gif Url            |
 |       ✅        | Sticker With Fire Gif           |
 |       ✅        | Sticker With Lightning Gif      |
 |       ✅        | Image To Sticker.               |
 |       ✅        | Text To Picture                 |
 |       ✅        | Text To Gif                     |
+|       ✅        | Text Pro                        |
+
 
 |.  Downloader    |              Feature            |
 | :-------------: | :-----------------------------: |
@@ -136,14 +138,6 @@ after running it you need to scan the qr
 |       ✅        |  Joox Downloader                |
 |       ✅        |  Play Music                     |
 
-|      Prayer     |             Feature             |
-| :-------------: | :-----------------------------: |
-|       ✅        |   Jadwalsholat                  |
-|       ✅        |   List Daerah                   |
-|       ✅        |   Al-Quran                      |
-|       ✅        |   Infosurah                     |
-|       ✅        |   List Surah                    |
-|       ✅        |   Tafsir Ayat                   |
 
 |  Kerang Ajaib   |             Feature             |
 | :-------------: | :-----------------------------: |
@@ -151,12 +145,15 @@ after running it you need to scan the qr
 |       ✅        |   Bisakah                       |
 |       ✅        |   Rate                          |
 |       ✅        |   Kapankah                      |
+|       ✅        |   Brppersen                     |
+
 
 |  Tebak-Tebakan  |              Feature            |
 | :-------------: | :-----------------------------: |
 |       ✅        |   Family100                     |
 |       ✅        |   Tebak Gambar                  |
 |       ✅        |   Cak Lontong                   |
+
 
 |      Media      |             Feature             |
 | :-------------: | :-----------------------------: |
@@ -200,6 +197,7 @@ after running it you need to scan the qr
 |   Group Only    |              Feature            |
 | :-------------: | :-----------------------------: |
 |       ✅        |   Promote User                  |
+|       ✅        |   Edotensei User                |
 |       ✅        |   Demote User                   |
 |       ✅        |   Kick User                     |
 |       ✅        |   Add User                      |
@@ -209,15 +207,15 @@ after running it you need to scan the qr
 |       ✅        |   Listblock                     |
 |       ✅        |   Listbanned                    |
 |       ✅        |   Listgroup                     |
-|       ✅        |   Get Elaina Admin list         |
+|       ✅        |   Afk                           |
+|       ✅        |   Get  Admin list               |
 |       ✅        |   Get owner group               |
 |       ✅        |   Get group info                |
 |       ✅        |   enable or disable nsfw command|
-|       ✅        |   enable or disable simi command|
 |       ✅        |enable or disable welcome feature|
 |       ✅        |   enable or disable left feature|
 |       ✅        |   enable or disable antilink    |
-|       ✅        |   enable or disable antibadword |
+
 
 | Admin Bot Only  |              Feature            |
 | :-------------: | :-----------------------------: |
@@ -226,9 +224,11 @@ after running it you need to scan the qr
 |       ✅        |   Mute                          |
 |       ✅        |   Unmute                        |
 
+
 | Owner Group Only|              Feature            |
 | :-------------: | :-----------------------------: |
 |       ✅        |   Kick All Member Group         |
+
 
 | Owner Bot Only  |              Feature            |
 | :-------------: | :-----------------------------: |
@@ -238,13 +238,14 @@ after running it you need to scan the qr
 |       ✅        |   Getses                        |
 |       ✅        |   Banchat                       |
 |       ✅        |   Maintenance                   |
-|       ✅        |   Add Admin Elaina              |
-|       ✅        |   Del Admin Elaina              |
+|       ✅        |   Add Admin                     |
+|       ✅        |   Del Admin                     |
 |       ✅        |   Block                         |
 |       ✅        |   Unblock                       |
 |       ✅        |   Join Group                    |
 
 ---
+
 
 ## Troubleshooting
 Make sure all the necessary dependencies are installed: https://github.com/puppeteer/puppeteer/blob/main/docs/troubleshooting.md
