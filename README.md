@@ -7,12 +7,6 @@
 <p align="center">
 <a href="https://github.com/TobyG74"><img title="Author" src="https://img.shields.io/badge/Recode by-Juwen-orange.svg?style=for-the-badge&logo=github"></a>
 </p>
-<p align="center">
-<a href="https://github.com/juwenaja/followers"><img title="Followers" src="https://img.shields.io/github/followers/juwenaja?color=blue&style=flat-square"></a>
-<a href="https://github.com/juwenaja/megumikato2/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/juwenaja/Bot-We-A?color=red&style=flat-square"></a>
-<a href="https://github.com/juwenaja/megumikato2/network/members"><img title="Forks" src="https://img.shields.io/github/forks/juwenaja/Bot-We-A?color=red&style=flat-square"></a>
-<a href="https://github.com/juwenaja/megumikato2/watchers"><img title="Watching" src="https://img.shields.io/github/watchers/juwenaja/Bot-We-AT?label=Watchers&color=blue&style=flat-square"></a>
-</p>
 <p align='center'>
    <a href="https://instagram.com/juwendy_s"><img height="30" src="https://github.com/TobyG74/TobyG74/blob/main/instagram.jpg?raw=true"></a>&nbsp;&nbsp;
 </P>
