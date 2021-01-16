@@ -252,7 +252,7 @@ Fix Stuck on linux, install google chrome stable:
 
 ## 🙏 Big Special Thanks To
 
-* [`TOBZ](https://github.com/TobyG74/ElainaBOT)
+* [`TOBZ`](https://github.com/TobyG74/ElainaBOT)
 * [`MHRTZ`](https://github.com/MRHRTZ) 
 * [`OpenWA/WA-Automate`](https://github.com/open-wa/wa-automate-nodejs) 
 * [`YogaSakti`](https://github.com/YogaSakti/imageToSticker) 
