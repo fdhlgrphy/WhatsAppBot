@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://media.giphy.com/media/4dM1U76aAQ3dbE6bc3/giphy.gif" alt="GIF" width="128" height="128"/>
+<img src="https://avatars0.githubusercontent.com/u/76975675?s=460&u=2ded539def22cee13a92c9253a0726bacd1bb46b&v=4" alt="image" width="128" height="128"/>
 </p>
 <p align="center">
 <a href="#"><img title="ZXCBOT" src="https://img.shields.io/badge/ZXCBOT-green?colorA=%23ff0000&colorB=%23017e40&style=for-the-badge"></a>
