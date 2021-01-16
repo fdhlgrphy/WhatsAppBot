@@ -15,9 +15,9 @@
 
 #### This script is open to anyone! If you want to add commands, please contribute / pull request! Buying and selling scripts is prohibited!
 - [Cara Penginstallan Bot](https://youtu.be/41Xj_Kg4DCM)
-- Change [ownerNumber](https://github.com/TobyG74/ElainaBOT/blob/df5caa20c74a1e76345a9664baa8dbc1b198da21/tobz.js#L248) in tobz.js to be your number
+- Change [ownerNumber](https://github.com/juwenaja/Bot-We-A/blob/fd8728c726ba8dccebd4a18a8312d7bc60995990/tobz.js#L264) in tobz.js to be your number
 ownerNumber = "6213xxxxxx@c.us"
-- Change [adminNumber](https://github.com/TobyG74/ElainaBOT/blob/main/lib/database/admin.json#L1) in admin.json to be your number
+- Change [adminNumber](https://github.com/juwenaja/Bot-We-A/blob/main/lib/database/admin.json#L1) in admin.json to be your number
 [] -> ["62813xxxxxx@c.us"]
 
 ## Contact
@@ -36,7 +36,7 @@ Open setting.js then edit & paste it in YOUR_APIKEY
 - [MHANKBARBAR](https://mhankbarbars.herokuapp.com/api)
 
 Apikey Location
-- [SETTING](https://github.com/TobyG74/ElainaBOT/blob/main/lib/database/setting.json)
+- [SETTING](https://github.com/juwenaja/Bot-We-A/blob/main/lib/database/setting.json)
 
 ## Donate
 - [Saweria](https://saweria.co/juwenajaa)
