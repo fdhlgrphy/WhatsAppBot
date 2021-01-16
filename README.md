@@ -24,10 +24,10 @@ ownerNumber = "6213xxxxxx@c.us"
 
 If you find some bugs please contact the WhatsApp number on Contact
 
-- [TELEGRAM](https://t.me/tobz2k19)
+- [TELEGRAM](https://t.me/ghostbom)
 - [WHATSAPP](https://wa.me/6289635687240)
 - [MY BOT](wa.me/6285155078806)
-- [WHATSAPP GROUP](https://chat.whatsapp.com/JuwROWyZh70Gn8rrmtReyu)
+- [WHATSAPP GROUP](https://chat.whatsapp.com/GCHSJyGvdRfAaubOzcAUm4)
 
 ## APIKEY
 Open setting.js then edit & paste it in YOUR_APIKEY
