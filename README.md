@@ -25,26 +25,26 @@ ownerNumber = "6213xxxxxx@c.us"
 If you find some bugs please contact the WhatsApp number on Contact
 
 - [TELEGRAM](https://t.me/tobz2k19)
-- [WHATSAPP](https://wa.me/6281311850715)
-- [MY BOT](wa.me/447418349954)
+- [WHATSAPP](https://wa.me/6289635687240)
+- [MY BOT](wa.me/6285155078806)
 - [WHATSAPP GROUP](https://chat.whatsapp.com/JuwROWyZh70Gn8rrmtReyu)
 
 ## APIKEY
 Open setting.js then edit & paste it in YOUR_APIKEY
 - [VHTEAR](https://api.vhtear.com)
+- [TOBZ](https://https://tobz-api.herokuapp.com/api)
 - [MHANKBARBAR](https://mhankbarbars.herokuapp.com/api)
 
 Apikey Location
 - [SETTING](https://github.com/TobyG74/ElainaBOT/blob/main/lib/database/setting.json)
 
 ## Donate
-- [Saweria](https://saweria.co/ItzTobz)
-- [Dana](https://link.dana.id/qr/17mlqta)
+- [Saweria](https://saweria.co/juwenajaa)
+- [GOPAY | 085155078806]
 
 ## Getting Started
 
 ### This project require NodeJS v14.
-This is a Bot Group Type, so you have to enter the bot into a group in order to fully use the command!
 
 ### FFMPEG
 - [DOWNLOAD](https://ffmpeg.org/)
@@ -58,7 +58,7 @@ Note : Kalo Mau Work, Centang Kolom 1,2,3,5,6
 Clone this project
 
 ```bash
-> git clone https://github.com/TobyG74/ElainaBOT
+> git clone https://github.com/juwenaja/Bot-We-A
 > cd ElainaBOT
 ```
 
@@ -66,6 +66,8 @@ Install the dependencies:
 
 ```bash
 > npm install
+> npm install jsdom
+> npm install gify -cli
 > npm install -g pm2
 ```
 
@@ -250,6 +252,7 @@ Fix Stuck on linux, install google chrome stable:
 
 ## 🙏 Big Special Thanks To
 
+* [`TOBZ](https://github.com/TobyG74/ElainaBOT)
 * [`MHRTZ`](https://github.com/MRHRTZ) 
 * [`OpenWA/WA-Automate`](https://github.com/open-wa/wa-automate-nodejs) 
 * [`YogaSakti`](https://github.com/YogaSakti/imageToSticker) 
