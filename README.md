@@ -13,7 +13,7 @@
 
 ## Information
 
-#### This script is open to anyone! If you want to add commands, please contribute / pull request! Buying and selling scripts is prohibited!
+#### Ini gratis yaa, jangan diperjualbelikan scriptnya. Dan ini bukan gw yang bikin, gw cuman recode doang tapi nambahin menunya. Intinya bukan gw yang buat wkwkwk
 - [Cara Penginstallan Bot](https://youtu.be/41Xj_Kg4DCM)
 - Change [ownerNumber](https://github.com/juwenaja/Bot-We-A/blob/fd8728c726ba8dccebd4a18a8312d7bc60995990/tobz.js#L264) in tobz.js to be your number
 ownerNumber = "6213xxxxxx@c.us"
