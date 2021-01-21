@@ -55,19 +55,12 @@ Apikey Location
 Note : Kalo Mau Work, Centang Kolom 1,2,3,5,6
 
 ### Install
-Clone this project
-
-```bash
-> git clone https://github.com/juwenaja/Bot-We-A
-> cd ElainaBOT
-```
 
 Install the dependencies:
 
 ```bash
 > npm install
 > npm install jsdom
-> npm install gify -cli
 > npm install -g pm2
 ```
 
