@@ -3877,93 +3877,140 @@ ${desc}`)
                     console.log(err)
                 }
                 break
-                case prefix+'play'://silahkan kalian custom sendiri jika ada yang ingin diubah
-                if(isReg(obj)) return
-                if(cekumur(cekage)) return
-               // if (!isVip) return tobz.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
-               if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
-               if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                if (args.length === 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play judul lagu`, id)
-                try {
-                    tobz.reply(from, mess.wait, id)
-                    const serplay = body.slice(6)
-                    const webplay = await fetch(`https://api.vhtear.com/ytmp3?query=${serplay}&apikey=${vhtearkey}`)
-                    if (!webplay.ok) throw new Error(`Error Get Video : ${webplay.statusText}`)
-                    const webplay2 = await webplay.json()
-                     if (webplay2.status == false) {
-                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
-                    } else {
-                        if (Number(webplay2.result.size.split(' MB')[0]) >= 10.00) return tobz.reply(from, 'Maaf durasi music sudah melebihi batas maksimal 10 MB!', id)
-                        const { image, mp3, size, ext, title, duration } = await webplay2.result
-                        const captplay = `*「 PLAY 」*\n\n*Judul* : ${title}\n*Durasi* : ${duration}\n*Filesize* : ${size}\n*Exp* : ${ext}\n\n_*Music Sedang Dikirim*_`
-                        const responses = await fetch(mp3);
-                        const buffer = await responses.buffer();   
-                        tobz.sendFileFromUrl(from, image, `thumb.jpg`, captplay, id)
-                        await fs.writeFile(`./media/audio.mp3`, buffer)
-                        await tobz.sendFile(from,'./media/audio.mp3', `${title}.mp3`, '', id).catch(() => tobz.reply(from, mess.error.Yt4, id))
-                       // await tobz.sendFileFromUrl(from, mp3, `${title}.mp3`, '', id).catch(() => tobz.reply(from, mess.error.Yt4, id))
-                       await limitAdd(serial)
+                case prefix+'play':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                        tobz.reply(from, `Untuk mencari lagu dari youtube\nPenggunaan: ${prefix}play1 judul lagu\n\nSilahkan pilih:\n\n> *${prefix}play1*\n> *${prefix}play2*  \n> *${prefix}play3 (dengan file vn, voice note)*\n\nNb: Bila ingin mendownload dengan file kecil, kamu bisa pakai *${prefix}play2*`, id)
+                        break
+                        case prefix+'play1'://silahkan kalian custom sendiri jika ada yang ingin diubah
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
+                       // if (!isVip) return tobz.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
+                       if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                       if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        if (args.length === 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play2 judul lagu`, id)
+                        try {
+                            tobz.reply(from, mess.wait, id)
+                            const serplay = body.slice(6)
+                            const webplay = await fetch(`https://api.vhtear.com/ytmp3?query=${serplay}&apikey=${vhtearkey}`)
+                            if (!webplay.ok) throw new Error(`Error Get Video : ${webplay.statusText}`)
+                            const webplay2 = await webplay.json()
+                             if (webplay2.status == false) {
+                                tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                            } else {
+                                if (Number(webplay2.result.size.split(' MB')[0]) >= 10.00) return tobz.reply(from, 'Maaf durasi music sudah melebihi batas maksimal 10 MB!', id)
+                                const { image, mp3, size, ext, title, duration } = await webplay2.result
+                                const captplay = `*「 PLAY 」*\n\n*Judul* : ${title}\n*Durasi* : ${duration}\n*Filesize* : ${size}\n*Exp* : ${ext}\n\n_*Music Sedang Dikirim*_`
+                                const responses = await fetch(mp3);
+                                const buffer = await responses.buffer();   
+                                tobz.sendFileFromUrl(from, image, `thumb.jpg`, captplay, id)
+                                await fs.writeFile(`./media/audio.mp3`, buffer)
+                                await tobz.sendFile(from,'./media/audio.mp3', `${title}.mp3`, '', id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                               // await tobz.sendFileFromUrl(from, mp3, `${title}.mp3`, '', id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                               await limitAdd(serial)
+                            }
+                        } catch (err) {
+                            tobz.sendText(ownerNumber, 'Error Play : '+ err)
+                            tobz.reply(from, mess.error.Yt3, id)
+                        }
+                        break
+                  /*  case prefix+'play':
+                     if(isReg(obj)) return
+                     if(cekumur(cekage)) return
+                     //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
+                     if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    // if (!isVip) return tobz.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
+                    if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                    if (args.length === 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play1 judul lagu`, id)
+                    const playy = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(body.slice(6))}`).json()
+                    const mulaikah = playy.result[0].url
+                    try {
+                        tobz.reply(from, mess.wait, id)
+                        yta(mulaikah)
+                        .then((res) => {
+                            const { dl_link, thumb, title, filesizeF, filesize } = res
+                            axios.get(`https://tinyurl.com/api-create.php?url=${dl_link}`)
+                            .then(async (a) => {
+                            if (Number(filesize) >= 30000) return tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${filesizeF}\n*Link* : ${a.data}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_`, id)
+                            const captions = `*「Data Berhasil Didapatkan 」*\n\n*Title* : ${title}\n*Ext* : MP3\n*Size* : ${filesizeF}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                            tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, captions, id)
+                            // INFOLOG(dl_link)
+                            await tobz.sendFileFromUrl(from, dl_link, `${title}.mp3`, `Audio telah terkirim ${pushname}`, id).catch(() => tobz.reply(from, mess.error.Yt3, id))
+                            await limitAdd(serial)
+                            })
+                        })
+                    } catch (err) {
+                        tobz.sendText(ownerNumber, 'Error ytmp3 : '+ err)
+                        tobz.reply(from, mess.error.Yt3, id)
                     }
-                } catch (err) {
-                    tobz.sendText(ownerNumber, 'Error Play : '+ err)
-                    tobz.reply(from, mess.error.Yt3, id)
-                }
-                break
-			case prefix+'premplay':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-           if (!isPrem) return tobz.reply(from, `Perintah ini hanya untuk user Premium *ZXCBOT*\n\nKetik* ${prefix}premmenu* untuk melihat menu premium`, id)
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik #ceklimit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length == 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play judul lagu`, id)
-            try {
-                tobz.reply(from, 'Tunggu sebentar, permintaan sedang di proses', id)
-                const serplay = body.slice(6)
-                const webplay = await fetch(`https://api.vhtear.com/ytmp3?query=${serplay}&apikey=${vhtearkey}`)
-                if (!webplay.ok) throw new Error(`Error Get Video : ${webplay.statusText}`)
-                const webplay2 = await webplay.json()
-                 if (webplay2.status == false) {
-                    tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
-                } else {
-                    if (Number(webplay2.result.size.split(' MB')[0]) >= 20.00) return tobz.reply(from, 'Maaf durasi music sudah melebihi batas maksimal 20 MB!', id)
-                    const { image, mp3, size, ext, title, duration } = await webplay2.result
-                    const captplay = `*「 PREMIUM USER - PLAY 」*\n\n*Judul* : ${title}\n*Durasi* : ${duration}\n*Filesize* : ${size}\n*Exp* : ${ext}\n\n_*Music Sedang Dikirim*_`
-                    tobz.sendFileFromUrl(from, image, `thumb.jpg`, captplay, id)
-                    await tobz.sendFileFromUrl(from, mp3, `${title}.mp3`, '', id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                    break */
+                    case prefix+'play2':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                    if (args.length === 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play3 judul lagu`, id)
+                        tobz.reply(from, mess.wait, id)
+                    const getvids = await axios.get(`https://api.zeks.xyz/api/ytplaymp3?q=${body.slice(6)}&apikey=apivinz`)
+                    if (getvids.data.status == false) return tobz.reply(from, getvids.data.message, id)
+                    if (Number(getvids.data.result.url_audio.split(' MB')[0]) >= 20.00) return tobz.reply(from, 'Maaf durasi music sudah melebihi batas maksimal 10 MB!', id)
+                    const responses = await fetch(getvids.data.result.url_audio);
+                    const buffer = await responses.buffer(); 
+                    await tobz.sendFileFromUrl(from, getvids.data.result.thumbnail, 'gambar.jpg', `*Title:* ${getvids.data.result.title}\n*Size:* ${getvids.data.result.size}\n*File:* Mp3\n\n_*Music sedang dikirim*_`, id)
+                    await fs.writeFile(`./media/play.mp3`, buffer)
+                    await tobz.sendFile(from,'./media/play.mp3', ``, ``, id)
                     await limitAdd(serial)
-                }
+                    break
+                case prefix+'play3':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                    if (args.length === 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play4 judul lagu`, id)
+                        tobz.reply(from, mess.wait, id)
+            const getvidss = await axios.get(`https://api.zeks.xyz/api/ytplaymp3?q=${body.slice(6)}&apikey=${vinzkey}`)
+            if (getvidss.data.status == false) return tobz.reply(from, getvidss.data.message, id)
+            if (Number(getvidss.data.result.url_audio.split(' MB')[0]) >= 20.00) return tobz.reply(from, 'Maaf durasi music sudah melebihi batas maksimal 10 MB!', id)
+            const responsess = await fetch(getvidss.data.result.url_audio);
+            const bufferr = await responsess.buffer(); 
+            await tobz.sendFileFromUrl(from, getvidss.data.result.thumbnail, 'gambar.jpg', `*Title:* ${getvidss.data.result.title}\n*Size:* ${getvidss.data.result.size}\n*File:* Mp3\n\n_*Music sedang dikirim*_\n\nNB:\nFORMAT : *VN*`, id)
+            await fs.writeFile(`./media/play.mp3`, bufferr)
+            await tobz.sendPtt(from,'./media/play.mp3', id)
+            await limitAdd(serial)
+                break   
+            case prefix+'ytmp3':
+                    if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (isLimit(serial)) return aruga.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ytmp3 [linkYt]*`, id)
+            let isLinks = args[1].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
+            if (!isLinks) return tobz.reply(from, mess.error.Iv, id)
+            try {
+                tobz.reply(from, mess.wait, id)
+                yta(args[1])
+                .then((res) => {
+                    const { dl_link, thumb, title, filesizeF, filesize } = res
+                    axios.get(`https://tinyurl.com/api-create.php?url=${dl_link}`)
+                    .then((a) => {
+                    if (Number(filesize) >= 30000) return tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${filesizeF}\n*Link* : ${a.data}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_`, id)
+                    const captions = `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Size* : ${filesizeF}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                    tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, captions, id)
+                    tobz.sendFileFromUrl(from, dl_link, `${title}.mp3`, ``, id).catch(() => tobz.reply(from, mess.error.Yt3, id))
+                    console.log('~>> [INF] SCRAPING METADATA...')
+                    })
+
+                })
             } catch (err) {
-                tobz.sendText(ownerNumber, 'Error Play : '+ err)
+                tobz.sendText(ownerNumber, 'Error ytmp3 : '+ err)
                 tobz.reply(from, mess.error.Yt3, id)
             }
-            break   
-            case prefix+'ytmp3':
-                if(isReg(obj)) return
-                if(cekumur(cekage)) return
-                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ytmp3 [ Link Yt ]*, untuk contoh silahkan kirim perintah *${prefix}readme*`, id)
-                let isLinks = args[1].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
-                if (!isLinks) return tobz.reply(from, mess.error.Iv, id)
-                try {
-                    tobz.reply(from, mess.wait, id)
-                    const vhtearyt3 = await fetch(`https://api.vhtear.com/ytdl?link=${args[1]}&apikey=${vhtearkey}`)
-                    if (!vhtearyt3.ok) throw new Error(`Error ytmp3 3 : ${vhtearyt3.statusText}`)
-                    const vhtearyt33 = await vhtearyt3.json()
-                     if (vhtearyt33.status == false) {
-                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
-                    } else {
-                        if(Number(vhtearyt33.result.size.split(' MB')[0]) >= 10.00) return tobz.sendFileFromUrl(from, vhtearyt33.result.imgUrl, `thumb.jpg`, `*「 YOUTUBE MP3 」*\n\n• *Judul* : ${vhtearyt33.result.title}\n• *Filesize* : ${vhtearyt33.result.size}\n\n_Maaf, Durasi audio melebihi 10 MB. Silahkan download audio melalui link dibawah_.\n${vhtearyt33.result.UrlMp3}`, id)
-                        const { title, ext, size, UrlMp3, status, imgUrl } = await vhtearyt33.result
-                        console.log(`VhTear Giliran ${ext}\n${size}\n${status}`)
-                        const captions = `*「 YOUTUBE MP3 」*\n\n• *Judul* : ${title}\n• *Filesize* : ${size}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
-                        tobz.sendFileFromUrl(from, imgUrl, `thumb.jpg`, captions, id)
-                        //await tobz.sendFile(from, UrlMp3, `${title}.mp3`, '', id)
-                        await tobz.sendFileFromUrl(from, UrlMp3, `${title}.mp3`, '', id).catch(() => tobz.reply(from, mess.error.Yt4, id))
-                        await limitAdd(serial)
-                    }
-                } catch (err) {
-                    tobz.sendText(ownerNumber, 'Error ytmp3 : '+ err)
-                    tobz.reply(from, mess.error.Yt3, id)
-                }
                 break   
         case prefix+'google':
             if(isReg(obj)) return
