@@ -25,7 +25,7 @@ module.exports = options = (headless, start) => {
     // }
 
     const options = {
-        headless: headless,
+        headless: headless, // headless: true, (kalau mau chromenya keluar)
         autoRefresh: true,
         restartOnCrash: start,
         cacheEnabled: false,
