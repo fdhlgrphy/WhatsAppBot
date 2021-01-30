@@ -1,13 +1,13 @@
 {
-  "name": "ELAINABOT",
+  "name": "ZXCBOT",
   "version": "3.0.0",
-  "description": "THX FOR MHANKBARBAR AS MY FRIEND, REEDIT BY TOBZ",
+  "description": "THX FOR MHANKBARBAR & TOBZ, REEDIT BY JUWEN",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "TOBZ",
+  "author": "JUWEN",
   "license": "Apache-2.0",
   "dependencies": {
     "@open-wa/wa-automate": "^3.1.0",
@@ -18,6 +18,7 @@
     "dotenv": "^8.2.0",
     "download-file": "^0.1.5",
     "emoji-regex": "^9.0.0",
+    "emoji-unicode": "^2.0.1",
     "figlet": "^1.5.0",
     "file-type": "^15.0.1",
     "fluent-ffmpeg": "^2.1.2",
@@ -30,6 +31,7 @@
     "image-size": "^0.9.1",
     "image-to-base64": "^2.1.1",
     "image-to-pdf": "^1.0.0",
+    "jsdom": "^16.4.0",
     "lolcatjs": "^2.4.0",
     "mathjs": "^8.0.1",
     "moment-timezone": "^0.5.31",
@@ -48,6 +50,7 @@
     "request": "^2.88.2",
     "sastrawijs": "^1.0.3",
     "text2png": "^2.3.0",
+    "tiktok-scraper": "^1.4.12",
     "translatte": "^2.5.8",
     "video-crop": "^1.1.0",
     "video-crop-cli": "^1.1.0",
