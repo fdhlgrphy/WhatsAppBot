@@ -79,12 +79,12 @@ const start = async (tobz = new Client()) => {
             }))
         
         tobz.onAddedToGroup(async (chat) => {
-            if(isWhite(chat.id)) return tobz.sendText(chat.id, `*Hai, terima kasih telah invite *ZXCBOT*.\n\nKetik ${prefix}help Untuk Melihat Menu dari ZXCBOT`)
+            if(isWhite(chat.id)) return tobz.sendText(chat.id, `*ZXCBOT BERHASIL MASUK!*\nUntuk melihat menu ketik *${prefix}help*\n\nSelamat menggunakan bot :D\nDipakai dengan bijak yaaa.`)
             if(mtcState === false){
                 const groups = await tobz.getAllGroups()
                 // BOT group count less than
                 if(groups.length > groupLimit){
-                    await tobz.sendText(chat.id, 'Maaf, Batas group yang dapat ZXCBOT tampung sudah penuh').then(async () =>{
+                    await tobz.sendText(chat.id, 'Maaf, Batas group yang dapat bot tampung sudah full.').then(async () =>{
                         tobz.deleteChat(chat.id)
                         tobz.leaveGroup(chat.id)
                     })
@@ -95,7 +95,7 @@ const start = async (tobz = new Client()) => {
                             tobz.leaveGroup(chat.id)
                         })
                     }else{
-                        if(!chat.isReadOnly) tobz.sendText(chat.id, `*Hai, terima kasih telah invite ZXCBOT*.\n\nKetik ${prefix}help Untuk Melihat Menu dari ZXCBOT`)
+                        if(!chat.isReadOnly) tobz.sendText(chat.id, `*ZXCBOT BERHASIL MASUK!*\nUntuk melihat menu ketik *${prefix}help*\n\nSelamat menggunakan bot :D\nDipakai dengan bijak yaaa.`)
                     }
                 }
             }else{
