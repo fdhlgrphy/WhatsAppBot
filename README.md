@@ -15,7 +15,7 @@
 
 #### Ini gratis yaa, jangan diperjualbelikan scriptnya. Dan ini bukan gw yang bikin, gw cuman recode doang tapi nambahin menunya. Intinya bukan gw yang buat wkwkwk
 - [Cara Penginstallan Bot](https://youtu.be/41Xj_Kg4DCM)
-- Change [ownerNumber](https://github.com/juwenaja/Bot-We-A/blob/fd8728c726ba8dccebd4a18a8312d7bc60995990/tobz.js#L264) in tobz.js to be your number
+- Change [ownerNumber](https://github.com/juwenaja/Bot-We-A/blob/6f50edb25acba2b2e7372b47e5f0ef6d2dfbf0af/tobz.js#L273) in tobz.js to be your number
 ownerNumber = "6213xxxxxx@c.us"
 - Change [adminNumber](https://github.com/juwenaja/Bot-We-A/blob/main/lib/database/admin.json#L1) in admin.json to be your number
 [] -> ["62813xxxxxx@c.us"]
@@ -29,11 +29,14 @@ If you find some bugs please contact the WhatsApp number on Contact
 - [MY BOT](wa.me/6285155078806)
 - [WHATSAPP GROUP](https://chat.whatsapp.com/GCHSJyGvdRfAaubOzcAUm4)
 
-## APIKEY
+## API & APIKEY
 Open setting.js then edit & paste it in YOUR_APIKEY
 - [VHTEAR](https://api.vhtear.com)
 - [TOBZ](https://https://tobz-api.herokuapp.com/api)
 - [MHANKBARBAR](https://mhankbarbars.herokuapp.com/api)
+- [ZEKS REST API](https://api.zeks.xyz)
+- [TURU API](https://naufalhoster.xyz/docs/)
+- [JOJO API](https://docs-jojo.herokuapp.com/api)
 
 Apikey Location
 - [SETTING](https://github.com/juwenaja/Bot-We-A/blob/main/lib/database/setting.json)
