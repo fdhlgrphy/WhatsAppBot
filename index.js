@@ -9,6 +9,7 @@ const figlet = require('figlet')
 const lolcatjs = require('lolcatjs')
 const options = require('./options')
 const { prefix } = JSON.parse(fs.readFileSync('./lib/database/setting.json'))
+const ownerNumber = 'no_kamu'
 
 // AUTO UPDATE BY NURUTOMO
 // THX FOR NURUTOMO
@@ -48,7 +49,7 @@ const start = async (tobz = new Client()) => {
         console.log('------------------------------------------------')
         lolcatjs.fromString(color(figlet.textSync('ZXCBOT', { horizontalLayout: 'full' })))
         console.log('------------------------------------------------')
-        lolcatjs.fromString('[DEV] @JUWENAJAA')
+        lolcatjs.fromString('[OWNER] @JUWENAJAA')
         lolcatjs.fromString('[SERVER] Server Started!')
         tobz.onAnyMessage((fn) => messageLog(fn.fromMe, fn.type))
         // Force it to keep the current session
@@ -61,7 +62,7 @@ const start = async (tobz = new Client()) => {
 
         tobz.getAmountOfLoadedMessages() // Cut message Cache if cache more than 3K
             .then((msg) => {
-                if (msg >= 100000) {
+                if (msg >= 3000) {
                     console.log('[CLIENT]', color(`Loaded Message Reach ${msg}, cuting message cache...`, 'yellow'))
                     tobz.cutMsgCache()
                 }
@@ -113,6 +114,7 @@ const start = async (tobz = new Client()) => {
         // listening on Incoming Call
         tobz.onIncomingCall(( async (call) => {
             await tobz.sendText(call.peerJid, 'Maaf, saya tidak bisa menerima panggilan. nelfon = block!.\nJika ingin membuka block harap chat Owner!')
+            tobz.sendContact(from, ownerNumber)
             .then(() => tobz.contactBlock(call.peerJid))
         }))
     }
