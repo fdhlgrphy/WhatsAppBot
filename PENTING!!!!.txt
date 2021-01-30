@@ -1,0 +1,66 @@
+INI WAJIB BANGET DIBACA!!!!
+TAPI KALAU UDAH NGERTI YUDAH.
+
+-------
+INI PENTING, DAN WAJIB DI INSTALL KALAU GAMAU GAGAL.
+
+-------
+BINGUNG PAS INSTALL? HUBUNGI GUE VIA WHATSAPP.( wa.me/6289635687240 )
+ADA CASE BERMASALAH? HUBUNGI GUE VIA WHATSAPP.( wa.me/6289635687240 )
+--------
+KALAU MISALNYA CASE WORK TAPI MALAH KELUARNYA BEDA, MUNGKIN KARENA ERRORNYA DI API
+BELI APIKEYNYA DISINI:
+
+https://naufalhoster.xyz/docs/
+http://tobz-api.herokuapp.com
+http://api.zeks.xyz/
+https://api.vhtear.com/
+
+---------------------------------
+
+NOTE BUAT INSTALL DI CMD NYA:
+
+> npm i 
+> npm i pm2
+> npm i jsdom
+> npm i emoji-unicode
+> npm i tiktok-scraper
+> npm i audit fix
+
+BUAT START BOTNYA:
+NPM:
+> npm start
+atau bisa
+> node index.js
+
+PM2:
+> pm2 start run.js
+> pm2 monit
+
+BUAT BERHENTIIN BOTNYA:
+
+NPM:
+> TEKAN CTRL + C 
+
+PM2:
+> TEKAN CTRL + C
+> pm2 stop run.js
+> pm2 stop index.js
+
+--------------------------------
+
+BAHAN - BAHAN BUAT BOTNYA
+
+IMAGEMAGICK + FFMPEG: 
+> https://drive.google.com/file/d/1MpZn98ADbRvxAwIS1jVqQwZ4ks8DW9ZO/view?usp=sharing
+
+TUTORIAL INSTALL:
+> 
+
+GITCLONE
+> https://git-scm.com/downloads
+
+NODE JS:
+> https://nodejs.org/en/download/
+
+
