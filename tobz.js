@@ -7897,6 +7897,9 @@ Terima kasih juga yang sudah membantu mengembangkan *ZXCBOT*
 >   Jeniii 
 | instagram.com/oowl.jeniar
 
+> TOBZ 
+| https://github.com/TobyG74/ElainaBOT
+| https://www.instagram.com/accounts/login/?next=/tobz2k19/
 
 Kalian bisa sewa *ZXCBOT*, chat dengan ownernya aja ya. 
 *Ketik ${prefix}owner*, utamakan salam biar adem.
