@@ -1795,6 +1795,7 @@ ${pesanafk}`)}`)
             // api baru nyadar bgst
             //https://rest.farzain.com/api/random.php?min=1&max=100&apikey=
            // https://tobz-api.herokuapp.com/api/photooxy?theme=csgo&text=Tobz&apikey=APIKEYLU
+           //pikri%20gans
           
            case prefix+'csgologo':
             if(isReg(obj)) return
@@ -1808,6 +1809,42 @@ ${pesanafk}`)}`)
             tobz.sendFileFromUrl(from, csgologo2.result,`csgologo.jpg`, `Nih Gambarnya`, id)
             await limitAdd(serial)
             break
+            case prefix+'eroded':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}batik [teks]*\nContoh : *${prefix}batik ZXCBOT*`, id)
+            await tobz.reply(from, mess.wait, id)
+            const eroded = body.slice(8)
+            const eroded1 = await axios.get(`https://videfikri.com/api/textmaker/eroded/?text=${eroded}`)
+            const eroded2 = eroded1.data
+            tobz.sendFileFromUrl(from, eroded2.result.img, `eroded.jpg`, `Nih Gambarnya`, id)
+            await limitAdd(serial)
+            break
+            case prefix+'batik':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}batik [teks]*\nContoh : *${prefix}batik ZXCBOT*`, id)
+            await tobz.reply(from, mess.wait, id)
+            const modernb = body.slice(6)
+            const modernb1 = await axios.get(`https://videfikri.com/api/textmaker/modernbatik/?text=${modernb}`)
+            const modernb2 = modernb1.data
+            tobz.sendFileFromUrl(from, modernb2.result.img,`modernb.jpg`, `Nih Gambarnya`, id)
+            await limitAdd(serial)
+            break
+            case prefix+'labtext':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}batik [teks]*\nContoh : *${prefix}batik ZXCBOT*`, id)
+                await tobz.reply(from, mess.wait, id)
+                const labtext = body.slice(8)
+                const labtext1 = await axios.get(`https://videfikri.com/api/textmaker/labtext/?text=${labtext}`)
+                const labtext2 = labtext1.data
+                tobz.sendFileFromUrl(from, labtext2.result.img,`labtext.jpg`, `Nih Gambarnya`, id)
+                await limitAdd(serial)
+                break
            case prefix+'pubglogo':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -2189,21 +2226,21 @@ ${pesanafk}`)}`)
             // END
 
 
-            case prefix+'infofilm':
+            case prefix+'wattpad':
 			if(isReg(obj)) return
             if(cekumur(cekage)) return
 			if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}alkitab* [ Ayat ]\n\n*Contoh :* ${prefix}alkitab matius`, id)
-            const film21x = body.slice(9)
+            const wattpad = body.slice(8)
 			tobz.reply(from, mess.wait, id)
             try {
-                const dataplai = await axios.get(`https://tobz-api.herokuapp.com/api/film?q=${film21x}&apikey=BotWeA`)//
-                const dataplay = dataplai.data
-                 let film21 = `*「 FILM INFO 」*\n\n*Hasil Pencarian:* ${film21x}\n`
-                for (let i = 0; i < dataplay.result.length; i++) {
-                    film21 += `\n─────────────────\n\n• *Judul* : ${dataplay.result[i].judul}\n• *Link* : ${dataplay.result[i].link}\n• *Genre* : ${dataplay.result[i].genre_negara}\n•*Rating*: ${dataplay.result[i].rating}\n`
+                const dataplai1 = await axios.get(`https://docs-jojo.herokuapp.com/api/wattpad_search?q=${wattpad}`)//
+                const dataplay1 = dataplai1.data
+                 let wattpad2 = `*「 WATTPAD SEARCHING 」*\n\n*Hasil Pencarian:* ${wattpad}\n`
+                for (let i = 0; i < dataplay1.result.length; i++) {
+                    wattpad2 += `\n─────────────────\n\n• *Judul* : ${dataplay1.result[i].title}\n• *Dibaca* : ${dataplay1.result[i].reads}\n• *Votes*: ${dataplay1.result[i].votes}\n• *Link*: ${dataplay1.result[i].url}\n • *Deskripsi* : ${dataplay1.result[i].description}\n`
                 }
-                await tobz.reply(from, film21, id)
+                await tobz.reply(from, wattpad2, id)
             } catch (err){
                 console.log(err)
             }
@@ -2461,9 +2498,9 @@ ${pesanafk}`)}`)
                const jsonsercmuv2 = await resmusv2.json()
                let berhitung1 = 1
                const { result } = await jsonsercmuv2
-               let xixixai = `*Hasil pencarian dari ${querv2}*\n\nKetik ${prefix}getmusic [angka] untuk mengambil ID\nContoh : ${prefix}getmusic 2\n`
+               let xixixai = `*Hasil pencarian dari ${querv2}*\n\nKetik ${prefix}getmusic [id] untuk mengambil lagu. Atau reply pesan ini dan ketik ${prefix}getmusic 2\n`
                for (let i = 0; i < result.length; i++) {
-                   xixixai += `\n═════════════════\n\n*Urutan* : ${i+1}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].channel}\n*Durasi* : ${result[i].duration}\n*Perintah download* : ${prefix}getvideo ${result[i].id}\n`
+                   xixixai += `\n═════════════════\n\n*Urutan* : ${i+1}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].channel}\n*Durasi* : ${result[i].duration}\n*Perintah download*:\n${prefix}getmusic ${result[i].id}\n`
                }
                    xixixai += `\n\n`
                for (let ii = 0; ii < result.length; ii++) {
@@ -2565,7 +2602,30 @@ ${pesanafk}`)}`)
                                         }
                                         break
             
-			case prefix+'hug':
+                                        case prefix+'triggerd':
+                                            var imgbb = require('imgbb-uploader')
+                                             if ((isMedia && !mek.message.videoMessage || isQuotedImage) && args.length == 0) {
+                                             ger = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
+                                             tobz.reply(mess.wait)
+                                             owgi = await client.downloadAndSaveMediaMessage(ger)
+                                             anu = await imgbb("727e7e43f6cda1dfb85d888522fd4ce1", owgi)
+                                            teks = `${anu.display_url}`
+                                            ranpll = getRandom('.gif')
+                                            ranoll = getRandom('.webp')
+                                            anu1ll = `https://some-random-api.ml/canvas/triggered?avatar=${teks}`
+                                             exec(`wget ${anu1ll} -O ${ranpll} && ffmpeg -i ${ranpll} -vcodec libwebp -filter:v fps=fps=20 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${ranoll}`, (err) => {
+                                                    fs.unlinkSync(ranpll)
+                                                    if (err) return reply(mess.error.stick)
+                                                    nobgll = fs.readFileSync(ranoll)
+                                                    tobz.sendMessage(from, nobgll, sticker, {quoted: mek})
+                                                    fs.unlinkSync(ranoll)
+                                            })
+                                        
+                                                 } else {
+                                                    tobz.reply('Gunakan foto!')
+                                              }
+                                              break
+                                        case prefix+'hug':
                 const argggg = body.trim().split(' ')
                 const janjing = (`@${sender.id.replace('@c.us','')}`)
                await tobz.sendGiphyAsSticker(from, 'https://media.giphy.com/media/od5H3PmEG5EVq/giphy.gif')
@@ -5205,6 +5265,24 @@ ${url_account}`
             await tobz.sendText(from, `Waktu Indonesia Barat: *${moment().utcOffset('+0700').format('HH:mm')}* WIB \nWaktu Indonesia Tengah: *${moment().utcOffset('+0800').format('HH:mm')}* WITA \nWaktu Indonesia Timur: *${moment().utcOffset('+0900').format('HH:mm')}* WIT`)
             await limitAdd(serial)
             break
+
+
+           // https://docs-jojo.herokuapp.com/api/tiktok_nowm?url=
+           //Quotes*: _${skya_.result.quotes}_\n\n*Character*:\n${skya_.result.character}\n*Anime*:\n${skya_.result.anime}
+           //
+           case prefix+'ttnowm':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubglogo [teks]*\nContoh : *${prefix}pubglogo ZXCBOT*`, id)
+            await tobz.reply(from, mess.wait, id)
+            const tiktoknowm = body.slice(7)
+            const tiktoknowm1 = await axios.get(`https://docs-jojo.herokuapp.com/api/tiktok_nowm?url=${tiktoknowm}`) //
+            const tiktoknowm2 = tiktoknowm1.data
+            tobz.sendFileFromUrl(from, tiktoknowm2.result.url,``, `Data berhasil di download!\n\n*From*: [ ${tiktoknowm2.result.from} ]\n*Title*: [ ${tiktoknowm2.result.title} ]\n*Upload*: [ ${tiktoknowm2.result.uploaded} ]\n`, id)
+            await limitAdd(serial)
+            break
+
             case prefix+'tiktok':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -7185,15 +7263,6 @@ Prefiks adalah sebuah afiks yang dibubuhkan pada awal sebuah kata dasar.
 JANGAN MENELPON BOT!!
 *TELPON BOT : AUTO BLOCK*
 
-
-~> untuk melihat owner ketik *${prefix}owner*
-~> untuk melihat donasi ketik *${prefix}donasi*
-~> untuk inv bot ke grup ketik *${prefix}info*
-~> untuk melihat snk bot ketik *${prefix}snk*
-~> untuk melihat limit ketik *${prefix}limit*
-~> untuk melihat bhsa ketik *${prefix}bahasa*
-
-
 Sebagian menu tidak ada yang berfungsi dan sedang dalam perbaikan. Dan perintah tidak memakai tanda *[  ]*
 
 *Menu - Menu Pada ZXCBOT*
@@ -7212,7 +7281,7 @@ Sebagian menu tidak ada yang berfungsi dan sedang dalam perbaikan. Dan perintah 
 ✻  *${prefix}tahta [teks]*
 ✻  *${prefix}qrcode [optional]*
 ✻  *${prefix}tts [kode bhs] [teks]*
-✻  *${prefix}quotemaker [|teks|author|theme]
+✻  *${prefix}quotemaker [|teks|author|theme]*
 
 
     『 *NULIS MENU* 』
@@ -7252,11 +7321,6 @@ Sebagian menu tidak ada yang berfungsi dan sedang dalam perbaikan. Dan perintah 
 ✻  *${prefix}tod* *[TRUTH OR DARE]*
 ✻  *${prefix}igprofile [@username]*
 ✻  *${prefix}heroml [nama hero]*
-
-
-    ► 『 *18+* 』
-
-✻  *${prefix}nsfwmenu*
 
 
     『 *DOWNLOADER* 』
@@ -7897,9 +7961,6 @@ Terima kasih juga yang sudah membantu mengembangkan *ZXCBOT*
 >   Jeniii 
 | instagram.com/oowl.jeniar
 
-> TOBZ 
-| https://github.com/TobyG74/ElainaBOT
-| https://www.instagram.com/accounts/login/?next=/tobz2k19/
 
 Kalian bisa sewa *ZXCBOT*, chat dengan ownernya aja ya. 
 *Ketik ${prefix}owner*, utamakan salam biar adem.
