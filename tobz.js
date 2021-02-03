@@ -22,8 +22,6 @@ const Math_js = require('mathjs');
 const imageToBase64 = require('image-to-base64')
 const bent = require('bent')
 const request = require('request')
-const linkkk = 'https://arugaz.herokuapp.com'
-const linkkk2 = 'https://arugaz.my.id/api'
 const { getStickerMaker } = require('./lib/ttp')
 const quotedd = require('./lib/quote')
 const color = require('./lib/color')
@@ -268,13 +266,11 @@ module.exports = tobz = async (tobz, message) => {
         const isCmd = command.startsWith(prefix)
 
         const hurtz = tobz
-        const vinz = tobz
-        const switch_pref = prefix 
         const serial = sender.id
         const isAdmin = adminNumber.includes(sender.id) // Admin Number
 		const isPrem = premNumber.includes(sender.id) // Premium Number
-        //const ownerNumber = '6289635687240@c.us' // Owner Number 1 = Utama 
-        const ownerNumber = ["6289635687240@c.us", "6285157661229@c.us"] // Owner Number 2 = Assistan Owner
+        const ownerNumber = '6289635687240@c.us' // Owner Number 1 = Utama 
+        //const ownerNumber = ["6289635687240@c.us", "6285157661229@c.us"] // Owner Number 2 = Assistan Owner
         const isOwner = ownerNumber.includes(sender.id) // Owner Number 1
         //const isOwner2 = ownerNumber2.includes(sender.id) // Owner Number 2
         const isAfkOn = checkAfkUser(sender.id) // AFK NUMBER
@@ -325,9 +321,10 @@ module.exports = tobz = async (tobz, message) => {
         //
         //if (!isCmd && !isGroupMsg) { return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname)) }
         //if (!isCmd && isGroupMsg) { return console.log('[RECV]', color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), 'Message from', color(pushname), 'in', color(name || formattedTitle)) }
+
         if (isBanned) return console.log(color('[BANNED]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))
         if (isBlocked) return console.log(color('[BLOCKED]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))
-	if (isCmd && !isGroupMsg) {console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))}
+        if (isCmd && !isGroupMsg) {console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))}
         if (isCmd && isGroupMsg) {console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle))}
 
         // FUNCTION
@@ -7047,10 +7044,16 @@ const pen = no.replace(' ','')
             const getnomber =  await tobz.checkNumberStatus(texnugm)
             const useriq = getnomber.id.replace('@','') + '@c.us'
                 try {
-                    var jnck = await tobz.getProfilePicFromServer(useriq)
-                    tobz.sendFileFromUrl(from, jnck, `awok.jpg`, 'Berhasil mendapatkan foto profil!', id)
+                    //var jnck = await tobz.getProfilePicFromServer(useriq)
+                    const dpd2 = await tobz.getProfilePicFromServer(useriq)
+                    if (dpd2 == undefined) {
+                        var pfp2 = errorImg // cuman buat triger errornya wkwk
+                        } else {
+                            var pfp2 = dpd2
+                        } 
+                    tobz.sendFileFromUrl(from, pfp2, `awok.jpg`, 'Berhasil mendapatkan foto profil!', id)
                 } catch(err) {
-                    console.log(err)
+                    //console.log(err)
                     tobz.reply(from, 'Ups, ada yang error!  Mungkin ppnya depresi atau di privasi.', id)
                 }
             break
@@ -7061,7 +7064,8 @@ const pen = no.replace(' ','')
         case prefix+'ban':
             if (!isAdmin) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin ZXCBOT!', id)
             for (let i = 0; i < mentionedJidList.length; i++) {
-                if ((adminNumber).includes(mentionedJidList[i])) return tobz.reply(from,`Maaf ${pushname}, Kamu tidak bisa banned Admin ZXCBOT!`, id)
+                if ((ownerNumber).includes(mentionedJidList[i])) return tobz.reply(from,`Sopan kah lu gitu, mau ban owner bot?`, id)
+                if ((adminNumber).includes(mentionedJidList[i])) return tobz.reply(from,`Maaf, Kamu tidak bisa membanned Admin Bot!`, id)
                 banned.push(mentionedJidList[i])
                 fs.writeFileSync('./lib/banned.json', JSON.stringify(banned))
                 tobz.reply(from, `Succes ban target!`,id)
@@ -7183,6 +7187,7 @@ const pen = no.replace(' ','')
                     var sts = await tobz.getStatus(author)
                     var adm = isGroupAdmins
                     var donate = isAdmin
+                    prema = isPrem
                     var ctt = await tobz.getContact(author)
                     const { status } = sts
                     var found = false
@@ -7212,7 +7217,7 @@ const pen = no.replace(' ','')
                     } else {
                         var namae = contact
                     } 
-                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}`)
+                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}*`)
                     }
                 } else if (quotedMsg) {
                     var qmid = quotedMsgObj.sender.id
@@ -7224,6 +7229,7 @@ const pen = no.replace(' ','')
                     var ctt = await tobz.getContact(qmid)
                     var adm = isGroupAdmins
                     var donate = isAdmin
+                    var prema = isPrem
                     const { status } = sts
                     Object.keys(pendaftar).forEach((i) => {
                         if(pendaftar[i].id == qmid){
@@ -7250,8 +7256,8 @@ const pen = no.replace(' ','')
                         var namae = '*Tidak Ada Nama*' 
                     } else {
                         var namae = contact
-                    } 
-                    tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}`)
+                    }                                                   
+                    tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username:* ${namae}\n• *User Info:* ${status}\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}`)
                     }
                 }
             }
@@ -8312,6 +8318,9 @@ case prefix+'wame':
 
         // DEFAULT
         default:
+        /*    if (command.startsWith(`${prefix}`)) {
+                if (isBanned) return tobz.reply(from, `Maaf anda di banned, anda tidak dapat memakai bot!`, id)
+            } */
             if (command.startsWith('b1ottttt')) {
                 if (!isGroupMsg)
                 tobz.sendTextWithMentions(from, `Hai *@${sender.id.replace('@c.us','')}* ada yang bisa dibantu? ketik *${prefix}help* untuk melihat commands`, id)
