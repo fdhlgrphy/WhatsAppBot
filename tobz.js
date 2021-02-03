@@ -37,7 +37,6 @@ const { RemoveBgResult, removeBackgroundFromImageBase64, removeBackgroundFromIma
 const lolcatjs = require('lolcatjs')
 const figlet = require('figlet')
 const tiktok = require('tiktok-scraper')
-const farzain = 'n4NdZlxPpCCIR7r2X0UJGVX7R'
 // LOLCATJS & FIGLET
 
 lolcatjs.options.seed = Math.round(Math.random() * 1000);
@@ -268,6 +267,9 @@ module.exports = tobz = async (tobz, message) => {
       //  const stickermsg = message.type === 'sticker'
         const isCmd = command.startsWith(prefix)
 
+        const hurtz = tobz
+        const vinz = tobz
+        const switch_pref = prefix 
         const serial = sender.id
         const isAdmin = adminNumber.includes(sender.id) // Admin Number
 		const isPrem = premNumber.includes(sender.id) // Premium Number
@@ -276,6 +278,7 @@ module.exports = tobz = async (tobz, message) => {
         const isOwner = ownerNumber.includes(sender.id) // Owner Number 1
         //const isOwner2 = ownerNumber2.includes(sender.id) // Owner Number 2
         const isAfkOn = checkAfkUser(sender.id) // AFK NUMBER
+        
 		
 
         if (isGroupMsg && GroupLinkDetector && !isGroupAdmins && !isAdmin && !isOwner && !isPrem){
@@ -599,6 +602,8 @@ ${pesanafk}`)}`)
         const mess = {
             wait: 'Sedang di proses, silahkan tunggu sebentar!',
             magernulissatu: 'Sedang di proses, silahkan tunggu sebentar!',
+            wait2: 'Sedang di proses, silahkan tunggu sekitar ± 1 min!',
+            
             error: {
                 St: `[❗] Kirim gambar dengan caption *${prefix}sticker* atau tag gambar yang sudah dikirim`,
                 Ti: `[❗] Replay sticker dengan caption *${prefix}toimg* atau tag sticker yang sudah dikirim`,
@@ -1528,7 +1533,7 @@ ${pesanafk}`)}`)
         case prefix+'stickergif': // INSTALL FFMPEG, IF YOU WANT THIS COMMAND WORK!
         case prefix+'stikergif': // TUTORIAL IN README, PLEASE READ!
         case prefix+'sgif': // MRHRTZ
-            tobz.reply(from, `[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!`, id)
+        tobz.reply(from, mess.wait2, id)
             if (isMedia && type === 'video' || mimetype === 'image/gif') {
                 try {
                     const mediaData = await decryptMedia(message, uaOverride)
@@ -1706,7 +1711,7 @@ ${pesanafk}`)}`)
                     const commentPh = argz[2]
                     const ppPhRaw = await tobz.getProfilePicFromServer(orgn)
                     if (ppPhRaw === undefined) {
-                        var ppPh = errorImg
+                        var ppPh = errorurl
                     } else {
                         var ppPh = ppPhRaw
                     }
@@ -1918,7 +1923,7 @@ ${pesanafk}`)}`)
                 if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                 await limitAdd(serial)
                 if (isMedia && type === 'image' || isQuotedImage) {
-                    await tobz.reply(from, `[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!`, id)
+                    await  tobz.reply(from, mess.wait2, id)
                     const encryptMedia = isQuotedImage ? quotedMsg : message
                     const mediaData = await decryptMedia(encryptMedia, uaOverride)
                     const imageLink = await uploadImages(mediaData, `triger.${sender.id}`)
@@ -2246,6 +2251,7 @@ ${pesanafk}`)}`)
             } catch (err){
                 console.log(err)
             }
+            await limitAdd(serial)
             break
          case prefix+'searchig':
                 if(isReg(obj)) return
@@ -2265,6 +2271,7 @@ ${pesanafk}`)}`)
                 } catch (err){
                     console.log(err)
                 }
+                await limitAdd(serial)
                 break
             case prefix+'trendtwit':
 			if(isReg(obj)) return
@@ -2284,6 +2291,7 @@ ${pesanafk}`)}`)
             } catch (err){
                 console.log(err)
             }
+            await limitAdd(serial)
             break
             case prefix+'cineplex':
                 if(isReg(obj)) return
@@ -2303,6 +2311,7 @@ ${pesanafk}`)}`)
                 } catch (err){
                     console.log(err)
                 }
+                await limitAdd(serial)
                 break
             
 			case prefix+'galaxy':
@@ -2362,18 +2371,17 @@ ${pesanafk}`)}`)
                     await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}pornhub [ |Teks1|Teks2 ]*, contoh *${prefix}pornhub |juwen|keren*`, id)
                 }
                 break
-        /*    case prefix+'musik':
+                case prefix+'musik':
                     case prefix+'music':
                         if(isReg(obj)) return
-                         if(cekumur(cekage)) return
-                         if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
-                         //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
-                         if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                        if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}musik* _Judul lagu yang akan dicari_`, id)
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        //if (!isGroupMsg) return hurtz.reply(from, menuPriv, id)
+                        if (args.length === 1) return hurtz.reply(from, `Kirim perintah *${prefix}musik* _Judul lagu yang akan dicari_`)
                         const quer = body.slice(7).toString()
-                        tobz.reply(from, mess.wait, id)
+                        hurtz.reply(from, mess.wait, id)
                         try {
-                            //tobz.reply(from, '_Sedang mencari data..._', id)
+                            //hurtz.reply(from, '_Sedang mencari data..._', id)
                             const jsonsercmu = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(quer)}`).json()
                             // console.log(jsonsercmu)
                             // if (!resmus.ok) throw new Error(`unexpected response ${resmus.statusText}`)
@@ -2383,20 +2391,49 @@ ${pesanafk}`)}`)
                             let xixixi = `*Hasil pencarian from ${quer}*\n\n_Note : Apabila kesusahan mengambil data id, untuk download musik tag pesan ini dan berikan perintah : *${prefix}getmusik urutan* contoh : *${prefix}getmusik 2*_\n`
                             //console.log(result)
                             for (let i = 0; i < result.length; i++) {
-                                xixixi += `\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].author}\n*Durasi* : ${result[i].timestamp}\n*Perintah download* : _${prefix}getmusik ${result[i].id}_\n`
+                                xixixi += `\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].author}\n*Durasi* : ${result[i].timestamp}\n*Perintah download* :\n_${prefix}getmusik ${result[i].id}_\n`
                             }
                                 xixixi += `\n\n`
                             for (let ii = 0; ii < result.length; ii++) {
                                 xixixi += `(#)${result[ii].id}`
                             }
-                            await tobz.sendFileFromUrl(from, result[0].thumb, 'thumbserc.jpg', xixixi, id)
+                            await hurtz.sendFileFromUrl(from, result[0].thumb, 'thumbserc.jpg', xixixi, id)
                         } catch (err){
-                            tobz.reply(from, `_Kesalahan saat mencari judul lagu ${quer}_`, id)
+                            hurtz.reply(from, `_Kesalahan saat mencari judul lagu ${quer}_`, id)
                         }
-                        await tobz.sendSeen(from)
-                        break 
+                        await hurtz.sendSeen(from)
+                        await limitAdd(serial)
+                        break
             
-                        case prefix+'.':
+                        case prefix+'vidio':
+                                        case prefix+'video':
+                                            //if (!isGroupMsg) return hurtz.reply(from, menuPriv, id)
+                                            if (args.length === 1) return hurtz.reply(from, 'Kirim perintah *!video* _Judul video yang akan dicari_')
+                                            const querv = body.slice(7)
+                                            hurtz.reply(from, mess.wait, id)
+                                            try {
+                                                //hurtz.reply(from, '_Sedang mencari data..._', id)
+                                                const jsonsercmuv = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(querv)}`).json()
+                                                // if (!resmusv.ok) throw new Error(`unexpected response ${resmusv.statusText}`)
+                                                // const jsonsercmuv = await resmusv.json()
+                                                // let berhitung1 = 1
+                                                const { result } = await jsonsercmuv
+                                                let xixixai = `*Hasil pencarian from ${querv}*\n\n_Note : Apabila kesusahan mengambil data id, untuk download video tag pesan ini dan berikan perintah : *${prefix}getvideo urutan* contoh : *${prefix}getvideo 2*_\n`
+                                                for (let i = 0; i < result.length; i++) {
+                                                    xixixai += `\n*Urutan* : ${i+1}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].author}\n*Durasi* : ${result[i].timestamp}\n*Perintah download* :\n_${prefix}getvideo ${result[i].id}_\n`
+                                                }
+                                                    xixixai += `\n\n`
+                                                for (let ii = 0; ii < result.length; ii++) {
+                                                    xixixai += `(#)${result[ii].id}`
+                                                }
+                                                await hurtz.sendFileFromUrl(from, result[0].thumb, 'thumbserc.jpg', xixixai, id)
+                                            } catch (err){
+                                                ERRLOG(err)
+                                            }
+                                            await hurtz.sendSeen(from)
+                                    break
+
+                      /*  case prefix+'.':
                             yta('https://youtube.com/watch?v='+args[1]).then(c => console.log(c))
                             break */
                             case prefix+'getmusik':
@@ -2454,44 +2491,8 @@ ${pesanafk}`)}`)
                                         tobz.reply(from, `_Kesalahan! Pastikan id download sudah benar._`, id)
                                     }
                                     break
-            
-     /*                        case prefix+'vidio':
-                             case prefix+'video':
-                                if(isReg(obj)) return
-                                if(cekumur(cekage)) return
-                                if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
-                                
-                              //  if (!isPrem) return tobz.reply(from, `Perintah ini hanya untuk user Premium *ZXCBOT*\n\nKetik* ${prefix}premmenu* untuk melihat menu premium`, id)
-                                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                                if(isReg(obj)) return
-                                if(cekumur(cekage)) return
-                                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}video* _Judul video yang akan dicari_`, id)
-                                    const querv = body.slice(7)
-                                    tobz.reply(from, mess.wait, id)
-                                    try {
-                                        //tobz.reply(from, '_Sedang mencari data..._', id)
-                                        const jsonsercmuv = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(querv)}`).json()
-                                        // if (!resmusv.ok) throw new Error(`unexpected response ${resmusv.statusText}`)
-                                        // const jsonsercmuv = await resmusv.json()
-                                        // let berhitung1 = 1
-                                        const { result } = await jsonsercmuv
-                                        let xixixai = `*Hasil pencarian from ${querv}*\n\n_Note : Apabila kesusahan mengambil data id, untuk download video tag pesan ini dan berikan perintah : *${prefix}getvideo urutan* contoh : *${prefix}getvideo 2*_\n`
-                                        for (let i = 0; i < result.length; i++) {
-                                            xixixai += `\n*Urutan* : ${i+1}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].author}\n*Durasi* : ${result[i].timestamp}\n*Perintah download* : _${prefix}getvideo ${result[i].id}_\n`
-                                        }
-                                            xixixai += `\n\n`
-                                        for (let ii = 0; ii < result.length; ii++) {
-                                            xixixai += `(#)${result[ii].id}`
-                                        }
-                                        await tobz.sendFileFromUrl(from, result[0].thumb, 'thumbserc.jpg', xixixai, id)
-                                    } catch (err){
-                                     tobz.reply(from, 'Ada yang error', id)
-                                    }
-                                    break
-                                    */
-
-             case prefix+'video': // SEARCH VIDEO FROM YOUTUBE
+   
+  /*           case prefix+'video': // SEARCH VIDEO FROM YOUTUBE
              case prefix+'vidio':
              if(isReg(obj)) return
              if(cekumur(cekage)) return
@@ -2537,7 +2538,7 @@ ${pesanafk}`)}`)
                const jsonsercmuv2 = await resmusv2.json()
                let berhitung1 = 1
                const { result } = await jsonsercmuv2
-               let xixixai = `*Hasil pencarian dari ${querv2}*\n\nKetik ${prefix}getmusic [id] untuk mengambil lagu. Atau reply pesan ini dan ketik ${prefix}getmusic 2\n`
+               let xixixai = `*Hasil pencarian dari ${querv2}*\n\nKetik ${prefix}getmusic [id] untuk mengambil lagu. Atau reply pesan ini dan ketik ${prefix}getmusic [ urutan no ].\n\nContoh:\n1. ${prefix}getmusic 1GvW5WJVYLw\n2. ${prefix}getmusic 2\n`
                for (let i = 0; i < result.length; i++) {
                    xixixai += `\n═════════════════\n\n*Urutan* : ${i+1}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].channel}\n*Durasi* : ${result[i].duration}\n*Perintah download*:\n${prefix}getmusic ${result[i].id}\n`
                }
@@ -2549,7 +2550,7 @@ ${pesanafk}`)}`)
            } catch (err){
                console.log(err)
            }
-           break
+           break */
                                     case prefix+'bass':
                                         if (!isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
                                         if (isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
@@ -2591,8 +2592,9 @@ ${pesanafk}`)}`)
                                         if(isReg(obj)) return
                                         if(cekumur(cekage)) return
                                         if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                                            if (isMedia && isImage || isQuotedImage) {
-                                                tobz.reply(from, `[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!`, id)
+                                        tobz.reply(from, mess.wait2, id)
+                                        try {  
+                                        if (isMedia && type === 'image' || isQuotedImage) {     
                                                 const encryptMedia = isQuotedImage ? quotedMsg : message
                                                 console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
                                                 const mediaData = await decryptMedia(encryptMedia, uaOverride)
@@ -2661,6 +2663,10 @@ ${pesanafk}`)}`)
                                                     })
                                             }
                                             limitAdd(serial)
+                                        } catch(err) {
+                                            console.log(err)
+                                            tobz.reply(from, 'Ups, ada yang error!', id)
+                                        }
                                         break         
                                     case prefix+'getvideo':
                                      case prefix+'getvidio':
@@ -3678,34 +3684,34 @@ ${desc}`, id)
                 tobz.reply(from, 'Pilih enable atau disable!', id)
             }
             break
-        case prefix+'simi':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            
-            if (!isAdmin) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh Admin ZXCBOT!', id) // Hanya Admin yang bisa mengaktifkan
-            if (args.length === 1) return tobz.reply(from, 'Pilih enable atau disable!', id)
-            if (args[1].toLowerCase() === 'enable') {
-                var grup = simi_.indexOf(groupId)
-                if(cek){
-                    return tobz.reply(from, `Simsimi Sudah diaktifkan di grup ini`, id)
+            case prefix+'simi':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                
+                if (!isAdmin) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh Admin ZXCBOT!', id) // Hanya Admin yang bisa mengaktifkan
+                if (args.length === 1) return tobz.reply(from, 'Pilih enable atau disable!', id)
+                if (args[1].toLowerCase() === 'enable') {
+                    var cek = simi_.includes(chatId);
+                    if(cek){
+                        return tobz.reply(from, `Simsimi Sudah diaktifkan di grup ini`, id)
+                    } else {
+                    simi_.push(chat.id)
+                    fs.writeFileSync('./lib/database/Simsimi.json', JSON.stringify(simi_))
+                    tobz.reply(from, `Simsimi berhasil di aktifkan di group ini! Kirim perintah *${prefix}$ [teks]*\nContoh : *${prefix}$ halo*`, id)
+                    }
+                } else if (args[1].toLowerCase() === 'disable') {
+                    var cek = simi_.includes(chatId);
+                    if(cek){
+                        return tobz.reply(from, `Simsimi Sudah diaktifkan di grup ini`, id)
+                    } else {
+                    simi_.splice(chat.id, 1)
+                    fs.writeFileSync('./lib/database/Simsimi.json', JSON.stringify(simi_))
+                    tobz.reply(from, 'Simsimi berhasil di nonaktifkan di group ini!', id)
+                    }
                 } else {
-                simi_.splice(grup, 1)
-                fs.writeFileSync('./lib/database/Simsimi.json', JSON.stringify(simi_))
-                tobz.reply(from, `Simsimi berhasil di aktifkan di group ini! Kirim perintah *${prefix}$ [teks]*\nContoh : *${prefix}$ halo*`, id)
+                    tobz.reply(from, 'Pilih enable atau disable!', id)
                 }
-            } else if (args[1].toLowerCase() === 'disable') {
-                var cek = simi_.includes(chatId);
-                if(cek){
-                    return tobz.reply(from, `Simsimi Sudah diaktifkan di grup ini`, id)
-                } else {
-                simi_.splice(chat.id, 1)
-                fs.writeFileSync('./lib/database/Simsimi.json', JSON.stringify(simi_))
-                tobz.reply(from, 'Simsimi berhasil di nonaktifkan di group ini!', id)
-                }
-            } else {
-                tobz.reply(from, 'Pilih enable atau disable!', id)
-            }
-            break
+                break
         case prefix+'group':
 		case prefix+'gc':
             if(isReg(obj)) return
@@ -3725,32 +3731,7 @@ ${desc}`, id)
             }
             break
 
-            case prefix+'setgroup':
-                case prefix+'setgc':
-                    if(isReg(obj)) return
-                    if(cekumur(cekage)) return
-                    if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
-                    if (!isGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan oleh admin group', id)
-                    if (!isBotGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan ketika bot menjadi admin', id)
-                    if (args.length === 1) return tobz.reply(from, 'Pilih open atau close!', id)
-                    if (args[1].toLowerCase() === 'open') {
-                        tobz.reply(from, 'Group akan dibuka dalam 30 detik!', id)
-                        await sleep(10000)
-                        await sleep(10000)
-                        await sleep(10000)
-                        tobz.setGroupToAdminsOnly(groupId, false)
-                        tobz.sendTextWithMentions(from, `Group telah dibuka oleh admin @${sender.id.replace('@c.us','')}\nSekarang *semua member* dapat mengirim pesan`)
-                    } else if (args[1].toLowerCase() === 'close') {
-                        tobz.reply(from, 'Group akan ditutup dalam 30 detik!', id)
-                        await sleep(10000)
-                        await sleep(10000)
-                        await sleep(10000)
-                        tobz.setGroupToAdminsOnly(groupId, true)
-                        tobz.sendTextWithMentions(from, `Group telah ditutup oleh admin @${sender.id.replace('@c.us','')}\nSekarang *hanya admin* yang dapat mengirim pesan`)
-                    } else {
-                        tobz.reply(from, 'Pilih open atau disable close!', id)
-                    }
-                    break
+           
         case prefix+'left':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -4088,7 +4069,6 @@ ${desc}`, id)
         case prefix+'nhder':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            
             if (!isNsfw) return tobz.reply(from, 'command/Perintah NSFW belum di aktifkan di group ini!', id)
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length >=2){
@@ -4120,14 +4100,15 @@ ${desc}`, id)
             tobz.reply(from, `*Quotes*: _${skya_.result.quotes}_\n\n*Character*:\n${skya_.result.character}\n*Anime*:\n${skya_.result.anime}`, id)
             await limitAdd(serial)
             break
-            case prefix+'xxxsearch':
+            case prefix+'cersex':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            const xxxs = body.slice(10)
-            const xxxs2 = await axios.get(`https://api.vhtear.com/xxxsearch?query=${xxxs}&apikey=${vhtearkey}`)
-            xxxs3 = xxxs2.data.result.data
-            tobz.reply(from, `*Link*: ${xxxs3.url}`, id)
+            const xxxs1 = await axios.get(`https://api.vhtear.com/cerita_sex&apikey=${vhtearkey}`)
+            xxxs2 = xxxs1.data.result.judul // JUDUL
+            xxxs3 = xxxs1.data.result.image // GAMBAR
+            xxxs4 = xxxs1.data.result.cerita // CERITA
+            tobz.sendFileFromUrl(from, xxxs3, `crot.jpg`, `*${xxxs2}*\n\n${xxxs4}`, id)
             await limitAdd(serial)
             break
             case prefix+'infono':
@@ -4141,24 +4122,11 @@ ${desc}`, id)
             tobz.reply(from, `*Nomor*: ${infono3.nomor}\n*Operator*: ${infono3.op}`, id)
             await limitAdd(serial)
             break
-
-            case prefix+'igstory':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}infono [NO Telepon]*\nContoh : *${prefix}infono 085155078806`, id)
-            const usernameig = body.slice(8)
-            const usernameig2 = await axios.get(`https://api.vhtear.com/igstory?query=${usernameig}&apikey=${vhtearkey}`)
-            usernameig3 = usernameig2.data.result.story.itemlist
-            tobz.sendFileFromUrl(from, usernameig3.urlDownload)
-            await limitAdd(serial)
-            break
-
-            case prefix+'covid':
+      /*      case prefix+'covid':
                 const country = body.slice(6)   //https://coronavirus-19-api.herokuapp.com/countries/indonesia
                 const kawal = await axios.get(`https://coronavirus-19-api.herokuapp.com/countries/${country}`)
                 tobz.reply(from, `Negara: ${kawal.data.country}\nKasus: ${kawal.data.todayCases}\nTotal meninggal: ${kawal.data.deaths}\n`, id)
-                break
+                break */
 
         case prefix+'meme':
             if(isReg(obj)) return
@@ -4494,23 +4462,22 @@ ${desc}`, id)
                 limitAdd(serial)
             }
             break
-   /*     case prefix+'covid':
+        case prefix+'covid':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            //argz = body.trim().split(' ')
-            //console.log(...argz[1])
-            //var slicedArgs = Array.prototype.slice.call(arg, 1);
-            //console.log(slicedArgs)
-            //const country = await slicedArgs.join(' ')
-            const country = body.slice(6)
+            argz = body.trim().split(' ')
+            console.log(...argz[1])
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            console.log(slicedArgs)
+            const country = await slicedArgs.join(' ')
             console.log(country)
             const response2 = await axios.get('https://coronavirus-19-api.herokuapp.com/countries/' + country)
             const { cases, todayCases, deaths, todayDeaths, active } = response2.data
-            await tobz.sendText(from, '🌎️ Covid Info - ' + country + ' 🌍️\n\n✨️ Total Cases: ' + `${cases}` + '\n📆️ Today\'s Cases: ' + `${todayCases}` + '\n☣️ Total Deaths: ' + `${deaths}` + '\n☢️ Today\'s Deaths: ' + `${todayDeaths}` + '\n⛩️ Active Cases: ' + `${active}` + '.')
+            await tobz.reply(from, '🌎️ Covid Info - ' + country + ' 🌍️\n\n✨️ Total Cases: ' + `${cases}` + '\n📆️ Today\'s Cases: ' + `${todayCases}` + '\n☣️ Total Deaths: ' + `${deaths}` + '\n☢️ Today\'s Deaths: ' + `${todayDeaths}` + '\n⛩️ Active Cases: ' + `${active}` + '.', id)
             await limitAdd(serial)
-            break */
+            break 
         case prefix+'spamcall':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -4534,7 +4501,7 @@ ${desc}`, id)
                     if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                         tobz.reply(from, `Untuk mencari lagu dari youtube\nPenggunaan: ${prefix}play1 judul lagu\n\nSilahkan pilih:\n\n> *${prefix}play1*\n> *${prefix}play2*  \n> *${prefix}play3 (dengan file vn, voice note)*\n\nNb: Bila ingin mendownload dengan file kecil, kamu bisa pakai *${prefix}play2*`, id)
                         break */
-                        case prefix+'play'://silahkan kalian custom sendiri jika ada yang ingin diubah
+             /*           case prefix+'play'://silahkan kalian custom sendiri jika ada yang ingin diubah
                         if(isReg(obj)) return
                         if(cekumur(cekage)) return
                         //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
@@ -4567,8 +4534,8 @@ ${desc}`, id)
                             tobz.sendText(ownerNumber, 'Error Play : '+ err)
                             tobz.reply(from, mess.error.Yt3, id)
                         }
-                        break
-                  /*  case prefix+'play':
+                        break */
+                    case prefix+'play':
                      if(isReg(obj)) return
                      if(cekumur(cekage)) return
                      //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
@@ -4597,7 +4564,7 @@ ${desc}`, id)
                         tobz.sendText(ownerNumber, 'Error ytmp3 : '+ err)
                         tobz.reply(from, mess.error.Yt3, id)
                     }
-                    break */
+                    break 
               /*      case prefix+'play2':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -4869,7 +4836,7 @@ ${desc}`, id)
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            //if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             tobz.reply(from, `Sebelum bermain berjanjilah akan melaksanakan apapun perintah yang diberikan.\n\nSilahkan Pilih:\n-> ${prefix}truth\n-> ${prefix}dare`, id)
             break
     case prefix+'truth':
@@ -4886,7 +4853,7 @@ ${desc}`, id)
             .catch(() => {
                 tobz.reply(from, 'Hayolohhh, ada yang error!!', id)
             })
-            await limitAdd(serial)
+            //await limitAdd(serial)
             break
     case prefix+'dare':
         if(isReg(obj)) return
@@ -5326,10 +5293,11 @@ ${url_account}`
             if (!isSimi) return tobz.reply(from, 'command/Perintah Simi belum di aktifkan di group ini!', id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}$ [teks]*\nContoh : *${prefix}$ hai simi*`, id)
             const que = body.slice(3)
-            const sigo = await axios.get(`https://videfikri.com/api/simsimi/?teks=${que}`)
-            const sigot = sigo.data
-            tobz.reply(from, sigot.jawaban, id)
-            //console.log(sigot)
+            const sigo = await axios.get(`https://naufalhoster.xyz/tools/simsimi?apikey=${naufalkey}&pesan=${que}`)
+            const sigot = sigo.data.result.response
+            const sigot2 = sigo.data.result.pesan
+            tobz.reply(from, sigot, id)
+            //console.log(`IN: ${sigot2}\nOUT:${sigot}`)
             break
             case prefix+'fml':
                 if(isReg(obj)) return
@@ -6284,8 +6252,11 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
 			
             case prefix+'searchteks': 
             case prefix+'googleteks': 
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             ////if (!isVipUser) return tobz.reply(self, '*Fitur Ini Khusus VIP!*\n _Daftar VIP Hanya 5k/Bulan_\n\n*Mau Daftar VIP?*\nChat Owner BOT\n_wa.me/6281220439155_ ', id)       
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis/nJika Ingin Isi Ulang Chat Owner!/nKetik #limit Untuk Mengecek Kuota Limit Kamu`, id)
+            //if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis/nJika Ingin Isi Ulang Chat Owner!/nKetik #limit Untuk Mengecek Kuota Limit Kamu`, id)
 		if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}searchteks [ |Teks1|Teks2|teks3 ]*, contoh *${prefix}searchteks |Juwen|Gans|Banget*`, id)
             argz = body.trim().split('|')
             if (argz.length >= 3) {
@@ -6302,64 +6273,13 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
 			await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}searchteks [ |Teks1|Teks2|teks3 ]*, contoh *${prefix}searchteks |Juwen|Gans|Banget*`, id)
             }
             break
-            case prefix+'fotomissing':
-                if (!q) return await tobz.reply(from, `Format salah! Silakan cek cara penggunaan di *${prefix}menu*.`, id)
-                const atas = q.substring(0, q.indexOf('|'))
-                const tengah = q.substring(q.indexOf('|') + 2, q.lastIndexOf('|'))
-                const bawah = q.substring(q.lastIndexOf('|') + 2)
-                if (isMedia && type === 'image' || isQuotedImage) {
-                    await tobz.reply(self, ind.wait(), id)
-                    const encryptMedia = isQuotedImage ? quotedMsg : message
-                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
-                    const imageLink = await uploadImages(mediaData)
-                    fun.missing(atas, tengah, bawah, imageLink)
-                        .then(async ({ result }) => {
-                            await tobz.sendFileFromUrl(from, result.imgUrl, 'missing.jpg', '', id)
-                                .then(() => console.log('Success sending image!'))
-                        })
-                        .catch(async (err) => {
-                            console.error(err)
-                            await tobz.reply(from, 'Error!', id)
-                        })
-                } else {
-                    await tobz.reply(from, `Format salah! Silakan cek cara penggunaan di *${prefix}menu*.`, id)
-                }
-            break           
-        case prefix+'cerpen': // ARUGAZ
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            const cerpen = await get.get('https://arugaz.herokuapp.com/api/cerpen').json()
-            tobz.reply(from, `• *Cerpen*: ${cerpen.result}`, id)
-            break
-        case prefix+'puisi': // ARUGAZ
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-            const puisi = await get.get('https://arugaz.herokuapp.com/api/puisi1').json()
-            tobz.reply(from, `• *Puisi*: ${puisi.result}`, id)
-            break
-        case prefix+'puisi2': // ARUGAZ
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            const puisi2 = await get.get('https://arugaz.herokuapp.com/api/puisi2').json()
-            tobz.reply(from, `• *Puisi*: ${puisi2.result}`, id)
-            break
-        case prefix+'puisi3': // ARUGAZ
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            const puisi3 = await get.get('https://arugaz.herokuapp.com/api/puisi3').json()
-            tobz.reply(from, `• *Puisi*: ${puisi3.result}`, id)
-            break
+            
+       
 			
 			 case prefix+'fakta':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             fetch('https://raw.githubusercontent.com/ArugaZ/grabbed-results/main/random/faktaunix.txt')
             .then(res => res.text())
             .then(body => {
@@ -6370,8 +6290,12 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             .catch(() => {
                 tobz.reply(from, 'Ada yang Error!', id)
             })
+            await limitAdd(serial)
             break
 			case prefix+'katabijak':
+                if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             fetch('https://raw.githubusercontent.com/ArugaZ/grabbed-results/main/random/katabijax.txt')
             .then(res => res.text())
             .then(body => {
@@ -6382,9 +6306,13 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             .catch(() => {
                 tobz.reply(from, 'Ada yang Error!', id)
             })
+            await limitAdd(serial)
             break		
 			
 			case prefix+'motivasi':
+                if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             fetch('https://raw.githubusercontent.com/selyxn/motivasi/main/motivasi.txt')
             .then(res => res.text())
             .then(body => {
@@ -6395,23 +6323,14 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             .catch(() => {
                 tobz.reply(from, 'Ada yang Error!', id)
             })
+            await limitAdd(serial)
             break
-	case prefix+'howgay':
-		if (args.length == 1) return tobz.reply(from, `Untuk mengetahui seberapa gay seseorang gunakan ${prefix}howgay namanya\n\nContoh: #howgay burhan`, id)
-            fetch('https://arugaz.herokuapp.com/api/howgay')
-            .then(res => res.desc())
-            .then(body => {
-                let splithowgay = body.split('\n')
-                let randomhowgay = splithowgay[Math.floor(Math.random() * splithowgay.length)]
-                tobz.reply(from, randomhowgay, id)
-            })
-            .catch(() => {
-                tobz.reply(from, 'Ada yang Error!', id)
-            })
-            break
-
+	
 			
 		case prefix+'pantun':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             fetch('https://raw.githubusercontent.com/ArugaZ/grabbed-results/main/random/pantun.txt')
             .then(res => res.text())
             .then(body => {
@@ -6422,9 +6341,12 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             .catch(() => {
                 tobz.reply(from, 'Ada yang Error!', id)
             })	
-			
+            await limitAdd(serial)
 				break
 				case prefix+'katacinta':
+                    if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             fetch('https://raw.githubusercontent.com/beniismael/whatsapp-bot/master/bucin.txt')
             .then(res => res.text())
             .then(body => {
@@ -6435,55 +6357,9 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             .catch(() => {
                 tobz.reply(from, 'Ada yang Error!', id)
             })
+            await limitAdd(serial)
             break
-				case prefix+'cerpen2':
-				const cerpenn = async () => new Promise((resolve, reject) => {
-				axios.get(`${linkkk}/api/cerpen`)
-			.then((res) => {
-				resolve(res.data)
-			})
-			.catch((err) => {
-				reject(err)
-			})
-				})
-			cerpenn()
-			.then(async (res) => {
-				await tobz.reply(from, res.result, id)
-			})
-            break
-			case prefix+'cersex':
-			const cersex = async () => new Promise((resolve, reject) => {
-					const ransex = Math.floor(Math.random() * 2) + 1
-				axios.get(`${linkkk}/api/cersex${ransex}`)
-				.then((res) => {
-				resolve(res.data)
-			})
-			.catch((err) => {
-				reject(err)
-			})
-				})
-					cersex()
-					.then(async (res) => {
-				await tobz.reply(from, res.result, id)
-			})
-			break
-			case prefix+'puisi4':
-			const puisii = async () => new Promise((resolve, reject) => {
-				const puiti = ['1','3']
-				const ranisi = puiti[Math.floor(Math.random() * puiti.length)]
-					axios.get(`${linkkk}/api/puisi${ranisi}`)
-				.then((res) => {
-					resolve(res.data)
-			})
-				.catch((err) => {
-					reject(err)
-				})
-					})
-			puisii()
-			.then(async (res) => {
-				await tobz.reply(from, res.result, id)
-			})
-			break
+          
         // ADMIN & OWNER
         case 'prefix':
             tobz.reply(from, `[ PREFIX YANG SAAT INI DIGUNAKAN ]\n\n    *「* ${prefix} *」*`, id)
@@ -7170,10 +7046,10 @@ const pen = no.replace(' ','')
             const useriq = getnomber.id.replace('@','') + '@c.us'
                 try {
                     var jnck = await tobz.getProfilePicFromServer(useriq)
-
                     tobz.sendFileFromUrl(from, jnck, `awok.jpg`, 'Berhasil mendapatkan foto profil!', id)
                 } catch(err) {
-                    tobz.reply(from, `Tidak Ada Foto Profil. Mungkin di privasi atau depresi`, id)
+                    console.log(err)
+                    tobz.reply(from, 'Ups, ada yang error!  Mungkin ppnya depresi atau di privasi.', id)
                 }
             break
 			case prefix+'cekadminb':
