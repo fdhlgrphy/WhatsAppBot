@@ -9,6 +9,8 @@ const os = require('os')
 const get = require('got')
 const speed = require('performance-now')
 const fetch = require('node-fetch')
+const path = require('path')
+const canvas = require('canvacord')
 const { spawn, exec } = require('child_process')
 const nhentai = require('nhentai-js')
 const { API } = require('nhentai-api')
@@ -1801,7 +1803,7 @@ ${pesanafk}`)}`)
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubglogo [teks]*\nContoh : *${prefix}pubglogo ZXCBOT*`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}csgologo [teks]*\nContoh : *${prefix}csgologo ZXCBOT*`, id)
             await tobz.reply(from, mess.wait, id)
             const csgologo = body.slice(9)
             const csgologo1 = await axios.get(`https://tobz-api.herokuapp.com/api/photooxy?theme=csgo&text=${csgologo}&apikey=${tobzkey}`)
@@ -2230,7 +2232,7 @@ ${pesanafk}`)}`)
 			if(isReg(obj)) return
             if(cekumur(cekage)) return
 			if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}alkitab* [ Ayat ]\n\n*Contoh :* ${prefix}alkitab matius`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}wattpad* [ Judul ]\n\n*Contoh :* ${prefix}wattpad bengek hyung`, id)
             const wattpad = body.slice(8)
 			tobz.reply(from, mess.wait, id)
             try {
@@ -2245,26 +2247,63 @@ ${pesanafk}`)}`)
                 console.log(err)
             }
             break
-
-            case prefix+'cineplex':
+         case prefix+'searchig':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}searchig* [ username ]\n\n*Contoh :* ${prefix}searchig eejsxx`, id)
+                const iguser = body.slice(9)
+                tobz.reply(from, mess.wait, id)
+                try {
+                    const dataplai2 = await axios.get(`http://api.zeks.xyz/api/iguser?apikey=${vinzkey}&q=${iguser}`)//
+                    const dataplay2 = dataplai2.data
+                     let iguser2 = `*「 INSTAGRAM SEARCHING 」*\n\n*Hasil Pencarian:* ${iguser}\n`
+                    for (let i = 0; i < dataplay2.result.length; i++) {
+                         iguser2 += `\n─────────────────\n\n• *Username* : ${dataplay2.result[i].username}\n• *Nama* : ${dataplay2.result[i].full_name}\n• *Private*: ${dataplay2.result[i].private_user}\n• *Verified*: ${dataplay2.result[i].verified_user}\n• *Link* : instagram.com/${dataplay2.result[i].username}\n`
+                    }
+                    await tobz.reply(from, iguser2, id)
+                } catch (err){
+                    console.log(err)
+                }
+                break
+            case prefix+'trendtwit':
 			if(isReg(obj)) return
             if(cekumur(cekage)) return
 			if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
            // if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}alkitab* [ Ayat ]\n\n*Contoh :* ${prefix}alkitab matius`, id)
             //const cineplexx = body.slice(9)
-			tobz.reply(from, mess.wait, id)
+			//tobz.reply(from, mess.wait, id)
             try {
-                const dataplai = await axios.get(`https://docs-jojo.herokuapp.com/api/cineplex`)//
-                const dataplay = dataplai.data
-                 let cineplex1 = `*「 CINEPLEX 」*\n\n`
-                for (let i = 0; i < dataplay.result.length; i++) {
-                    cineplex1 += `\n─────────────────\n\n• *Judul* : ${dataplay.result[i].title}\n• *Link* : ${dataplay.result[i].link}\n• *Genre* : ${dataplay.result[i].genre}\n• *Rating* : ${dataplay.result[i].rating}\n`
+                const dataplai3 = await axios.get(`https://docs-jojo.herokuapp.com/api/trendingtwitter`)//
+                const dataplay3 = dataplai3.data
+                 let trendtwit = `*「 TRENDING TWITTER 」*\n`
+                for (let i = 0; i < dataplay3.result.length; i++) {
+                    trendtwit += `\n─────────────────\n\n• *Hastag* : ${dataplay3.result[i].hastag}\n• *Rank* : ${dataplay3.result[i].rank}\n• *Tweet* : ${dataplay3.result[i].tweet}\n• *Link* : ${dataplay3.result[i].link}\n`
                 }
-                await tobz.reply(from, cineplex1, id)
+                await tobz.reply(from, trendtwit, id)
             } catch (err){
                 console.log(err)
             }
             break
+            case prefix+'cineplex':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+               // if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}alkitab* [ Ayat ]\n\n*Contoh :* ${prefix}alkitab matius`, id)
+                //const cineplexx = body.slice(9)
+                tobz.reply(from, mess.wait, id)
+                try {
+                    const dataplai = await axios.get(`https://docs-jojo.herokuapp.com/api/cineplex`)//
+                    const dataplay = dataplai.data
+                     let cineplex1 = `*「 CINEPLEX 」*\n\n`
+                    for (let i = 0; i < dataplay.result.length; i++) {
+                        cineplex1 += `\n─────────────────\n\n• *Judul* : ${dataplay.result[i].title}\n• *Link* : ${dataplay.result[i].link}\n• *Genre* : ${dataplay.result[i].genre}\n• *Rating* : ${dataplay.result[i].rating}\n`
+                    }
+                    await tobz.reply(from, cineplex1, id)
+                } catch (err){
+                    console.log(err)
+                }
+                break
             
 			case prefix+'galaxy':
             if(isReg(obj)) return
@@ -2512,7 +2551,8 @@ ${pesanafk}`)}`)
            }
            break
                                     case prefix+'bass':
-                                        //if (!isAdmin) return tobz.reply(from, `Perintah ini hanya untuk Admin ZXCBOT`, id)
+                                        if (!isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
+                                        if (isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
                                         //if (!isGroupMsg) return tobz.reply(from, menuPriv, id)
                                         if (isQuotedAudio) {
                                             let dB = 58
@@ -2544,7 +2584,84 @@ ${pesanafk}`)}`)
                                 }
                             }
                             break
-            
+                            case prefix+'triggered':
+                                case prefix+'triggred':
+                                case prefix+'trigger':
+                                case prefix+'triger':
+                                        if(isReg(obj)) return
+                                        if(cekumur(cekage)) return
+                                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                                            if (isMedia && isImage || isQuotedImage) {
+                                                tobz.reply(from, `[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!`, id)
+                                                const encryptMedia = isQuotedImage ? quotedMsg : message
+                                                console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
+                                                const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                                                const temp = './temp'
+                                                const name = new Date() * 1
+                                                const fileInputPath = path.join(temp, `${name}.gif`)
+                                                const fileOutputPath = path.join(temp, 'video', `${name}.mp4`)
+                                                canvas.Canvas.trigger(mediaData)
+                                                    .then((buffer) => {
+                                                        canvas.write(buffer, fileInputPath)
+                                                        ffmpeg(fileInputPath)
+                                                            .outputOptions([
+                                                                '-movflags faststart',
+                                                                '-pix_fmt yuv420p',
+                                                                '-vf scale=trunc(iw/2)*2:trunc(ih/2)*2'
+                                                            ])
+                                                            .inputFormat('gif')
+                                                            .on('start', (commandLine) => console.log(color('[FFmpeg]', 'green'), commandLine))
+                                                            .on('progress', (progress) => console.log(color('[FFmpeg]', 'green'), progress))
+                                                            .on('end', async () => {
+                                                                console.log(color('[FFmpeg]', 'green'), 'Processing finished!')
+                                                                await tobz.sendMp4AsSticker(from, fileOutputPath, { fps: 30, startTime: `00:00:00.0`, endTime : `00:00:05.0`, loop: 0 })
+                                                                console.log(color('[WAPI]', 'green'), 'Success sending GIF!')
+                                                                setTimeout(() => {
+                                                                    fs.unlinkSync(fileInputPath)
+                                                                    fs.unlinkSync(fileOutputPath)
+                                                                }, 30000)
+                                                            })
+                                                            .save(fileOutputPath)
+                                                    })
+                                            } else {
+                                                const orgc = mentionedJidList[0] ? mentionedJidList[0] : sender.id
+                                                const ppRaw = await tobz.getProfilePicFromServer(orgc)
+                                                if (ppRaw === undefined) {
+                                                    var pepe = errorImg
+                                                } else {
+                                                    pepe = ppRaw
+                                                }
+                                                console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
+                                                const temp = './temp'
+                                                const name = new Date() * 1
+                                                const fileInputPath = path.join(temp, `${name}.gif`)
+                                                const fileOutputPath = path.join(temp, 'video', `${name}.mp4`)
+                                                canvas.Canvas.trigger(pepe)
+                                                    .then((buffer) => {
+                                                        canvas.write(buffer, fileInputPath)
+                                                        ffmpeg(fileInputPath)
+                                                            .outputOptions([
+                                                                '-movflags faststart',
+                                                                '-pix_fmt yuv420p',
+                                                                '-vf scale=trunc(iw/2)*2:trunc(ih/2)*2'
+                                                            ])
+                                                            .inputFormat('gif')
+                                                            .on('start', (commandLine) => console.log(color('[FFmpeg]', 'green'), commandLine))
+                                                            .on('progress', (progress) => console.log(color('[FFmpeg]', 'green'), progress))
+                                                            .on('end', async () => {
+                                                                console.log(color('[FFmpeg]', 'green'), 'Processing finished!')
+                                                                await tobz.sendMp4AsSticker(from, fileOutputPath, { fps: 30, startTime: `00:00:00.0`, endTime : `00:00:05.0`, loop: 0 })
+                                                                console.log(color('[WAPI]', 'green'), 'Success sending GIF!')
+                                                                setTimeout(() => {
+                                                                    fs.unlinkSync(fileInputPath)
+                                                                    fs.unlinkSync(fileOutputPath)
+                                                                }, 30000)
+                                                            })
+                                                            .save(fileOutputPath)
+                                                    })
+                                            }
+                                            limitAdd(serial)
+                                        break         
                                     case prefix+'getvideo':
                                      case prefix+'getvidio':
                                         if(isReg(obj)) return
@@ -3607,6 +3724,33 @@ ${desc}`, id)
                 tobz.reply(from, 'Pilih open atau disable close!', id)
             }
             break
+
+            case prefix+'setgroup':
+                case prefix+'setgc':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
+                    if (!isGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan oleh admin group', id)
+                    if (!isBotGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan ketika bot menjadi admin', id)
+                    if (args.length === 1) return tobz.reply(from, 'Pilih open atau close!', id)
+                    if (args[1].toLowerCase() === 'open') {
+                        tobz.reply(from, 'Group akan dibuka dalam 30 detik!', id)
+                        await sleep(10000)
+                        await sleep(10000)
+                        await sleep(10000)
+                        tobz.setGroupToAdminsOnly(groupId, false)
+                        tobz.sendTextWithMentions(from, `Group telah dibuka oleh admin @${sender.id.replace('@c.us','')}\nSekarang *semua member* dapat mengirim pesan`)
+                    } else if (args[1].toLowerCase() === 'close') {
+                        tobz.reply(from, 'Group akan ditutup dalam 30 detik!', id)
+                        await sleep(10000)
+                        await sleep(10000)
+                        await sleep(10000)
+                        tobz.setGroupToAdminsOnly(groupId, true)
+                        tobz.sendTextWithMentions(from, `Group telah ditutup oleh admin @${sender.id.replace('@c.us','')}\nSekarang *hanya admin* yang dapat mengirim pesan`)
+                    } else {
+                        tobz.reply(from, 'Pilih open atau disable close!', id)
+                    }
+                    break
         case prefix+'left':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -3976,6 +4120,39 @@ ${desc}`, id)
             tobz.reply(from, `*Quotes*: _${skya_.result.quotes}_\n\n*Character*:\n${skya_.result.character}\n*Anime*:\n${skya_.result.anime}`, id)
             await limitAdd(serial)
             break
+            case prefix+'xxxsearch':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            const xxxs = body.slice(10)
+            const xxxs2 = await axios.get(`https://api.vhtear.com/xxxsearch?query=${xxxs}&apikey=${vhtearkey}`)
+            xxxs3 = xxxs2.data.result.data
+            tobz.reply(from, `*Link*: ${xxxs3.url}`, id)
+            await limitAdd(serial)
+            break
+            case prefix+'infono':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}infono [NO Telepon]*\nContoh : *${prefix}infono 085155078806`, id)
+            const infono = body.slice(7)
+            const infono2 = await axios.get(`https://docs-jojo.herokuapp.com/api/infonomor?no=${infono}`)
+            infono3 = infono2.data
+            tobz.reply(from, `*Nomor*: ${infono3.nomor}\n*Operator*: ${infono3.op}`, id)
+            await limitAdd(serial)
+            break
+
+            case prefix+'igstory':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}infono [NO Telepon]*\nContoh : *${prefix}infono 085155078806`, id)
+            const usernameig = body.slice(8)
+            const usernameig2 = await axios.get(`https://api.vhtear.com/igstory?query=${usernameig}&apikey=${vhtearkey}`)
+            usernameig3 = usernameig2.data.result.story.itemlist
+            tobz.sendFileFromUrl(from, usernameig3.urlDownload)
+            await limitAdd(serial)
+            break
 
             case prefix+'covid':
                 const country = body.slice(6)   //https://coronavirus-19-api.herokuapp.com/countries/indonesia
@@ -4286,13 +4463,29 @@ ${desc}`, id)
             tobz.sendText(from, surl2, id)
             await limitAdd(serial)
             break
+           
+         case prefix+'weather':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}weather [tempat]*\nContoh : *${prefix}weather tangerang`, id)
+            const weather12 = body.slice(8)
+            const weather2 = await axios.get(`https://api.vhtear.com/weather?city=${weather12}&apikey=${vhtearkey}`)
+            const weatherr2 = weather2.data.result
+            if (weatherr2.error) {
+                tobz.reply(from, weatherr2.error, id)
+            } else {
+                tobz.reply(from, `${weatherr2.weather}\n\n${weatherr2.location}\n`, id)
+                limitAdd(serial)
+            }
+            break 
         case prefix+'cuaca':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#cuaca [tempat]*\nContoh : *#cuaca tangerang', id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}cuaca [tempat]*\nContoh : *${prefix}cuaca tangerang`, id)
             const tempat = body.slice(7)
-            const weather = await axios.get(`https://tobz-api.herokuapp.com/api/cuaca?wilayah=` + tempat)
+            const weather = await axios.get(`https://tobz-api.herokuapp.com/api/cuaca?wilayah=${tempat}&apikey=${tobzkey}`)
             const weatherr = weather.data
             if (weatherr.error) {
                 tobz.reply(from, weatherr.error, id)
@@ -5133,9 +5326,9 @@ ${url_account}`
             if (!isSimi) return tobz.reply(from, 'command/Perintah Simi belum di aktifkan di group ini!', id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}$ [teks]*\nContoh : *${prefix}$ hai simi*`, id)
             const que = body.slice(3)
-            const sigo = await axios.get(`https://naufalhoster.xyz/tools/simsimi?apikey=${naufalkey}&pesan=${que}`)
+            const sigo = await axios.get(`https://videfikri.com/api/simsimi/?teks=${que}`)
             const sigot = sigo.data
-            tobz.reply(from, sigot.result.response, id)
+            tobz.reply(from, sigot.jawaban, id)
             //console.log(sigot)
             break
             case prefix+'fml':
@@ -5274,7 +5467,7 @@ ${url_account}`
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubglogo [teks]*\nContoh : *${prefix}pubglogo ZXCBOT*`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ttnowm [linkVideoTikTod]*\nContoh : *${prefix}ttnowm link*`, id)
             await tobz.reply(from, mess.wait, id)
             const tiktoknowm = body.slice(7)
             const tiktoknowm1 = await axios.get(`https://docs-jojo.herokuapp.com/api/tiktok_nowm?url=${tiktoknowm}`) //
@@ -6014,8 +6207,7 @@ ${url_account}`
             await limitAdd(serial)
             break
             case prefix+'gift': // Hanya Admin & Owner Elaina yang bisa gift Limit
-			
-            if (!isAdmin) return tobz.reply(from, `Maaf, perintah ini hanya dapat dilakukan oleh Owner Bot!`, id)
+            if (!isAdmin) return tobz.reply(from, `Maaf, perintah ini hanya dapat dilakukan oleh AdminBan!`, id)
             const nomernyaa = args[1]
                     let textnyaaa = nomernyaa.replace(/[-\s+@c.us]/g,'')
                     const nomerr = textnyaaa + '@c.us'
@@ -6377,6 +6569,7 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
                             tobz.reply('Broadcast Success!')
                 }
                 break
+                
         case prefix+'adminlist':
 		case prefix+'admlist':
          if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
@@ -6547,6 +6740,19 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
 				
             } 
             break
+            case prefix+'setkick':
+                if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
+                if (!isGroupAdmins) return tobz.reply(from, `Fitur ini hanya bisa di gunakan oleh admin group`, id)
+                if (!isBotGroupAdmins) return tobz.reply(from, `Fitur ini hanya bisa di gunakan ketika bot menjadi admin`, id)
+            tobz.reply(from, `Akan di kick dalam 30 detik`, id)
+            await sleep(10000)
+            await sleep(10000)
+            await sleep(10000)
+            await tobz.sendTextWithMentions(from, `${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`).join('\n')} akwokawokawo di kick`)
+            for (let i = 0; i < mentionedJidList.length; i++) {
+                await tobz.removeParticipant(groupId, mentionedJidList[i]) }
+                break
+
 			case prefix+'gabut': // By Juwenajaa
 			if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
             if (!isGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin group', id)
@@ -6933,13 +7139,13 @@ const pen = no.replace(' ','')
             if (!isOwner) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!`, id)
                 const setnem = body.slice(9)
                 await tobz.setMyName(setnem)
-                tobz.sendTextWithMentions(from, `Berhasil memperbarui nama bot oleh @${sender.id.replace('@c.us','')}`)
+                tobz.reply(from, `Berhasil memperbarui nama!`, id)
             break
         case prefix+'setstatus':
             if (!isOwner) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!`, id)
                 const setstat = body.slice(11)
                 await tobz.setMyStatus(setstat)
-                tobz.sendTextWithMentions(from, `Berhasil memperbarui info bot oleh @${sender.id.replace('@c.us','')}`)
+                tobz.reply(from, `Berhasil memperbarui status!`, id)
             break
         case prefix+'setprofilepic':
             if (!isOwner) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!`, id)
@@ -7936,7 +8142,7 @@ Harga:
 
 Terima kasih sudah memakai layanan ZXCBOT`, id)
 break
-    case prefix+'info':
+  /*  case prefix+'info':
      if(isReg(obj)) return
         if(cekumur(cekage)) return
         tobz.sendTextWithMentions(from,
@@ -7965,7 +8171,7 @@ Terima kasih juga yang sudah membantu mengembangkan *ZXCBOT*
 Kalian bisa sewa *ZXCBOT*, chat dengan ownernya aja ya. 
 *Ketik ${prefix}owner*, utamakan salam biar adem.
 Jangan lupa beri kita donasi yaa biar kita semangat jalanin nih bot.`, id)
-        break
+        break */
     case prefix+'bahasa':
 tobz.reply(from,
 `*Code       Bahasa*
