@@ -269,8 +269,8 @@ module.exports = tobz = async (tobz, message) => {
         const serial = sender.id
         const isAdmin = adminNumber.includes(sender.id) // Admin Number
 		const isPrem = premNumber.includes(sender.id) // Premium Number
-        const ownerNumber = '6289635687240@c.us' // Owner Number 1 = Utama 
-        //const ownerNumber = ["6289635687240@c.us", "6285157661229@c.us"] // Owner Number 2 = Assistan Owner
+        //const ownerNumber = '6289635687240@c.us' // Owner Number 1 = Utama 
+        const ownerNumber = ["6289635687240@c.us", "6285157661229@c.us"] // Owner Number 2 = Assistan Owner
         const isOwner = ownerNumber.includes(sender.id) // Owner Number 1
         //const isOwner2 = ownerNumber2.includes(sender.id) // Owner Number 2
         const isAfkOn = checkAfkUser(sender.id) // AFK NUMBER
@@ -2622,7 +2622,7 @@ ${pesanafk}`)}`)
                                                                     fs.unlinkSync(fileOutputPath)
                                                                 }, 30000)
                                                             })
-                                                            .save(fileOutputPath)
+                                                           .save(fileOutputPath)
                                                     })
                                             } else {
                                                 const orgc = mentionedJidList[0] ? mentionedJidList[0] : sender.id
@@ -4467,11 +4467,11 @@ ${desc}`, id)
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             argz = body.trim().split(' ')
-            console.log(...argz[1])
+            //console.log(...argz[1])
             var slicedArgs = Array.prototype.slice.call(argz, 1);
-            console.log(slicedArgs)
+            //console.log(slicedArgs)
             const country = await slicedArgs.join(' ')
-            console.log(country)
+            //console.log(country)
             const response2 = await axios.get('https://coronavirus-19-api.herokuapp.com/countries/' + country)
             const { cases, todayCases, deaths, todayDeaths, active } = response2.data
             await tobz.reply(from, '🌎️ Covid Info - ' + country + ' 🌍️\n\n✨️ Total Cases: ' + `${cases}` + '\n📆️ Today\'s Cases: ' + `${todayCases}` + '\n☣️ Total Deaths: ' + `${deaths}` + '\n☢️ Today\'s Deaths: ' + `${todayDeaths}` + '\n⛩️ Active Cases: ' + `${active}` + '.', id)
@@ -5354,13 +5354,13 @@ ${url_account}`
                 tobz.reply(from, `Maaf, Terjadi Kesalahan`, id)
             })
             break */
-            case prefix+'ig': 
+        case prefix+'ig': 
         case prefix+'instagram':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *#ig [ Link Instagram ]* untuk contoh silahkan kirim perintah *#readme*`)
-            if (!args[1].match(isUrl) && !args[1].includes('instagram.com')) return tobz.reply(from, `Maaf, link yang kamu kirim tidak valid. [Invalid Link]`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ig [ Link Instagram ]* untuk contoh silahkan kirim perintah *#readme*`)
+            //if (!args[1].match(isUrl) && !args[1].includes('instagram.com')) return tobz.reply(from, `Maaf, link yang kamu kirim tidak valid. [Invalid Link]`, id)
             await tobz.reply(from, mess.wait, id);
             const instagram = async (url) => new Promise(async (resolve, reject) => {
                 const api = `https://api.vhtear.com/instadl?link=${url}&apikey=${vhtearkey}`
@@ -5391,6 +5391,7 @@ ${url_account}`
                 tobz.reply(from, `Maaf, Terjadi Kesalahan`, id)
             })
             break 
+            
         case prefix+'fb':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -5435,13 +5436,30 @@ ${url_account}`
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ttnowm [linkVideoTikTod]*\nContoh : *${prefix}ttnowm link*`, id)
-            await tobz.reply(from, mess.wait, id)
-            const tiktoknowm = body.slice(7)
-            const tiktoknowm1 = await axios.get(`https://docs-jojo.herokuapp.com/api/tiktok_nowm?url=${tiktoknowm}`) //
+            tobz.reply(from, mess.wait, id)
+            argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const tiktoknowm = await slicedArgs.join(' ')
+            const tiktoknowm1 = await axios.get(`https://naufalhoster.xyz/dl/tiktok?apikey=${naufalkey}&url=${tiktoknowm}`) 
             const tiktoknowm2 = tiktoknowm1.data
-            tobz.sendFileFromUrl(from, tiktoknowm2.result.url,``, `Data berhasil di download!\n\n*From*: [ ${tiktoknowm2.result.from} ]\n*Title*: [ ${tiktoknowm2.result.title} ]\n*Upload*: [ ${tiktoknowm2.result.uploaded} ]\n`, id)
+            tobz.sendFileFromUrl(from, tiktoknowm2.result.videoWithWatermark,``, `Data berhasil di dapatkan!\n\n*Username*: [ ${tiktoknowm2.result.username} ]\n*Nickname*: [ ${tiktoknowm2.result.nickname} ]\n*Caption*: [ ${tiktoknowm2.result.caption} ]`, id)
             await limitAdd(serial)
             break
+            case prefix+'ttsong':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ttnowm [linkVideoTikTod]*\nContoh : *${prefix}ttnowm link*`, id)
+                //tobz.reply(from, mess.wait, id)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const tiktok1nowm = await slicedArgs.join(' ')
+                const tiktok1nowm1 = await axios.get(`https://naufalhoster.xyz/dl/tiktok?apikey=${naufalkey}&url=${tiktok1nowm}`) 
+                const tiktok1nowm2 = tiktok1nowm1.data
+                await tobz.sendFileFromUrl(from, tiktok1nowm2.result.thumbnail, `awkokw.jpg`, `*Data berhasil di dapatkan!*\n\n*Username*: [ ${tiktok1nowm2.result.username} ]\n*Nickname*: [ ${tiktok1nowm2.result.nickname} ]\n*Caption*: [ ${tiktok1nowm2.result.caption} ]\n\n_Tunggu sebentar, file membutuhkan beberapa menit untuk dikirim_`, id)
+                tobz.sendFileFromUrl(from, tiktok1nowm2.result.audioOnly, ``, ``, id)
+                await limitAdd(serial)
+                break
 
             case prefix+'tiktok':
                 if(isReg(obj)) return
@@ -6366,7 +6384,9 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
         case prefix+'setprefix':
             if(!isOwner) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!`, id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}prefix [ NEW PREFIX ]*`, id)
-            const prefa = body.slice(11)
+            argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const prefa = await slicedArgs.join(' ')
             setting.prefix = `${prefa}`
             prefix = `${prefa}`
             fs.writeFileSync('./lib/database/setting.json', JSON.stringify(setting))
