@@ -3205,9 +3205,10 @@ ${desc}`, id)
                 .then(body => {
                     let asupan = body.split('\n')
                     let asupanx = asupan[Math.floor(Math.random() * asupan.length)]
-                tobz.sendFileFromUrl(from, `http://sansekai.my.id/ptl_repost/${asupanx}`, '', '*ASUPAN*', id)
+                tobz.sendFileFromUrl(from, `https://raw.githubusercontent.com/VideFrelan/words/main/ptl.txt'/${asupanx}`, '', '*ASUPAN*', id)
                 })
             break
+           
         case prefix+'newstickerline':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -3943,7 +3944,7 @@ ${desc}`, id)
             const mskkntl = fs.readFileSync('./lib/database/18+.json') // MFARELS
             const kntlnya = JSON.parse(mskkntl) // MFARELS
             const rindBkp = Math.floor(Math.random() * kntlnya.length) // MFARELS
-            const rindBkep = konsolJsin[rindBkp] // MFARELS
+            const rindBkep = kntlnya[rindBkp] // MFARELS
             tobz.sendFileFromUrl(from, rindBkep.image, 'Bokep.jpg', rindBkep.teks, id) // MFARELS
             await limitAdd(serial)
             break // MFARELS
@@ -6081,7 +6082,7 @@ ${url_account}`
             await tobz.sendFileFromUrl(from, `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${qrcodes}`, 'gambar.png', 'Process sukses!', id)
             await limitAdd(serial)
             break
-        case prefix+'ptl':
+      /*  case prefix+'ptl':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             
@@ -6090,7 +6091,7 @@ ${url_account}`
             let pep = pptl[Math.floor(Math.random() * pptl.length)]
             tobz.sendFileFromUrl(from, pep, 'pptl.jpg', 'Follow ig : https://www.instagram.com/ptl_repost untuk mendapatkan penyegar timeline lebih banyak', message.id)
             await limitAdd(serial)
-            break
+            break */
         case prefix+'neko':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -6325,7 +6326,23 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             })
             await limitAdd(serial)
             break		
-			
+            //
+            case prefix+'ptl':
+                if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            fetch('https://raw.githubusercontent.com/VideFrelan/words/main/ptl.txt')
+            .then(res2 => res2.text())
+            .then(body => {
+                let splitmotivasi2 = body.split('\n')
+                let randommotivasi2 = splitmotivasi2[Math.floor(Math.random() * splitmotivasi2.length)]
+                tobz.sendFileFromUrl(from, randommotivasi2, ``, `*PTL*`,  id)
+            })
+            .catch(() => {
+                tobz.reply(from, 'Ada yang Error!', id)
+            })
+            await limitAdd(serial)
+            break
 			case prefix+'motivasi':
                 if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -6590,16 +6607,28 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             }
             break
         case prefix+'add':
-            const orgh = body.slice(5)
+            
             if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
-            if (args.length === 1) return tobz.reply(from, 'Untuk menggunakan fitur ini, kirim perintah *#add* 628xxxxx', id)
+            if (!quotedMsg && args.length === 1) return tobz.reply(from, 'Untuk menggunakan fitur ini, kirim perintah *#add* 628xxxxx', id)
             if (!isGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin group', id)
             if (!isBotGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan ketika bot menjadi admin', id)
+            if (!quotedMsg) {
             try {
-                await tobz.addParticipant(from,`${orgh}@c.us`)
+            argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const orgh = await slicedArgs.join(' ')
+            await tobz.addParticipant(from,`${orgh}@c.us`)
+        } catch {
+            tobz.reply(from, 'Ada yang error!', id)
+        }
+                 }else if(quotedMsg){
+            try {
+                var qmoed2 = quotedMsgObj.sender.id
+                await tobz.addParticipant(from, qmoed2)
             } catch {
-                tobz.reply(from, mess.error.Ad, id)
+                tobz.reply(from, 'Ada yang error!', id)
             }
+        } 
             break
         case prefix+'okick':
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
@@ -6616,11 +6645,20 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
             if (!isGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin group', id)
             if (!isBotGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan ketika bot menjadi admin', id)
-            if (mentionedJidList.length === 0) return tobz.reply(from, `Untuk menggunakan Perintah ini, kirim perintah *${prefix}kick* @tagmember`, id)
-           await tobz.sendTextWithMentions(from, `${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`).join('\n')} akwokawokawo di kick`)
+            if (!quotedMsg && mentionedJidList.length === 0) return tobz.reply(from, `Untuk menggunakan Perintah ini, kirim perintah *${prefix}kick* @tagmember atau reply pesan orang dan ketik *${prefix}kick*`, id)
+            if (!quotedMsg) {
+            await tobz.sendTextWithMentions(from, `${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`).join('\n')} akwokawokawo di kick`)
             for (let i = 0; i < mentionedJidList.length; i++) {
                 await tobz.removeParticipant(groupId, mentionedJidList[i])
             }
+             }else if(quotedMsg){
+                try {
+                    var qmoed2 = quotedMsgObj.sender.id
+                    await tobz.removeParticipant(from, qmoed2)
+                } catch {
+                    tobz.reply(from, 'Ada yang error!', id)
+                }
+            } 
             break
             case prefix+'edotensei':
             if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
@@ -6738,12 +6776,24 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
             if (!isGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan oleh admin group', id)
             if (!isBotGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan ketika bot menjadi admin', id)
-            if (mentionedJidList.length === 0) return tobz.reply(from, `Untuk menggunakan fitur ini, kirim perintah *${prefix}promote* @tagmember`, id)
+            if (!quotedMsg && mentionedJidList.length === 0) return tobz.reply(from, `Untuk menggunakan fitur ini, kirim perintah *${prefix}promote* @tagmember atau bisa reply pesan member dan ketik ${prefix}adm`, id)
             if (mentionedJidList.length >= 3) return tobz.reply(from, 'Maaf, perintah ini hanya dapat digunakan kepada 1 user.', id)
             if (groupAdmins.includes(mentionedJidList[0])) return tobz.reply(from, 'Maaf, user tersebut sudah menjadi admin.', id)
+            if (!quotedMsg) {
             await tobz.promoteParticipant(groupId, mentionedJidList[0])
             await tobz.sendTextWithMentions(from, `Perintah diterima, menambahkan @${mentionedJidList[0]} sebagai admin.`)
-            break
+
+              }else if(quotedMsg){
+             try {
+             var qmoed3 = quotedMsgObj.sender.id
+             await tobz.promoteParticipant(from, qmoed3)
+            await tobz.reply(from, `Berhasil menambahkan sebagai admin.`, id)
+              } catch {
+            tobz.reply(from, 'Ada yang error!', id)
+            }
+                 } 
+             break
+
         case prefix+'odemote':
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
             if (!isOwner) return tobz.reply(from, 'Perintah ini hanya untuk Owner Bot!', id)
@@ -6759,11 +6809,21 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
             if (!isGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan oleh admin group', id)
             if (!isBotGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan ketika bot menjadi admin', id)
-            if (mentionedJidList.length === 0) return tobz.reply(from, `Untuk menggunakan fitur ini, kirim perintah *${prefix}demote* @tagadmin`, id)
+            if (!quotedMsg && mentionedJidList.length === 0) return tobz.reply(from, `Untuk menggunakan fitur ini, kirim perintah *${prefix}demote* @tagadmin atau bisa reply pesan dari admin dan ketik ${prefix}udm`, id)
             if (mentionedJidList.length >= 2) return tobz.reply(from, 'Maaf, perintah ini hanya dapat digunakan kepada 1 orang.', id)
             if (!groupAdmins.includes(mentionedJidList[0])) return tobz.reply(from, 'Maaf, user tersebut tidak menjadi admin.', id)
+            if (!quotedMsg) {
             await tobz.demoteParticipant(groupId, mentionedJidList[0])
             await tobz.sendTextWithMentions(from, `Perintah diterima, menghapus jabatan @${mentionedJidList[0]}.`)
+         }else if(quotedMsg){
+            try {
+            var qmoed4 = quotedMsgObj.sender.id
+            await tobz.demoteParticipant(from, qmoed4)
+           await tobz.reply(from, `Berhasil menurunkan jabatan dari admin.`, id)
+             } catch {
+           tobz.reply(from, 'Ada yang error!', id)
+           }
+                } 
             break
         case prefix+'join':
 			if (!isOwner, !isAdmin) return tobz.reply(from, 'Perintah ini hanya untuk Owner Bot!', id)
