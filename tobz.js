@@ -1754,7 +1754,7 @@ ${pesanafk}`)}`)
              break   				
 
              case prefix+'ninja':
-                if (args.length === 0) return aruga.reply(from, `Kirim perintah *${prefix}ninja [ |Teks1|Teks2 ]*, contoh *${prefix}ninja |aqulzz|xinz*`, id)
+                if (args.length === 0) return tobz.reply(from, `Kirim perintah *${prefix}ninja [ |Teks1|Teks2 ]*, contoh *${prefix}ninja |aqulzz|xinz*`, id)
                 argz = body.trim().split('|')
                 if (argz.length === 3) {
                     tobz.reply(from, mess.wait, id)
@@ -2371,11 +2371,10 @@ ${pesanafk}`)}`)
                 }
                 break
                 case prefix+'musik':
-                    case prefix+'music':
-                        if(isReg(obj)) return
-                if(cekumur(cekage)) return
-                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                        //if (!isGroupMsg) return hurtz.reply(from, menuPriv, id)
+                         if(isReg(obj)) return
+                         if(cekumur(cekage)) return
+                         if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                         if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                         if (args.length === 1) return hurtz.reply(from, `Kirim perintah *${prefix}musik* _Judul lagu yang akan dicari_`)
                         const quer = body.slice(7).toString()
                         hurtz.reply(from, mess.wait, id)
@@ -2400,14 +2399,18 @@ ${pesanafk}`)}`)
                         } catch (err){
                             hurtz.reply(from, `_Kesalahan saat mencari judul lagu ${quer}_`, id)
                         }
-                        await hurtz.sendSeen(from)
                         await limitAdd(serial)
+                        await hurtz.sendSeen(from)
                         break
             
                         case prefix+'vidio':
                                         case prefix+'video':
-                                            //if (!isGroupMsg) return hurtz.reply(from, menuPriv, id)
-                                            if (args.length === 1) return hurtz.reply(from, 'Kirim perintah *!video* _Judul video yang akan dicari_')
+                                            if(isReg(obj)) return
+                         if(cekumur(cekage)) return
+                         if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                         if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                        if (args.length === 1) return hurtz.reply(from, `Kirim perintah *${prefix}musik* _Judul lagu yang akan dicari_`)
+                        
                                             const querv = body.slice(7)
                                             hurtz.reply(from, mess.wait, id)
                                             try {
@@ -2427,8 +2430,8 @@ ${pesanafk}`)}`)
                                                 }
                                                 await hurtz.sendFileFromUrl(from, result[0].thumb, 'thumbserc.jpg', xixixai, id)
                                             } catch (err){
-                                                ERRLOG(err)
                                             }
+                                            await limitAdd(serial) 
                                             await hurtz.sendSeen(from)
                                     break
 
@@ -2755,7 +2758,7 @@ ${pesanafk}`)}`)
 				janjing + ' *peyuuuk* ' + argggg[1])
                 break
             case prefix+'daftar':  // NAMBAHIN NOMOR DI DATABASE
-            if (isGroupMsg) return tobz.reply(from, 'Maaf perintah ini hanya bisa dilakukan di personal chat bot.', id)
+            //if (isGroupMsg) return tobz.reply(from, 'Maaf perintah ini hanya bisa dilakukan di personal chat bot.', id)
                 argz = body.trim().split('|')
                 if (argz.length >= 2) {
                 const nonye = sender.id
@@ -3205,7 +3208,7 @@ ${desc}`, id)
                 .then(body => {
                     let asupan = body.split('\n')
                     let asupanx = asupan[Math.floor(Math.random() * asupan.length)]
-                tobz.sendFileFromUrl(from, `https://raw.githubusercontent.com/VideFrelan/words/main/ptl.txt'/${asupanx}`, '', '*ASUPAN*', id)
+                tobz.sendFileFromUrl(from, `http://sansekai.my.id/ptl_repost/${asupanx}`, '', '*ASUPAN*', id)
                 })
             break
            
@@ -3341,10 +3344,9 @@ ${desc}`, id)
         case prefix+'tts':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}tts [ Bahasa ] [ Teks ]*, contoh *${prefix}tts id halo semua*`)
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             try {
-                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}tts [ Bahasa ] [ Teks ]*, contoh *${prefix}tts id halo semua*`)
                 var dataBhs = args[1]      
                 const ttsHZ = require('node-gtts')(dataBhs)
                 var dataText = body.slice(8)
@@ -4632,7 +4634,7 @@ ${desc}`, id)
                     if(isReg(obj)) return
                 if(cekumur(cekage)) return
                 if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-            if (isLimit(serial)) return aruga.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ytmp3 [linkYt]*`, id)
             await limitAdd(serial)
             let isLinks = args[1].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
@@ -4661,7 +4663,7 @@ ${desc}`, id)
                     if(isReg(obj)) return
                      if(cekumur(cekage)) return
                      if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-                    if (isLimit(serial)) return aruga.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                     if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ytmp4* _linkYt_`, id)
                     await limitAdd(serial)
                     let isLinks2 = args[1].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
@@ -5644,7 +5646,7 @@ ${url_account}`
                 let { penyanyi, judul, album, linkImg, linkMp3, filesize, ext, duration } = await res
                 let tjoox = `*「 JOOX DOWNLOADER 」*\n\n*Penyanyi:* ${penyanyi}\n*Judul:* ${judul}\n*Album:* ${album}\n*Ext:* ${ext}\n*Size:* ${filesize}\n*Durasi:* ${duration}\n\n_Silahkan tunggu sebentar proses pengiriman file membutuhkan waktu beberapa menit._`
                 tobz.sendImage(from, linkImg, judul, tjoox)
-                tobz.sendFileFromUrl(from, linkMp3, `${judul}.${ext}`, '', id).catch(() => aruga.reply(from, mess.error.Yt4, id))
+                tobz.sendFileFromUrl(from, linkMp3, `${judul}.${ext}`, '', id).catch(() => tobz.reply(from, mess.error.Yt4, id))
                 await limitAdd(serial)
             }).catch((err) => {
                 console.log(err);
@@ -6625,6 +6627,7 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             try {
                 var qmoed2 = quotedMsgObj.sender.id
                 await tobz.addParticipant(from, qmoed2)
+                tobz.reply(from, 'Permintaan diterima, menambahkan member yang di reply', id)
             } catch {
                 tobz.reply(from, 'Ada yang error!', id)
             }
@@ -6655,6 +6658,7 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
                 try {
                     var qmoed2 = quotedMsgObj.sender.id
                     await tobz.removeParticipant(from, qmoed2)
+                    tobz.reply(from, 'Permintaan diterima, mengeluarkan member yang di reply', id)
                 } catch {
                     tobz.reply(from, 'Ada yang error!', id)
                 }
@@ -6784,13 +6788,9 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             await tobz.sendTextWithMentions(from, `Perintah diterima, menambahkan @${mentionedJidList[0]} sebagai admin.`)
 
               }else if(quotedMsg){
-             try {
              var qmoed3 = quotedMsgObj.sender.id
-             await tobz.promoteParticipant(from, qmoed3)
-            await tobz.reply(from, `Berhasil menambahkan sebagai admin.`, id)
-              } catch {
-            tobz.reply(from, 'Ada yang error!', id)
-            }
+             tobz.promoteParticipant(from, qmoed3)
+             tobz.reply(from, `Berhasil menambahkan sebagai admin.`, id)
                  } 
              break
 
@@ -6811,19 +6811,16 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             if (!isBotGroupAdmins) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan ketika bot menjadi admin', id)
             if (!quotedMsg && mentionedJidList.length === 0) return tobz.reply(from, `Untuk menggunakan fitur ini, kirim perintah *${prefix}demote* @tagadmin atau bisa reply pesan dari admin dan ketik ${prefix}udm`, id)
             if (mentionedJidList.length >= 2) return tobz.reply(from, 'Maaf, perintah ini hanya dapat digunakan kepada 1 orang.', id)
-            if (!groupAdmins.includes(mentionedJidList[0])) return tobz.reply(from, 'Maaf, user tersebut tidak menjadi admin.', id)
+            if (groupAdmins.includes(mentionedJidList[0])) return tobz.reply(from, 'Maaf, user tersebut tidak menjadi admin.', id)
             if (!quotedMsg) {
             await tobz.demoteParticipant(groupId, mentionedJidList[0])
             await tobz.sendTextWithMentions(from, `Perintah diterima, menghapus jabatan @${mentionedJidList[0]}.`)
-         }else if(quotedMsg){
-            try {
+         
+        }else if(quotedMsg){
             var qmoed4 = quotedMsgObj.sender.id
-            await tobz.demoteParticipant(from, qmoed4)
-           await tobz.reply(from, `Berhasil menurunkan jabatan dari admin.`, id)
-             } catch {
-           tobz.reply(from, 'Ada yang error!', id)
-           }
-                } 
+             tobz.demoteParticipant(from, qmoed4)
+            tobz.reply(from, `Berhasil menurunkan jabatan dari admin.`, id)
+        }
             break
         case prefix+'join':
 			if (!isOwner, !isAdmin) return tobz.reply(from, 'Perintah ini hanya untuk Owner Bot!', id)
@@ -6927,13 +6924,13 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             case 'limit':
     if(isReg(obj)) return
     if(cekumur(cekage)) return
-    if(isOwnerBot) return aruga.reply(from, 'Lu owner ga usah sok2 cek limit segala', id)
-    if(isAdmin) return aruga.reply(from, 'Kamu adalah Admin XINZ BOT\nAdmin Bot tidak memiliki limit harian', id)
+    if(isOwnerBot) return tobz.reply(from, 'Lu owner ga usah sok2 cek limit segala', id)
+    if(isAdmin) return tobz.reply(from, 'Kamu adalah Admin XINZ BOT\nAdmin Bot tidak memiliki limit harian', id)
  if(isVip) */
         case prefix+'limit':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if(isOwner) return tobz.reply(from, 'Lu kan owner bot njir', id)
+            if(isOwner) return tobz.reply(from, 'Lu kan owner bot bego, ngapa cek limit dah', id)
             if(isAdmin) return tobz.reply(from, 'Admin bot tidak memiliki limit harian / unlimitied limit.', id)
             var found = false
             const limidat = JSON.parse(fs.readFileSync('./lib/database/limit.json'))
@@ -6964,7 +6961,13 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
             } catch (err) {
                 tobz.reply(from, err, id)
             }
-        break
+                break
+              case prefix+'setlimit':
+                if(!isOwner) return (from, 'Fitur ini hanya bisa dilakukan oleh owner bot!', id)
+                fs.writeFileSync('./lib/database/limit.json', JSON.stringify(obj));
+                tobz.reply(from, 'Limit berhasil di reset!', id)
+                break
+
         case prefix+'restart': // WORK IF YOU RUN USING PM2
             if(isOwner){
                 tobz.sendText(from, '*[WARN]* Restarting ...')
@@ -7008,7 +7011,7 @@ PADA: ${moment().format('DD/MM/YY HH:mm:ss')}
                 fs.writeFileSync('./lib/database/admin.json', JSON.stringify(adminNumber))
                 tobz.reply(from, 'Success Menambahkan Admin ZXCBOT!', id)
                 }
-            break
+                break
         case prefix+'deladmin':
             if (!isOwner) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!', id)
                 let inq = adminNumber.indexOf(mentionedJidList[0])
