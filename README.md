@@ -104,22 +104,25 @@ after running it you need to scan the qr
 |       ✅        | Sticker With Gif                |
 |       ✅        | Sticker With Image Url          |                   
 |       ✅        | Sticker With Gif Url            |
-|       ✅        | Sticker With Fire Gif           |
-|       ✅        | Sticker With Lightning Gif      |
+|       ❌        | Sticker With Fire Gif           |
+|       ❌        | Sticker With Lightning Gif      |
 |       ✅        | Image To Sticker.               |
 |       ✅        | Text To Picture                 |
 |       ✅        | Text To Gif                     |
 |       ✅        | Text Pro                        |
+|       ✅        | Fisheye                         |
 
 
-|.  Downloader    |              Feature            |
+
+|   Downloader    |              Feature            |
 | :-------------: | :-----------------------------: |
 |       ✅        |  YouTube Video/Audio Downloader |
 |       ✅        |  Doujin Downloader              |
 |       ✅        |  XVideos Downloader             |
 |       ✅        | Instagram Video/Image Downloader|
 |       ✅        |  Facebook Video Downloader      |
-|       ✅        |  Tiktok Downloader              |
+|       ✅        |  Tiktok Downloader With WM & NO WM|
+|       ✅        |  Tiktok Song Downloader         |
 |       ✅        |  Twitter Downloader             |
 |       ✅        |  Smule Mp3 Downloader           |
 |       ✅        |  Starmaker Video Downloader     |
@@ -144,6 +147,15 @@ after running it you need to scan the qr
 |       ✅        |   Cak Lontong                   |
 
 
+|  Mager Nulis     |              Feature            |
+| :-------------:  | :-----------------------------: |
+|       ✅        |   Magernulis by Mfarels         |
+|       ✅        |   Nulis                         |   
+|       ✅        |   Nulis2                        |   
+|       ✅        |   Nulis kiri & kanan            |
+|       ✅        |   Fotofolio kiri & kanan        |                   
+
+
 |      Media      |             Feature             |
 | :-------------: | :-----------------------------: |
 |       ✅        |   Get a random meme             |
@@ -158,26 +170,32 @@ after running it you need to scan the qr
 |       ✅        |   Get a random anime quotes     |
 |       ✅        |   Get info gempa from BMKG      |
 |       ✅        |   Weather's report's            |
+|       ✅        |   Cuaca                         |
 |       ✅        |   Wikipedia                     |
-|       ✅        |   Youtube                       |
-|       ✅        |   Google                        |
+|       ✅        |   Youtube Search                |
+|       ✅        |   Google Search                 |
 |       ✅        |   Pinterest                     |
 |       ✅        |   Anime searcher                |
 |       ✅        |   Google Image                  |
 |       ✅        |   Couple Fortune Telling        |
 |       ✅        |   Chord                         |
+|       ✅        |   Shopee                        |
+|       ✅        |   Covid (Country)               |         
 |       ✅        |   Subreddit                     |
 |       ✅        |   Lyrics                        |
 |       ✅        |   Textmaker                     |
-|       ✅        |   Instagram Stalk               |
+|       ✅        |   Instagram Profile             |
 |       ✅        |   Tiktok Stalk                  |
 |       ✅        |   Smule Stalk                   |
 |       ✅        |   Write in Image                |
-|       ✅        |   Write in Paper                |
 |       ✅        |   Weather Information           |
 |       ✅        |   Hero Mobile Legends           |
 |       ✅        |   Zodiac Information            |
 |       ✅        |   Nomor Hoki                    |
+|       ✅        |   Asupan                        |
+|       ✅        |   Alkitab Searching             |
+|       ✅        |   Wattpad Searching             |    
+|       ✅        |   LK21                          |
 |       ✅        |   Get a random cat images       |
 |       ✅        |   Get a random dog images       |
 |      And        |   Others...                     |
@@ -185,9 +203,9 @@ after running it you need to scan the qr
 
 |   Group Only    |              Feature            |
 | :-------------: | :-----------------------------: |
-|       ✅        |   Promote User                  |
+|       ✅        |   Promote User @tag             |
+|       ✅        |   Demote User @tag              |
 |       ✅        |   Edotensei User                |
-|       ✅        |   Demote User                   |
 |       ✅        |   Kick User                     |
 |       ✅        |   Add User                      |
 |       ✅        |   Mention All User              |
@@ -200,10 +218,14 @@ after running it you need to scan the qr
 |       ✅        |   Get  Admin list               |
 |       ✅        |   Get owner group               |
 |       ✅        |   Get group info                |
+|       ✅        |   Promote User <reply yang ingin di promote>|
+|       ✅        |   Demote User <reply yang ingin di demote>|
 |       ✅        |   enable or disable nsfw command|
-|       ✅        |enable or disable welcome feature|
+|       ✅        |   enable or disable welcome feature|
 |       ✅        |   enable or disable left feature|
 |       ✅        |   enable or disable antilink    |
+|       ✅        |   enable or disable ANTI IG     |
+|       ✅        |   Leveling                      |
 
 
 | Admin Bot Only  |              Feature            |
@@ -232,6 +254,17 @@ after running it you need to scan the qr
 |       ✅        |   Block                         |
 |       ✅        |   Unblock                       |
 |       ✅        |   Join Group                    |
+
+
+# NEW FITUR
+
+
+|      Group      |              Feature            |
+| :-------------: | :-----------------------------: |
+|       ✅        |             Slot               |
+|       ✅        |            Mining              |
+|       ✅        |           Level                |
+|       ✅        |           Buylimit             |
 
 ---
 
