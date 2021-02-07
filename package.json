@@ -7,10 +7,10 @@
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "JUWEN",
+  "author": "TOBZ",
   "license": "Apache-2.0",
   "dependencies": {
-    "@open-wa/wa-automate": "^3.2.5",
+    "@open-wa/wa-automate": "^3.2.4",
     "@open-wa/wa-decrypt": "^2.0.1",
     "audit": "0.0.6",
     "axios": "^0.21.1",
@@ -47,6 +47,7 @@
     "node-cron": "^2.0.3",
     "node-fetch": "^2.6.1",
     "node-gtts": "^2.0.2",
+    "parse-ms": "^2.1.0",
     "path": "^0.12.7",
     "performance-now": "^2.1.0",
     "pm2": "^4.5.0",
