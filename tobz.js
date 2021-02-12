@@ -43,6 +43,7 @@ const ms = require('parse-ms')
 const toMs = require('ms')
 const Exif = require('./tools/exif')
 const exif = new Exif()
+const yts = require('yt-search')
 const _afk = JSON.parse(fs.readFileSync('./lib/database/afk.json'))
 const _leveling = JSON.parse(fs.readFileSync('./lib/database/leveling.json'))
 const _level = JSON.parse(fs.readFileSync('./lib/database/level.json'))
@@ -113,6 +114,7 @@ const {
     custom,
     picturemis
     } = require('./lib/fetcher')
+const { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } = require('constants')
 
 // LOAD FILE
 let banned = JSON.parse(fs.readFileSync('./lib/database/banned.json'))
@@ -1415,6 +1417,7 @@ function addMsgLimit(id){
             if(cekumur(cekage)) return
             //if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             //tobz.reply(from, `_Tunggu sebentar sedang di proses..._\n\nUntuk ukuran 1:1 gunakan ${prefix}sticker2`, id)
+            try {
             if (isMedia || isQuotedImage ||isMedia && type === 'image') {
                // await tobz.reply(from, mess.wait, id)
                 const encryptMedia = isQuotedImage ? quotedMsg : message
@@ -1450,6 +1453,10 @@ function addMsgLimit(id){
             } else {
                 await tobz.reply(from, `Kirim gambar dengan caption *${prefix}sticker* atau reply gambar dengan caption *${prefix}sticker*\nJika berupa video kirim perintah *${prefix}sgif*`, id)
             }
+        }catch(error) {
+            console.log(error)
+            tobz.reply(from, `Silahkan kirim gambar dengan caption ${prefix}stiker, karena kalau di reply sedang error dari server open wa.`, id)
+        }
         break
         
             
@@ -1993,16 +2000,22 @@ function addMsgLimit(id){
         case prefix+'toimg':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
+            try {
             if (quotedMsg && quotedMsg.type == 'sticker') {
                 const mediaData = await decryptMedia(quotedMsg)
                 const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`
                 await tobz.sendFile(from, imageBase64, 'imagesticker.jpg', 'Nih', id)
             } else if (!quotedMsg) return tobz.reply(from, `Mohon reply sticker yang ingin dijadikan gambar!`, id)
+        }catch(error) {
+            console.log(error)
+            tobz.reply(from, `Fitur toimg sedang error!`, id)
+        }
             break
 
                 case prefix+'tomp3': // by: Piyobot
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
+                    try {
                     if ((isMedia && isVideo || isQuotedVideo)) {
                     await tobz.reply(from, mess.wait, id)
                     const encryptMedia = isQuotedVideo ? quotedMsg : message
@@ -2033,16 +2046,22 @@ function addMsgLimit(id){
                 } else {
                     await tobz.reply(from, 'Kirim video yang ingin di konvert ke mp3 atau reply video yang ingin di konvert!', id)
                 }
+            }catch(error) {
+                console.log(error)
+                tobz.reply(from, `Silahkan kirim video dengan caption ${prefix}tomp3, karena kalau di reply sedang error dari server open wa.`, id)
+            }
             break
         case prefix+'stickergif': // INSTALL FFMPEG, IF YOU WANT THIS COMMAND WORK!
         case prefix+'stikergif': // TUTORIAL IN README, PLEASE READ!
         case prefix+'sgif': // MRHRTZ
         tobz.reply(from, mess.wait2, id)
+        try{
             if (isMedia && type === 'video' || mimetype === 'image/gif') {
                 try {
                     const mediaData = await decryptMedia(message, uaOverride)
                     await tobz.sendMp4AsSticker(from, mediaData, {fps: 10, startTime: `00:00:00.0`, endTime : `00:00:05.0`,loop: 0})
-                } catch (e) {
+                } catch (error) {
+                    console.log(error)
                     tobz.reply(from, `Size media terlalu besar! mohon kurangi durasi video.`)
                 }
             } else if 
@@ -2052,6 +2071,10 @@ function addMsgLimit(id){
             } else {
                 tobz.reply(from, `Kesalahan ⚠️ Hanya bisa video/gif apabila file media berbentuk gambar ketik ${prefix}stickergif`, id)
             } 
+        }catch(error) {
+            console.log(error)
+            tobz.reply(from, `Silahkan kirim video dengan caption ${prefix}stikergif, karena kalau di reply sedang error dari server open wa.`, id)
+        }
             break
 			
         case prefix+'stickerlightning':
@@ -2124,6 +2147,7 @@ function addMsgLimit(id){
             case prefix+'fisheye':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
+                try {
                 tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
                 if (isMedia && type === 'image') {
                     const mediaData = await decryptMedia(message, uaOverride)
@@ -2140,6 +2164,10 @@ function addMsgLimit(id){
                 } else {
                     await tobz.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan ${prefix}fisheye`, id)
                 }
+            }catch(error) {
+                console.log(error)
+                tobz.reply(from, `Silahkan kirim gambar dengan caption ${prefix}fisheye, karena kalau di reply sedang error dari server open wa.`, id)
+            }
                 await limitAdd(serial)
                 break
                 case prefix+'gtavposter':
@@ -3025,7 +3053,7 @@ function addMsgLimit(id){
                             let xixixi = `*Hasil pencarian from ${quer}*\n\n_Note : Apabila kesusahan mengambil data id, untuk download musik tag pesan ini dan berikan perintah : *${prefix}getmusik urutan* contoh : *${prefix}getmusik 2*_\n`
                             //console.log(result)
                             for (let i = 0; i < result.length; i++) {
-                                xixixi += `\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].author}\n*Durasi* : ${result[i].timestamp}\n*Perintah download* :\n_${prefix}getmusik ${result[i].id}_\n`
+                                xixixi += `\n═════════════════\n\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].author}\n*Durasi* : ${result[i].timestamp}\n*Perintah download* :\n_${prefix}getmusik ${result[i].id}_\n`
                             }
                                 xixixi += `\n\n`
                             for (let ii = 0; ii < result.length; ii++) {
@@ -3225,6 +3253,25 @@ function addMsgLimit(id){
                console.log(err)
            }
            break */
+           case prefix+'yts':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+           if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+           if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+           if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}yts judul lagu*`) 
+           await limitAdd(serial)
+           argz = body.trim().split(' ')
+           var slicedArgs = Array.prototype.slice.call(argz, 1);
+           const yt3 = await slicedArgs.join(' ')
+           tobz.reply(from, mess.wait, id)
+           const yt = await yts(yt3)
+           //「 *IG PROFILE* 」
+           let ytcap = `   *「 Youtube Search 」*\n\nHasil pencarian dari *${yt3}*\n`
+           for (let i = 0; i < yt.all.length; i++) {
+               ytcap += `\n══════════════════\n\n*Urutan* : ${i+1}\n*> Link Video:* ${yt.all[i].title}\n*> Durasi Video:* ${yt.all[i].timestamp}\n*> Viewers:* ${yt.all[i].views}\n*> Link:*\n>${yt.all[i].url}`}
+           await tobz.sendFileFromUrl(from, yt.all[0].thumbnail, ``, ytcap, id)
+            break
+
            case prefix+'ytmusic': // SEARCH MUSIC FROM YOUTUBE
             case prefix+'ytmusic':
             if(isReg(obj)) return
@@ -8350,12 +8397,14 @@ const pen = no.replace(' ','')
             if(cekumur(cekage)) return
             if (isGroupMsg) {
                 if (!quotedMsg) {
+                     //let limitCounts = limitCount-lmt.limit
                     var block = blockNumber.includes(author)
                     var bend = banned.includes(author)
                     var sts = await tobz.getStatus(author)
                     var adm = isGroupAdmins
                     var donate = isAdmin
                     prema = isPrem
+                    
                     var ctt = await tobz.getContact(author)
                     const { status } = sts
                     var found = false
@@ -8366,9 +8415,9 @@ const pen = no.replace(' ','')
                     })
                     if (found !== false) {
                         pendaftar[found].id = author;
-                        var registe = '✔'
+                        var registe = 'Yes'
                     } else {
-                        var registe = '❌'
+                        var registe = 'No'
                     }
                     if (ctt == null) {
                     return await tobz.reply(from, `Nomor WhatsApp tidak valid [ Tidak terdaftar di WhatsApp ]`, id) 
@@ -8385,7 +8434,7 @@ const pen = no.replace(' ','')
                     } else {
                         var namae = contact
                     } 
-                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}*`)
+                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}\n`)
                     }
                 } else if (quotedMsg) {
                     var qmid = quotedMsgObj.sender.id
