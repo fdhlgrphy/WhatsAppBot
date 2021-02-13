@@ -1,3 +1,13 @@
+/*
+THX BUAT YANG UDAH GUNAIN SCRIPT INI!
+
+BAGI YANG NANYA2 MASANG APIKEY DIMANA??
+BACA README NYA, PERCUMA GW BUAT README
+
+ZXCBOT V3
+*/
+
+
 require('dotenv').config()
 const { decryptMedia } = require('@open-wa/wa-decrypt')
 const fs = require('fs-extra')
@@ -3266,10 +3276,14 @@ function addMsgLimit(id){
            tobz.reply(from, mess.wait, id)
            const yt = await yts(yt3)
            //「 *IG PROFILE* 」
-           let ytcap = `   *「 Youtube Search 」*\n\nHasil pencarian dari *${yt3}*\n`
+           let ytcap = `*「 Youtube Search 」*\n\nHasil pencarian dari *${yt3}*\n\nKetik ${prefix}getmusic [id] untuk mengambil lagu. Atau reply pesan ini dan ketik ${prefix}getmusic [ urutan no ].\n\nContoh:\n1. ketik ${prefix}getmusic 1GvW5WJVYLw\n2. reply pesan  lalu ketik ${prefix}getmusic 2\n`
            for (let i = 0; i < yt.all.length; i++) {
-               ytcap += `\n══════════════════\n\n*Urutan* : ${i+1}\n*> Link Video:* ${yt.all[i].title}\n*> Durasi Video:* ${yt.all[i].timestamp}\n*> Viewers:* ${yt.all[i].views}\n*> Link:*\n>${yt.all[i].url}`}
-           await tobz.sendFileFromUrl(from, yt.all[0].thumbnail, ``, ytcap, id)
+               ytcap += `\n══════════════════\n\n*Urutan* : ${i+1}\n*> Judul:* ${yt.all[i].title}\n*> Durasi Video:* ${yt.all[i].timestamp}\n*> Viewers:* ${yt.all[i].views}\n*> Id Video:* ${yt.all[i].videoId}\n`
+            }
+               ytcap += `\n\n`
+             for (let ii = 0; ii < yt.all.length; ii++) {
+            ytcap += `(#)${yt.all[ii].videoId}`      } ``
+               await tobz.sendFileFromUrl(from, yt.all[0].thumbnail, ``, ytcap, id)
             break
 
            case prefix+'ytmusic': // SEARCH MUSIC FROM YOUTUBE
