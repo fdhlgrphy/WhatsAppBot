@@ -61,6 +61,7 @@ Apikey Location
 Note : Kalo Mau Work, Centang Kolom 1,2,3,5,6
 
 
+
 ## 🛠️ Installing the FFmpeg
 * Download one of the available versions of FFmpeg by clicking [this link](https://www.gyan.dev/ffmpeg/builds/).
 * Extract the file to `C:\` path.
