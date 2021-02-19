@@ -129,13 +129,6 @@ after running it you need to scan the qr
 ---
 ## 120+ Feature & Coming Soon
 
-|     Leveling     |  Availability  |
-| :--------------: | :------------: |
-| Leveling         |       ✔️       |
-| Set level color  |      Soon      |
-| Set bar color    |      Soon      |
-
-
 | Sticker Creator |              Feature            |
 | :-------------: | :-----------------------------: |
 |       ✅        | Sticker With Image              |
@@ -292,17 +285,13 @@ after running it you need to scan the qr
 |       ✅        |   Unblock                       |
 |       ✅        |   Join Group                    |
 
-
-# NEW FITUR
-
-
-|      Group      |              Feature            |
-| :-------------: | :-----------------------------: |
-|       ✅        |             Slot               |
-|       ✅        |            Mining              |
-|       ✅        |           Level                |
-|       ✅        |           Buylimit             |
-
+ 
+|  Leveling       |              Feature           |
+| :-------------: | :-----------------------------:|
+| ✅             |       Level                     |
+| ✅             |       Set Bg                  |
+| Soon             |       Set level color                  |
+| Soon            |      Set bar color                  |
 ---
 
 
