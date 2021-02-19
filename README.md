@@ -49,9 +49,12 @@ Apikey Location
 
 ### This project require NodeJS v14.
 
-### FFMPEG
-- [DOWNLOAD](https://ffmpeg.org/)
-- [TUTORIAL](https://youtu.be/04Gf6TEnmjk)
+### Requirements
+* [Node.js](https://nodejs.org/en/)
+* [Git](https://git-scm.com/downloads)
+* [FFmpeg](https://www.gyan.dev/ffmpeg/builds/)
+* [libwebp](https://developers.google.com/speed/webp/download)
+* Any text editor
 
 ### IMAGEMAGICK
 - [DOWNLOAD](https://imagemagick.org/script/download.php)
