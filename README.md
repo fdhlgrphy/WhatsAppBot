@@ -57,7 +57,38 @@ Apikey Location
 - [DOWNLOAD](https://imagemagick.org/script/download.php)
 Note : Kalo Mau Work, Centang Kolom 1,2,3,5,6
 
-### Install
+
+## 🛠️ Installing the FFmpeg
+* Download one of the available versions of FFmpeg by clicking [this link](https://www.gyan.dev/ffmpeg/builds/).
+* Extract the file to `C:\` path.
+* Rename the extracted folder to `ffmpeg`.
+* Run Command Prompt as Administrator.
+* Run this command:
+```cmd
+> setx /m PATH "C:\ffmpeg\bin;%PATH%"
+```
+It will give us a callback like `SUCCESS: specified value was saved`.
+* Now that you've FFmpeg installed, verify that it's working by running this command to see version number:
+```cmd
+> ffmpeg -version
+```
+
+## 📷 Installing the libwebp
+The installation is same as you install FFmpeg but whatever. I will make it clear.
+* Download the file according to the OS you are using by clicking [this link](https://developers.google.com/speed/webp/download).
+* Extract the file to `C:\` path.
+* Rename the extracted file to `libwebp`.
+* Run Command Prompt as Administrator.
+* Run this command:
+```cmd
+> setx /m PATH "C:\libwebp\bin;%PATH%"
+```
+It will give us a callback like `SUCCESS: specified value was saved`.
+* Now that you've libwebp installed, verify that it's installed by running this command to see version number:
+```cmd
+> webpmux -version
+```
+## 🔍 Installing the dependencies
 
 Install the dependencies:
 
@@ -66,7 +97,7 @@ Install the dependencies:
 > npm install -g pm2
 ```
 
-### Usage
+## Usage
 1. run the Whatsapp bot
 
 ```bash
