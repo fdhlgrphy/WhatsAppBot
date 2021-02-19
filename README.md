@@ -127,7 +127,14 @@ after running it you need to scan the qr
 - [Apache License 2.0](https://github.com/TobyG74/ElainaBOT/blob/main/LICENSE)
 
 ---
-## 120+ Feature
+## 120+ Feature & Coming Soon
+
+|     Leveling     |  Availability  |
+| :--------------: | :------------: |
+| Leveling         |       ✔️       |
+| Set level color  |      Soon      |
+| Set bar color    |      Soon      |
+
 
 | Sticker Creator |              Feature            |
 | :-------------: | :-----------------------------: |
