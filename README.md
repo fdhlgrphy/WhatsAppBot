@@ -104,8 +104,7 @@ after running it you need to scan the qr
 |       ✅        | Sticker With Gif                |
 |       ✅        | Sticker With Image Url          |                   
 |       ✅        | Sticker With Gif Url            |
-|       ❌        | Sticker With Fire Gif           |
-|       ❌        | Sticker With Lightning Gif      |
+|       ✅        | Sticker With Fire Gif           |
 |       ✅        | Image To Sticker.               |
 |       ✅        | Text To Picture                 |
 |       ✅        | Text To Gif                     |
