@@ -12,7 +12,7 @@
 </P>
 
 ## Information
-<br>
+
 #### Makasih udah belii :D
 - [Cara Penginstallan Bot](https://youtu.be/41Xj_Kg4DCM)
 - Change [ownerNumber](https://github.com/juwenaja/Bot-We-A/blob/6f50edb25acba2b2e7372b47e5f0ef6d2dfbf0af/tobz.js#L273) in tobz.js to be your number
@@ -28,8 +28,7 @@ If you find some bugs please contact the WhatsApp number on Contact
 - [WHATSAPP](https://wa.me/6289635687240)
 - [MY BOT](wa.me/6285155078806)
 - [WHATSAPP GROUP](https://chat.whatsapp.com/GCHSJyGvdRfAaubOzcAUm4)
-<br>
-<br>
+
 ## API & APIKEY
 Open setting.js then edit & paste it in YOUR_APIKEY
 - [VHTEAR](https://api.vhtear.com)
@@ -41,28 +40,26 @@ Open setting.js then edit & paste it in YOUR_APIKEY
 
 Apikey Location
 - [SETTING](https://github.com/juwenaja/Bot-We-A/blob/main/lib/database/setting.json)
-<br>
-<br>
+
 ## Donate
 - [Saweria](https://saweria.co/juwenajaa)
 - [GOPAY | 085155078806]
-<br>
-<br>
+
 ## Getting Started
 
 ### This project require NodeJS v14.
-<br>
+
 ### Requirements
 * [Node.js](https://nodejs.org/en/)
 * [Git](https://git-scm.com/downloads)
 * [FFmpeg](https://www.gyan.dev/ffmpeg/builds/)
 * [libwebp](https://developers.google.com/speed/webp/download)
 * Any text editor
-<br>
+
 ### IMAGEMAGICK
 - [DOWNLOAD](https://imagemagick.org/script/download.php)
 Note : Kalo Mau Work, Centang Kolom 1,2,3,5,6
-<br>
+
 ## 🛠️ Installing the FFmpeg
 * Download one of the available versions of FFmpeg by clicking [this link](https://www.gyan.dev/ffmpeg/builds/).
 * Extract the file to `C:\` path.
@@ -77,7 +74,7 @@ It will give us a callback like `SUCCESS: specified value was saved`.
 ```cmd
 > ffmpeg -version
 ```
-<br>
+
 ## 📷 Installing the libwebp
 The installation is same as you install FFmpeg but whatever. I will make it clear.
 * Download the file according to the OS you are using by clicking [this link](https://developers.google.com/speed/webp/download).
@@ -101,8 +98,7 @@ Install the dependencies:
 > npm install
 > npm install -g pm2
 ```
-<br>
-<br>
+
 ## Usage
 1. run the Whatsapp bot
 
@@ -131,7 +127,7 @@ after running it you need to scan the qr
 ### License
 
 - [Apache License 2.0](https://github.com/TobyG74/ElainaBOT/blob/main/LICENSE)
-<br>
+
 ---
 ## 120+ Feature & Coming Soon
 
