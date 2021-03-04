@@ -21,6 +21,8 @@ const speed = require('performance-now')
 const fetch = require('node-fetch')
 const path = require('path')
 const webp = require('webp-converter')
+const Exif = require('./tools/exif')
+const exif = new Exif()
 const sharp = require('sharp')
 const exect = require('await-exec')
 const canvas = require('canvacord')
@@ -28,7 +30,9 @@ const { spawn, exec } = require('child_process')
 const nhentai = require('nhentai-js')
 const { API } = require('nhentai-api')
 const google = require('google-it')
+const isPorn = require('is-porn')
 const translatte = require('translatte')
+const translate2 = require('@vitalets/google-translate-api');
 const { stdout } = require('process')
 const translate = require('translatte')
 const Math_js = require('mathjs');
@@ -39,6 +43,7 @@ const { getStickerMaker } = require('./lib/ttp')
 const quotedd = require('./lib/quote')
 const color = require('./lib/color')
 const urlShortener = require('./lib/shortener')
+const urlShortener2 = require('./lib/shortener2')
 const { addFilter, isFiltered } = require('./lib/msgFilter')
 const cariKasar = require('./lib/kataKotor')
 const { yta, ytv, buffer2Stream, ytsr, baseURI, stream2Buffer, noop } = require('./lib/ytdl')
@@ -51,9 +56,8 @@ const level = require('./lib/level')
 const card = require('./lib/card')
 const ms = require('parse-ms')
 const toMs = require('ms')
-const Exif = require('./tools/exif')
-const exif = new Exif()
 const yts = require('yt-search')
+
 
 // 
 const _afk = JSON.parse(fs.readFileSync('./lib/database/afk.json'))
@@ -63,6 +67,7 @@ const _bg = JSON.parse(fs.readFileSync('./lib/database/background.json'))
 const _reminder = JSON.parse(fs.readFileSync('./lib/database/reminder.json'))
 const _reminder2 = JSON.parse(fs.readFileSync('./lib/database/setgroup.json'))
 const _autosticker = JSON.parse(fs.readFileSync('./lib/database/autosticker.json'))
+const _autovn = JSON.parse(fs.readFileSync('./lib/database/autovn.json'))
 const setwelkom = JSON.parse(fs.readFileSync('./lib/database/setwelkom.json'))
 const setleft = JSON.parse(fs.readFileSync('./lib/database/setleft.json'))
 
@@ -70,41 +75,14 @@ const setleft = JSON.parse(fs.readFileSync('./lib/database/setleft.json'))
 
 lolcatjs.options.seed = Math.round(Math.random() * 1000);
 lolcatjs.options.colors = true;
-const { 
-    downloader,
-    liriklagu,
-    quotemaker,
-    randomNimek,
-    sleep,
-    jadwalTv,
-    processTime,
-    nulis
-    } = require('./lib/functions')
+
+const { liriklagu, quotemaker, sleep } = require('./lib/functions')
 
 //const { reminder } = require('./function')
 
-const { 
-    help,
-    admincmd,
-    ownercmd,
-    nsfwcmd,
-    kerangcmd,
-    mediacmd,
-    animecmd,
-    othercmd,
-    downloadcmd,
-    praycmd,
-    groupcmd,
-    funcmd,
-    bahasalist,
-    sewa,
-    snk, 
-    info, 
-    sumbang, 
-    readme, 
-    listChannel,
-    commandArray
-    } = require('./lib/help')
+const { snk, readme } = require('./lib/help')
+
+const { getLocationData } = require('./lib/location')
 
 const {
     facebook,
@@ -173,7 +151,6 @@ let {
     banChats,
     barbarkey,
     vhtearkey,
-    prefix,
     tobzkey,
     naufalkey,
     nobgkey,
@@ -326,14 +303,20 @@ module.exports = tobz = async (tobz, message) => {
         const isBlocked = blockNumber.includes(sender.id)
         const isNsfw = isGroupMsg ? nsfw_.includes(chat.id) : false
         const isSimi = isGroupMsg ? simi_.includes(chat.id) : false
+        const isAutoVn = isGroupMsg ? _autovn.includes(groupId) : false
         const isAutoStickerOn = isGroupMsg ? _autosticker.includes(groupId) : false
         const isLevelingOn = isGroupMsg ? _leveling.includes(groupId) : false
         const uaOverride = 'WhatsApp/2.2029.4 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
         const isUrl = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi)
         const url = args.length !== 0 ? args[0] : ''
-        
+        const prefix = /^[°•π÷×¶∆£¢€¥®™✓_=|~!?#$%^&+()<>.\/\\©^]/.test(command) ? command.match(/^[°•π÷×¶∆£¢€¥®™✓_=|~!?#$%^&+()<>.\/\\©^]/gi) : '#'
+
+        global.prefix
+
         const isQuotedImage = quotedMsg && quotedMsg.type === 'image'
         const isQuotedVideo = quotedMsg && quotedMsg.type === 'video'
+        const isQuotedSticker = quotedMsg && quotedMsg.type === 'sticker'
+        const isQuotedLocation = quotedMsg && quotedMsg.type === 'location'
         const isQuotedAudio = quotedMsg && (quotedMsg.type === 'audio' || quotedMsg.type === 'ptt' || quotedMsg.type === 'ppt')
         const isQuotedFile = quotedMsg && quotedMsg.type === 'document'
 
@@ -345,16 +328,17 @@ module.exports = tobz = async (tobz, message) => {
         const InstagramLinkDetector = antiig.includes(chatId)
         //const AntiStickerSpam = antisticker.includes(chatId)
         const isPrivate = sender.id === chat.contact.id
-        //  const stickermsg = message.type === 'sticker'
         const isCmd = command.startsWith(prefix)
 
         const gcount = '10'
+        const tobzkey = 'BotWeA'
+        const limitgame = 'Maaf limit kamu tidak cukup untuk memainkan game ini'
         const juwen = tobz
         const serial = sender.id
         const isAdmin = adminNumber.includes(sender.id) // Admin Number
 		const isPrem = premNumber.includes(sender.id) // Premium Number
+        //const reportNumber = '6289635687240@c.us'
        // const ownerNumber = '6289635687240@c.us' // Owner Number 1 = Utama 
-        const reportNumber = '6289635687240@c.us'
         const ownerNumber = ["6289635687240@c.us", "6285157661229@c.us"] // Owner Number 2 = Assistan Owner
         const isOwner = ownerNumber.includes(sender.id) // Owner Number 1
         //const isOwner2 = ownerNumber2.includes(sender.id) // Owner Number 2
@@ -454,6 +438,7 @@ module.exports = tobz = async (tobz, message) => {
             }
         }
         
+       // if ((!isCmd && isGroupMsg && isSimi) && message.type === 'chat') {
 
        /* if (isGroupMsg && AntiStickerSpam && !isGroupAdmins && !isAdmin && !isOwner && !isPrem){
             if(stickermsg === true){
@@ -469,10 +454,14 @@ module.exports = tobz = async (tobz, message) => {
         }
 
         // AKTIFKAN APABILA TIDAK INGIN TERKENA SPAM!!
-        //addFilter(from)  
+        // [BETA] Avoid Spam Message
+       
         //if (isCmd && isFiltered(from) && !isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname)) }
-        //if (isCmd && isFiltered(from) && isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) }
-        
+        //if (isCmd && isFiltered(from) && isGroupMsg) { return console.log(color('[SPAM]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle)) } 
+        //addFilter(from)
+        //if (!isFiltered(from) && isGroupMsg) return tobz.reply(from, 'You are in cooldown', id)
+        //if (!isFiltered(from) && !isGroupMsg) return tobz.reply(from, 'You are in cooldown', id)
+
         // CONSOLE LOG
         if (isBanned) {console.log(color('[BANNED]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle))}
         if (isBlocked) return console.log(color('[BLOCKED]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))
@@ -575,6 +564,18 @@ module.exports = tobz = async (tobz, message) => {
             return dDisplay + hDisplay + mDisplay + sDisplay;
         }
 
+        // AUTO VN
+        //if (isGroupMsg && isUser && isImage && isAutoStickerOn) {
+        if (isGroupMsg && isUser && isAutoVn) {
+            const nyenye = await axios.get(`https://naufalhoster.xyz/tools/tts?apikey=${naufalkey}&text=${encodeURIComponent(message.body)}&lang=id`)
+
+            const hahah = nyenye.data.result.audio
+            const responses = await fetch(hahah);
+            const buffer2 = await responses.buffer();   
+            await fs.writeFile(`./media/audio.mp3`, buffer2)
+            await tobz.sendPtt(from,'./media/audio.mp3', id)
+            //tobz.sendFileFromUrl(from, hahah, ``, ``, id)
+    }  
         // Auto-sticker
         if (isGroupMsg && isUser && isImage && isAutoStickerOn) {
            // console.log(`Hi`)
@@ -800,28 +801,6 @@ const getReminderPosition2 = (userId) => {
             '🍌 : 🍒 : 🔔',
             '🔔 : 🔔 : 🍇',
             ]
-    /*    const sotoy = [
-            '🍊 : 🍒 : 🍐',
-            '🍒 : 🔔 : 🍊',
-            '🍇 : 🍒 : 🍐',
-            '🍊 : 🍋 : 🔔',//by Fadhlur Owner of NotBot
-            '🔔 : 🍒 : 🍐',
-            '🔔 : 🍒 : 🍊',
-            '🍊 : 🍋 : 🔔',		
-            '🍐 : 🍒 : 🍋',
-            '🍐 : 🍐 : 🍐',
-            '🍊 : 🍒 : 🍒',
-            '🔔 : 🔔 : 🍇',
-            '🍌 : 🍒 : 🔔',
-            '🍐 : 🔔 : 🔔',
-            '🍊 : 🍋 : 🍒',
-            '🍋 : 🍋 : 🍌',
-            '🔔 : 🔔 : 🍇',
-            '🔔 : 🍐 : 🍇',
-            '🔔 : 🔔 : 🔔',
-            '🍒 : 🍒 : 🍒',
-            '🍌 : 🍌 : 🍌'
-            ] */
 		
 		const apakah = [ // APAKAH
             'Ya',
@@ -1418,7 +1397,7 @@ function addMsgLimit(id){
                 lolcatjs.fromString(color(figlet.textSync('> OWNER MODE', { horizontalLayout: 'full' })))
                 //console.log('ONLY OWNER MODE')
                 console.log('------------------------------------------------')
-                tobz.reply(from, '*ONLY OWNER MODE*', id)
+                tobz.reply(from, '*OWNER MODE*', id)
             /*	txtbcc = `*ONLY OWNER CAN USE BOT!*!`
                     const semuagrupp = await tobz.getAllChatIds();
                     if(quotedMsg && quotedMsg.type == 'image'){
@@ -1481,16 +1460,13 @@ function addMsgLimit(id){
                 exif.create(namaPack, authorPack)
                 await tobz.reply(from, 'Berhasil mengganti teks stiker wm!', id)
                  } catch (err) {
-                // tobz.sendText(ownerNumber, 'Error Play : '+ err)
                 console.log(err)
                  tobz.reply(from, 'Ada yang error!', id)
                  }
                     break
-            case prefix+'takestick': // By: VideFrelan
+            case prefix+'takestick': 
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            //if (!isAdmin) return await tobz.reply(from, 'Fitur ini khusus member user premium', id)
-            //if (!isVip) return tobz.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
             const pembawm = body.slice(11)
             try {
             if (!pembawm.includes('|')) return await tobz.reply(from, `Kirim perintah *${prefix}takestick nama|author*`, id)
@@ -1522,8 +1498,7 @@ function addMsgLimit(id){
                 await tobz.reply(from, 'Reply sticker pak', id)
             }
         } catch (err) {
-           // tobz.sendText(ownerNumber, 'Error Play : '+ err)
-            tobz.reply(from, 'Ada yang', id)
+            tobz.reply(from, 'Ada yang error!', id)
         }
         break
         case prefix+'sticker2':
@@ -1562,11 +1537,8 @@ function addMsgLimit(id){
             case prefix+'s':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            //if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            //tobz.reply(from, `_Tunggu sebentar sedang di proses..._\n\nUntuk ukuran 1:1 gunakan ${prefix}sticker2`, id)
             try {
-            if (isMedia || isQuotedImage ||isMedia && type === 'image') {
-               // await tobz.reply(from, mess.wait, id)
+            if (isMedia && type === 'image' || isQuotedImage) {
                 const encryptMedia = isQuotedImage ? quotedMsg : message
                 const mediaData = await decryptMedia(encryptMedia, uaOverride)
                 webp.buffer2webpbuffer(mediaData, 'jpg', '-q 100')
@@ -1590,26 +1562,47 @@ function addMsgLimit(id){
                                     const data = fs.readFileSync(`./temp/${sender.id}.webp`)
                                     const base64 = `data:image/webp;base64,${data.toString('base64')}`
                                     await tobz.sendRawWebpAsSticker(from, base64)
-                                    //console.log(`Sticker processed for ${processTime(t, moment())} seconds`)
                                     fs.unlinkSync(`./temp/${sender.id}.webp`)
                                     fs.unlinkSync(`./temp/stage_${sender.id}.webp`)
-                                    //limitAdd(serial)
                                 }
                             })
                     })
-                    
-             } else if (args.length === 2) {
+                // STIKER URL
+            } else if (args.length === 2) {
                 const url = args[1]
                 if (url.match(isUrl)) {
                     await tobz.sendStickerfromUrl(from, url, { method: 'get' })
                         .catch(err => console.log('Caught exception: ', err))
                 }
+        
+            } else if (isMedia && type === 'video' || mimetype === 'image/gif') {
+                 tobz.reply(from, mess.wait2, id)
+                 const mediaData = await decryptMedia(message, uaOverride)
+                await tobz.sendMp4AsSticker(from, mediaData, {fps: 10, startTime: `00:00:00.0`, endTime : `00:00:10.0`,loop: 0}, { author: `${autorwm}`, pack: `${packnamewm}` })
+                // client.sendImageAsSticker(from, image, id, { author: 'authorname', pack: 'packname' })             
+            
+            } else if 
+            (quotedMsg && quotedMsg.type == 'video' || quotedMsg && quotedMsg.mimetype == 'image/gif') {
+            tobz.reply(from, mess.wait2, id)
+             const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                await tobz.sendMp4AsSticker(from, mediaData, {fps: 10, startTime: `00:00:00.0`, endTime : `00:00:10.0`,loop: 0}, { author: `${autorwm}`, pack: `${packnamewm}` })
             }
+          /*  } else if  (quotedMsg.type == 'chat' ) {
+            const alay3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+            //const alay4 = await axios.get(`https://api.terhambar.com/bpk?kata=${alay3}`)
+            const lttp2 = ["Orange","White","Green","Black","Purple","Red","Yellow","Blue","Navy","Grey","Magenta","Brown","Gold"]
+            const rttp2 = lttp2[Math.floor(Math.random() * (lttp2.length))]
+            await tobz.sendStickerfromUrl(from, `https://api.vhtear.com/textmaker?text=${alay3}&warna=${rttp2}&apikey=${vhtearkey}`)
+            //const alay5 = alay4.data.text
+            //tobz.reply(from, alay5, id)
+            limitAdd(serial)
+            } */
+        
         }catch(error) {
             console.log(error)
-            tobz.reply(from, `Silahkan kirim gambar dengan caption ${prefix}stiker, karena kalau di reply sedang error dari server open wa.`, id)
+            tobz.reply(from, `Hmm ada yang erorr!`, id)
         }
-        break
+        break 
         case prefix+'imagetourl':
             case prefix+'imgtourl':
                 case prefix+'tourl':
@@ -1697,7 +1690,7 @@ function addMsgLimit(id){
                     await tobz.sendStickerfromUrl(from, tahtas, { method: 'get' })
             }
             break 
-            case prefix+'snobg':
+        /*   case prefix+'snobg':
          case prefix+'stikernobg':
              case prefix+'stickernobg':
                 if(isReg(obj)) return
@@ -1716,6 +1709,18 @@ function addMsgLimit(id){
                             await fs.writeFile(outFile, result.base64img)
                             await tobz.sendImageAsSticker(from, `data:${mimetype};base64,${result.base64img}`)
                             await limitAdd(serial)
+
+                             } else if (quotedMsg && quotedMsg.type == 'image') {
+                        tobz.reply(from, 'Removing background...', id)
+                        var mediaData = await decryptMedia(quotedMsg, uaOverride)
+                        var imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
+                        var base64img = imageBase64
+                        //console.log('Removing background...')
+                        var outFile = './media/img/noBg.png' //5tHjBbPSh3gYoHD9rTqiVCa7 [ { title: 'Insufficient credits', code: 'insufficient_credits' } ]
+                        var result = await removeBackgroundFromImageBase64({ base64img, apiKey: 'hyW66SDkKY1VvkgYPcDK4eSx', size: 'auto', type: 'auto', outFile })
+                            await fs.writeFile(outFile, result.base64img)
+                            await tobz.sendImageAsSticker(from, `data:${mimetype};base64,${result.base64img}`)
+                             }
                         } catch(err) {
                             //tobz.reply(from, `Maaf, Tidak dapat mengidentifikasi background! mungkin terlalu banyak warna.\n\n_Apabila anda terus melihat pesan ini meskipun gambar jelas mohon chat owner untuk di fix!_`, id)
                             tobz.reply(from, `Ada kesalahan saat mengkonversi gambar`, id)
@@ -1726,8 +1731,41 @@ function addMsgLimit(id){
                     } else {
                         tobz.reply(from, `Kirim foto dengan caption *${prefix}snobg*`, id)
                     }
+                    break */
+                    case prefix+'snobg':
+         case prefix+'stikernobg':
+             case prefix+'stickernobg':
+                if(isReg(obj)) return
+            if(cekumur(cekage)) return 
+            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', message.id)      
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis/nJika Ingin Isi Ulang Chat Owner!/nKetik #limit Untuk Mengecek Kuota Limit Kamu`, id)     
+            if (isMedia && type === 'image') {
+                        tobz.reply(from, 'Removing background...', id)
+                        var mediaData = await decryptMedia(message, uaOverride)
+                        var imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
+                        var base64img = imageBase64
+                        //console.log('Removing background...')
+                        var outFile = './media/img/noBg.png' //5tHjBbPSh3gYoHD9rTqiVCa7 [ { title: 'Insufficient credits', code: 'insufficient_credits' } ]
+                        var result = await removeBackgroundFromImageBase64({ base64img, apiKey: 'hyW66SDkKY1VvkgYPcDK4eSx', size: 'auto', type: 'auto', outFile })
+                            await fs.writeFile(outFile, result.base64img)
+                            await tobz.sendImageAsSticker(from, `data:${mimetype};base64,${result.base64img}`)
+                            await limitAdd(serial)
+                    } else if (quotedMsg && quotedMsg.type == 'image') {
+                        tobz.reply(from, 'Removing background...', id)
+                        const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                        //const getUrli2 = await uploadImages(mediaData, false)
+                        var imageBase64 = `data:${mimetype};base64,${mediaData.toString('base64')}`
+                        var base64img = imageBase64
+                        //console.log('Removing background...')
+                        var outFile = './media/img/noBg.png' //5tHjBbPSh3gYoHD9rTqiVCa7 [ { title: 'Insufficient credits', code: 'insufficient_credits' } ]
+                        var result = await removeBackgroundFromImageBase64({ base64img, apiKey: 'hyW66SDkKY1VvkgYPcDK4eSx', size: 'auto', type: 'auto', outFile })
+                            await fs.writeFile(outFile, result.base64img)
+                            await tobz.sendImageAsSticker(from, `data:${mimetype};base64,${result.base64img}`)
+                            await limitAdd(serial)
+                    } else {
+                        await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}snobg`, id)
+                    }
                     break 
-
                          case prefix+'reminder':
                         case prefix+'pengingat':
                             if(isReg(obj)) return
@@ -1845,25 +1883,34 @@ tobz.setGroupToAdminsOnly(groupId, true)
                                     }
                                 }, 1000)
                             break       
-                        
-case prefix+'attp':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            try {
-                if (quotedMsgObj == null) {
-                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ttg [ Teks ]*, contoh *${prefix}ttg aku bukan boneka*`, id)
-                        await tobz.sendRawWebpAsSticker(from, `https://api.xteam.xyz/attp?file&text=${body.slice(5)}`)
-                        limitAdd(serial)
-                } else {
-                    await tobz.sendRawWebpAsSticker(from, `https://api.xteam.xyz/attp?file&text=${quotedMsgObj}`)
-                    limitAdd(serial)
-                }
-            } catch(e) {
-                console.log(e)
-                tobz.reply(from, 'Maaf, Server sedang Error')
-            }
-            break
+             case prefix+'attp':
+              if(isReg(obj)) return
+              if(cekumur(cekage)) return
+              if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                     try {
+                          if (quotedMsgObj == null) {
+                          if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}alay [ Teks ]*, contoh *${prefix}alay aku bukan boneka*\n\nAtau reply pesan seseorang lalu ketik ${prefix}alay\n\nFitur ini tidak bisa support emoji dan simbol2 lainnya`, id)   
+                             argz = body.trim().split(' ')
+                            var slicedArgs = Array.prototype.slice.call(argz, 1);
+                             const textattp = await slicedArgs.join(' ')
+                             const resultattp = await axios.get('https://api.xteam.xyz/attp?text=' + textattp)
+                             let stik = resultattp.data.result
+                             tobz.sendRawWebpAsSticker(from, stik, { author: `${autorwm}`, pack: `${packnamewm}` })
+                                 limitAdd(serial)
+                            } else {
+                             const textattp = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                             const resultattp = await axios.get('https://api.xteam.xyz/attp?text=' + textattp)
+                             let stik = resultattp.data.result
+                             
+                             tobz.sendRawWebpAsSticker(from, stik, { author: `${autorwm}`, pack: `${packnamewm}` })
+                    }
+                      } catch(e) {
+                      console.log(e)
+                      tobz.reply(from, 'Maaf, Server sedang Error')
+                     }
+                     break            
+//https://naufalhoster.xyz/textmaker/trigerred?apikey=YOUR_API_KEY&url=https://naufalhoster.xyz/media/example1.jpg
+
         case prefix+'ttg':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -2036,67 +2083,51 @@ case prefix+'attp':
 						limitAdd(serial)
                     })
                 }
-				
                     break
-
-                    case prefix+'emojisticker':
+                        case prefix+'emojistiker':
+                        case prefix+'stikeremoji':
+                        case prefix+'emojisticker':
                         case prefix+'stickeremoji':
                             if(isReg(obj)) return
                             if(cekumur(cekage)) return
                             if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                        if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}emojisticker [Emote]*\nContoh : ${prefix}emojisticker 😭`, id)
-                        const emoji = emojiUnicode(body.slice(14))
-                        await tobz.reply(from, `Wait....`, id)
-                        //console.log(`Creating code emoji => ${emoji}`)
-                        tobz.sendStickerfromUrl(from, `https://api.vhtear.com/emojitopng?code=${emoji}&apikey=${vhtearkey}`)
-                         .catch ((err) => {
-                            console.log(err)
-                            tobz.reply(from, 'Maaf, emoji yang kamu kirim tidak support untuk dijadikan sticker, cobalah emoji lain', id)
-                            tobz.sendText(ownerNumber, 'Sepertinya emojisticker sedang error : ' + err);
-                        })
-                        await limitAdd(serial)
-                        await tobz.sendSeen(from) 
-                        break
-                        case prefix+'emojistiker':
-                        case prefix+'stikeremoji':
-                            if(isReg(obj)) return
-                            if(cekumur(cekage)) return
-                            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
-                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                          if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        //const emoji2 = emojiUnicode(body.slice(13))
+                       // const q = args.join(' ')
+                       try {
+                       if (quotedMsgObj == null) {
                         if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}emojistiker [Emote]*\nContoh : ${prefix}emojistiker 😭`, id)
-                        const emoji2 = emojiUnicode(body.slice(13))
-                        await tobz.reply(from, `Wait....`, id)
-                        //console.log(`Creating code emoji => ${emoji2}`)
-                        tobz.sendStickerfromUrl(from, `https://api.vhtear.com/emojitopng?code=${emoji2}&apikey=${vhtearkey}`)
-                         .catch ((err) => {
-                            console.log(err)
-                            tobz.reply(from, 'Maaf, emoji yang kamu kirim tidak support untuk dijadikan sticker, cobalah emoji lain', id)
-                            tobz.sendText(ownerNumber, 'Sepertinya emojisticker sedang error : ' + err);
-                        })
+                        const emoji = (args[1])
+                        if (emoji.length > 2) return tobz.reply(from, 'Emoji stiker hanya support 1 emot saja.', id)
+                        tobz.reply(from, mess.wait, id)
+                        tobz.sendStickerfromUrl(from, `https://api.vhtear.com/emojitopng?code=${emojiUnicode(emoji)}&apikey=${vhtearkey}`)
+                        } else {
+                            const emoji2 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                            tobz.reply(from, mess.wait, id)
+                        tobz.sendStickerfromUrl(from, `https://api.vhtear.com/emojitopng?code=${emojiUnicode(emoji2)}&apikey=${vhtearkey}`)
+                        }
+                    } catch(e) {
+                        console.log(e)
+                        tobz.reply(from, 'Maaf, emoji yang kamu kirim tidak support untuk dijadikan sticker, cobalah emoji lain', id)
+                       }
                         await limitAdd(serial)
                         await tobz.sendSeen(from) 
                         break
-            case prefix+'fancyfont':
-			if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-			if (args.length === 1) return tobz.reply(from, `Mengubah kalimat menjadi aesthetic atau random\n\nketik ${prefix}fancyfont [teks]`, id)
-		const fancyfont = async (fancyf) => new Promise((resolve, reject) => {
-			axios.get(`${linkkk2}/random/text/fancytext?text=${fancyf}`)
-				.then((ress12) => {
-				resolve(ress12.data.result)
-				})
-			.catch((err) => {
-				reject(err)
-			})
-				})
-				fancyfont(body.slice(10))
-			.then(async(ress12) => {
-				await tobz.reply(from, `${ress12}`, id)
-			})
-			break
-			
+                        case prefix+'emo2stik':
+                                if(isReg(obj)) return
+                                if(cekumur(cekage)) return
+                                if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+                              if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                            //const emoji2 = emojiUnicode(body.slice(13))
+                           // const q = args.join(' ')
+                            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}emojistiker [Emote]*\nContoh : ${prefix}emojistiker 😭`, id)
+                            const emoji = (args[1])
+                            if (emoji.length > 2) return tobz.reply(from, 'Emoji stiker hanya support 1 emot saja.', id)
+                            tobz.reply(from, mess.wait, id)
+                            tobz.sendStickerfromUrl(from, `https://videfikri.com/api/emojitopng/?emojicode=${emojiUnicode(emoji)}`)
+                            await limitAdd(serial)
+                            await tobz.sendSeen(from) 
+                            break
 			case prefix+'alay':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -2123,6 +2154,59 @@ case prefix+'attp':
                 tobz.reply(from, 'Maaf, Server sedang Error')
             }
             break
+
+            case prefix+'kebalik':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            try {
+                if (quotedMsgObj == null) {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}kebalik [ Teks ]*, contoh *${prefix}kebalik aku bukan boneka*\n\nAtau reply pesan seseorang lalu ketik ${prefix}alay\n\nFitur ini tidak bisa support emoji dan simbol2 lainnya`, id)   
+                    argz = body.trim().split(' ')
+                    var slicedArgs = Array.prototype.slice.call(argz, 1);
+                    const kebalek = await slicedArgs.join(' ')
+                    const kebalek1 = await axios.get(`https://videfikri.com/api/hurufterbalik/?query=${kebalek}`)
+                    const kebalek2 = kebalek1.data.result.kata
+                    tobz.reply(from, kebalek2, id) 
+                        limitAdd(serial)
+                } else {
+                    const kebalek3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const kebalek4 = await axios.get(`https://videfikri.com/api/hurufterbalik/?query=${kebalek3}`)
+                    const kebalek5 = kebalek4.data.result.kata
+                    tobz.reply(from, kebalek5, id)
+                    limitAdd(serial)
+                }
+            } catch(e) {
+                console.log(e)
+                tobz.reply(from, 'Maaf, Server sedang Error')
+            }
+            break
+            case prefix+'hitungkata':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                try {
+                    if (quotedMsgObj == null) {
+                        if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}hitungkata [ Teks ]*, contoh *${prefix}hitungkata aku bukan boneka*\n\nAtau reply pesan seseorang lalu ketik ${prefix}alay\n\nFitur ini tidak bisa support emoji dan simbol2 lainnya`, id)   
+                        argz = body.trim().split(' ')
+                        var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        const hitung = await slicedArgs.join(' ')
+                        const hitung1 = await axios.get(`https://videfikri.com/api/jumlahhuruf/?query=${hitung}`)
+                        const hitung2 = hitung1.data.result.jumlah
+                        tobz.reply(from, hitung2, id) 
+                            limitAdd(serial)
+                    } else {
+                        const hitung3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                        const hitungy4 = await axios.get(`https://videfikri.com/api/jumlahhuruf/?query=${hitung3}`)
+                        const hitung5 = hitung.data.result.jumlah
+                        tobz.reply(from, hitung5, id)
+                        limitAdd(serial)
+                    }
+                } catch(e) {
+                    console.log(e)
+                    tobz.reply(from, 'Maaf, Server sedang Error')
+                }
+                break
 			
 			
            // http://lolhuman.herokuapp.com/api/ninja/LoLHuman?apikey=cfecfd54d952c84a0a7f6bfb
@@ -2194,7 +2278,7 @@ case prefix+'attp':
             }
             limitAdd(serial)
             break
-            case prefix+'magernulis1': // BY MFARELS
+            case prefix+'nulis2': // BY MFARELS
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
@@ -2463,12 +2547,75 @@ case prefix+'attp':
                 const getUrli = await uploadImages(mediaData, false)
                 const imgnya = await stickerburn(getUrli)
                 const Sfire = imgnya.result
-                await tobz.sendStickerfromUrl(from, Sfire, { author: `${autorwm}`, pack: `${packnamewm}` })
+                await tobz.sendStickerfromUrl(from, Sfire)
             } else {
                 await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}stickerfire`, id)
             }
             await limitAdd(serial)
             break
+
+            case prefix+'imgtopdf':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    tobz.reply(from, mess.wait, id)
+                    if (isMedia && type === 'image') {
+                        if (args.length === 1) return await tobz.reply(from, `Beri nama untuk pdfnya!\n\nContoh:\n${prefix}imgtopdf penting`, id)
+                        argz = body.trim().split(' ')
+                        var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        const namanya = await slicedArgs.join(' ')
+                        const mediaData = await decryptMedia(message, uaOverride)
+                        const getUrli = await uploadImages(mediaData, false)
+                        const imgnya = await axios.get(`https://naufalhoster.xyz/tools/imagepdf?apikey=${naufalkey}&url=${getUrli}`)
+                        const pdfnya = imgnya.data.result.pdf
+                        await tobz.sendFileFromUrl(from, pdfnya, `${namanya}.pdf`, ``, id)
+                    } else if (quotedMsg && quotedMsg.type == 'image') {
+                        if (args.length === 1) return await tobz.reply(from, `Beri nama untuk pdfnya!\n\nContoh:\n${prefix}imgtopdf penting`, id)
+                        argz = body.trim().split(' ')
+                        var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        const namanya = await slicedArgs.join(' ')
+                        const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                        const getUrli = await uploadImages(mediaData, false)
+                        const imgnya = await axios.get(`https://naufalhoster.xyz/tools/imagepdf?apikey=${naufalkey}&url=${getUrli}`)
+                        const pdfnya = imgnya.data.result.pdf
+                        await tobz.sendFileFromUrl(from, pdfnya, `${namanya}.pdf`, ``, id)
+                    } else {
+                        await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}imgtopdf`, id)
+                    }
+                    await limitAdd(serial)
+                    break
+
+                  /*  case prefix+'':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        tobz.reply(from, mess.wait, id)
+                        if (isMedia && type === 'image') {
+                            if (args.length === 1) return await tobz.reply(from, `Beri nama untuk pdfnya!\n\nContoh:\n${prefix}imgtopdf penting`, id)
+                            argz = body.trim().split(' ')
+                            var slicedArgs = Array.prototype.slice.call(argz, 1);
+                            const namanya = await slicedArgs.join(' ')
+                            const mediaData = await decryptMedia(message, uaOverride)
+                            const getUrli = await uploadImages(mediaData, false)
+                            const imgnya = await axios.get(`https://naufalhoster.xyz/tools/imagepdf?apikey=${naufalkey}&url=${getUrli}`)
+                            const pdfnya = imgnya.data.result.pdf
+                            await tobz.sendFileFromUrl(from, pdfnya, `${namanya}.pdf`, ``, id)
+                        } else if (quotedMsg && quotedMsg.type == 'image') {
+                            if (args.length === 1) return await tobz.reply(from, `Beri nama untuk pdfnya!\n\nContoh:\n${prefix}imgtopdf penting`, id)
+                            argz = body.trim().split(' ')
+                            var slicedArgs = Array.prototype.slice.call(argz, 1);
+                            const namanya = await slicedArgs.join(' ')
+                            const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                            const getUrli = await uploadImages(mediaData, false)
+                            const imgnya = await axios.get(`https://naufalhoster.xyz/tools/imagepdf?apikey=${naufalkey}&url=${getUrli}`)
+                            const pdfnya = imgnya.data.result.pdf
+                            await tobz.sendFileFromUrl(from, pdfnya, `${namanya}.pdf`, ``, id)
+                        } else {
+                            await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}imgtopdf`, id)
+                        }
+                        await limitAdd(serial)
+                        break */
+    
 
             case prefix+'fighter':
                 if(isReg(obj)) return
@@ -2542,7 +2689,7 @@ case prefix+'attp':
                 }
                 await limitAdd(serial)
                 break
-
+//https://naufalhoster.xyz/tools/imagepdf?apikey=YOUR_API_KEY&url=URL
                 case prefix+'memecustom':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -2596,6 +2743,8 @@ case prefix+'ytcomment':
     }
     await limitAdd(serial)
     break
+
+
                         case prefix+'delfile':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -2614,7 +2763,143 @@ case prefix+'ytcomment':
                     }
                     await limitAdd(serial)
                     break
+                    case prefix+'nightbeach':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                        if (isMedia && type === 'image') {
+                            const mediaData = await decryptMedia(message, uaOverride)
+                            const getUrli2 = await uploadImages(mediaData, `${sender}_ph`)
+                            await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/nightbeach/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                        } else if (quotedMsg && quotedMsg.type == 'image') {
+                            const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                            const getUrli2 = await uploadImages(mediaData, `${sender}_ph`)
+                            await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/nightbeach/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                        } else {
+                            await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}delfile`, id)
+                        }
+                        await limitAdd(serial)
+                        break
 
+                    case prefix+'gtav':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                        if (isMedia && type === 'image') {
+                            const mediaData = await decryptMedia(message, uaOverride)
+                            const getUrli2 = await uploadImages(mediaData, false)
+                            await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/gtavposter/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                        } else if (quotedMsg && quotedMsg.type == 'image') {
+                            const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                            const getUrli2 = await uploadImages(mediaData, false)
+                            await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/gtavposter/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                        } else {
+                            await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}delfile`, id)
+                        }
+                        await limitAdd(serial)
+                        break
+
+                        case prefix+'pencil':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                        if (isMedia && type === 'image') {
+                            const mediaData = await decryptMedia(message, uaOverride)
+                            const getUrli2 = await uploadImages(mediaData, `${sender}_ph`)
+                            await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/pencil/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                        } else if (quotedMsg && quotedMsg.type == 'image') {
+                            const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                            const getUrli2 = await uploadImages(mediaData, `${sender}_ph`)
+                            await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/pencil/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                        } else {
+                            await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}delfile`, id)
+                        }
+                        await limitAdd(serial)
+                        break
+                      
+                        case prefix+'3dline':
+                            if(isReg(obj)) return
+                            if(cekumur(cekage)) return
+                            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                            tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                            if (isMedia && type === 'image') {
+                                const mediaData = await decryptMedia(message, uaOverride)
+                                const getUrli2 = await uploadImages(mediaData, false)
+                                await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/3dlinephoto/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                            } else if (quotedMsg && quotedMsg.type == 'image') {
+                                const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                                const getUrli2 = await uploadImages(mediaData, false)
+                                await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/3dlinephoto/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                            } else {
+                                await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}delfile`, id)
+                            }
+                            await limitAdd(serial)
+                            break
+
+                            case prefix+'fbpg':
+                            if(isReg(obj)) return
+                            if(cekumur(cekage)) return
+                            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                            tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                            if (isMedia && type === 'image') {
+                                argz = body.trim().split(' ')
+                                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                                const cia = await slicedArgs.join(' ')
+                                const mediaData = await decryptMedia(message, uaOverride)
+                                const getUrli2 = await uploadImages(mediaData, false)
+                                await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/facebookprof/?urlgbr=${encodeURIComponent(getUrli2)}&text=${cia}`, `awkowa.jpg`, `Nihh`, id)
+                            } else if (quotedMsg && quotedMsg.type == 'image') {
+                                argz = body.trim().split(' ')
+                                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                                const cia = await slicedArgs.join(' ')
+                                const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                                const getUrli2 = await uploadImages(mediaData, false)
+                                await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/facebookprof/?urlgbr=${encodeURIComponent(getUrli2)}&text=${cia}`, `awkowa.jpg`, `Nihh`, id)
+                            } else {
+                                await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}delfile`, id)
+                            }
+                            await limitAdd(serial)
+                            break
+
+                            case prefix+'rainy':
+                                if(isReg(obj)) return
+                                if(cekumur(cekage)) return
+                                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                                tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                                if (isMedia && type === 'image') {
+                                    const mediaData = await decryptMedia(message, uaOverride)
+                                    const getUrli2 = await uploadImages(mediaData, false)
+                                    await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/raindrop/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                                } else if (quotedMsg && quotedMsg.type == 'image') {
+                                    const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                                    const getUrli2 = await uploadImages(mediaData, false)
+                                    await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/raindrop/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                                } else {
+                                    await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}delfile`, id)
+                                }
+                                await limitAdd(serial)
+                                break
+                                case prefix+'customwp':
+                                    if(isReg(obj)) return
+                                    if(cekumur(cekage)) return
+                                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                                    tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                                    if (isMedia && type === 'image') {
+                                        const mediaData = await decryptMedia(message, uaOverride)
+                                        const getUrli2 = await uploadImages(mediaData, `${serial}_ph`)
+                                        await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/customwp/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                                    } else if (quotedMsg && quotedMsg.type == 'image') {
+                                        const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                                        const getUrli2 = await uploadImages(mediaData, `${serial}_ph`)
+                                        await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/customwp/?urlgbr=${encodeURIComponent(getUrli2)}`, `awkowa.jpg`, `Nihh`, id)
+                                    } else {
+                                        await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}delfile`, id)
+                                    }
+                                    await limitAdd(serial)
+                                    break
                     case prefix+'wasted':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -2651,12 +2936,46 @@ case prefix+'ytcomment':
                     const imgnya = await axios.get(`https://naufalhoster.xyz/tools/photo_fire?apikey=${naufalkey}&url=${encodeURIComponent(getUrli)}`)
                     const well = imgnya.data.result.image
                     await tobz.sendFileFromUrl(from, well, `akwoawk.jpg`, `Nihh`, id)
-                } else {
+                }  else {
                     await tobz.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan ${prefix}firee`, id)
                 }
                 await limitAdd(serial)
                 break
-
+               /* case prefix+'sfiree':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                    if (quotedMsg && quotedMsg.type == 'sticker') {
+                    const mediaData = await decryptMedia(quotedMsg)
+                    const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`
+                    await tobz.sendFile(from, imageBase64, 'imagesticker.jpg', 'Nih', id)
+                    const mediaData = await decryptMedia(message, uaOverride)
+                    const mediaData2 = await decryptMedia(imageBase642)
+                    const getUrli = await uploadImages(mediaData2, false)
+                    const imgnya = await axios.get(`https://naufalhoster.xyz/tools/photo_fire?apikey=${naufalkey}&url=${encodeURIComponent(getUrli)}`)
+                    const well = imgnya.data.result.image
+                    await tobz.sendFileFromUrl(from, well, `akwoawk.jpg`, `Nihh`, id)
+                    
+            }
+            break */
+                case prefix+'wastedgtav':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                    //argz = body.trim().split(' ')
+                    //var slicedArgs = Array.prototype.slice.call(argz, 1);
+                    //const text1 = await slicedArgs.join(' ')
+                    //var slicedArgs2 = Array.prototype.slice.call(argz, 2);
+                    //const text2 = await slicedArgs2.join(' ') 
+                    argz = body.trim().split('|')
+                    const text1 = argz[1] 
+                    const text2 = argz[2]
+                    const imgnya = `https://naufalhoster.xyz/textmaker/gta_original?apikey=${naufalkey}&text1=${text1}&text2=${text2}`
+                    tobz.sendFileFromUrl(from, imgnya, ``, `Nihh`, id)
+                    await limitAdd(serial)
+                    break
                 case prefix+'distord':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -2688,7 +3007,7 @@ case prefix+'ytcomment':
                 const lebarimg = argz[1] 
                 const tinggiimg = argz[2]
                 if (args.length === 1) return await tobz.reply(from, `Kirim Gambar lalu beri caption *${prefix}crop |Lebar|Tinggi|*\n\n*Contoh :*\n*${prefix}crop |720|720*`, id) 
-                if (args.length === 1) return await tobz.reply(from, `Kirim Gambar lalu beri caption *${prefix}crop |Lebar|Tinggi|*\n\n*Contoh :*\n*${prefix}crop |720|720*`, id) 
+                //if (args.length === 1) return await tobz.reply(from, `Kirim Gambar lalu beri caption *${prefix}crop |Lebar|Tinggi|*\n\n*Contoh :*\n*${prefix}crop |720|720*`, id) 
                 tobz.reply(from, mess.wait, id)
                 if (isMedia && type === 'image') {
                     const mediaData = await decryptMedia(message, uaOverride)
@@ -2762,7 +3081,7 @@ case prefix+'ytcomment':
             
             case prefix+'televisi':
             if(isReg(obj)) return
-            if(cekumur(cekage)) return
+            if(cekumur(cekage)) return 
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             tobz.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
             if (isMedia && type === 'image') {
@@ -2827,7 +3146,7 @@ case prefix+'ytcomment':
              const silk = body.slice(5)
              if (!silk) return tobz.reply(from, `Kirim perintah ${prefix}juwen [teks]\n\nContoh ${prefix}silk juwen`, id)
              tobz.reply(from, '_Tunggu sebentar sedang di proses_', id)
-             await tobz.sendFileFromUrl(from, `hhttps://api.vhtear.com/silktext?text=${silk}&apikey=${vhtearkey}`,`${silk}.jpg`,`Nih Gambarnya`, id)        
+             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/silktext?text=${silk}&apikey=${vhtearkey}`,`${silk}.jpg`,`Nih Gambarnya`, id)        
              break 			 
 			 case prefix+'sliding':
 			if(isReg(obj)) return
@@ -2838,7 +3157,7 @@ case prefix+'ytcomment':
              const sliding = body.slice(9)
              if (!sliding) return tobz.reply(from, `Kirim perintah ${prefix}ttpgif [teks]\n\nContoh ${prefix}ttpgif`, id)
              tobz.reply(from, 'Tunggu sebentar sedang di proses...', id)
-             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/slidingtext?text=${sliding}&apikey=${vhtearkey}`) .catch(() => tobz.reply(from, 'Ada yang error', id))
+             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/slidingtext?text=${sliding}&apikey=${vhtearkey}`, ``, `Nihh`, id) .catch(() => tobz.reply(from, 'Ada yang error', id))
               await limitAdd(serial)
              break  
              case prefix+'$2':
@@ -2908,7 +3227,7 @@ case prefix+'ytcomment':
              const glow = body.slice(6)
              if (!glow) return tobz.reply(from, `Kirim perintah ${prefix}glowmaker [teks]\n\nContoh ${prefix}glowmaker Juwen`, id)
              tobz.reply(from, '_Tunggu sebentar sedang di proses_', id)
-             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/glowtext?text=${glow}&apikey=${vhtearkey}`,`${glow}.jpg`,`Nih Gambarnya`, id)        
+             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/glowtext?text=${glow}&apikey=${vhtearkey}`, `${glow}.jpg`, `Nih Gambarnya`, id)        
              break   
 
 //
@@ -2921,8 +3240,51 @@ case prefix+'ytcomment':
              const romance = body.slice(7)
              if (!romance) return tobz.reply(from, `Kirim perintah ${prefix}romance [teks]\n\nContoh ${prefix}romance Juwen`, id)
              tobz.reply(from, '_Tunggu sebentar sedang di proses_', id)
-             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/romancetext?text=${romance}&apikey=${vhtearkey}`,`${romance}.jpg`,`Nih Gambarnya`, id)        
-             break   				
+             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/romancetext?text=${romance}&apikey=${vhtearkey}`, `${romance}.jpg`, `Nih Gambarnya`, id)        
+             break  
+
+             case prefix+'coffecup':
+			if(isReg(obj)) return
+            if(cekumur(cekage)) return
+             //if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis!*\nKetik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+             await limitAdd(serial)
+             argz = body.trim().split(' ')
+             var slicedArgs = Array.prototype.slice.call(argz, 1);
+             const coffeecup = await slicedArgs.join(' ')
+             if (!coffeecup) return tobz.reply(from, `Kirim perintah ${prefix}coffeecup [teks]\n\nContoh ${prefix}coffeecup Juwen`, id)
+             tobz.reply(from, mess.wait, id)
+             await tobz.sendFileFromUrl(from, `https://videfikri.com/api/textmaker/coffeecup2/?text=${coffeecup}`, `${coffeecup}.jpg`, `Nih Gambarnya`, id)        
+             break  
+
+              case prefix+'starwars':
+			if(isReg(obj)) return
+            if(cekumur(cekage)) return
+             //if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis!*\nKetik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+             await limitAdd(serial)
+             argz = body.trim().split(' ')
+             var slicedArgs = Array.prototype.slice.call(argz, 1);
+             const starwars = await slicedArgs.join(' ')
+             if (!starwars) return tobz.reply(from, `Kirim perintah ${prefix}starwars [teks]\n\nContoh ${prefix}starwars Juwen`, id)
+             tobz.reply(from, mess.wait, id)
+             await tobz.sendFileFromUrl(from, `https://naufalhoster.xyz/textmaker/starwars?apikey=${naufalkey}&text=${starwars}`, `${starwars}.jpg`, `Nih Gambarnya`, id)        
+             break  
+             //matchingajaa&text=Star%0A1Wars
+             
+             case prefix+'watermaker':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                 //if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+                 if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis!*\nKetik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                 await limitAdd(serial)
+                 argz = body.trim().split(' ')
+                 var slicedArgs = Array.prototype.slice.call(argz, 1);
+                 const watermaker = await slicedArgs.join(' ')
+                 if (!watermaker) return tobz.reply(from, `Kirim perintah ${prefix}watermaker [teks]\n\nContoh ${prefix}watermaker Juwen`, id)
+                 tobz.reply(from, '_Tunggu sebentar sedang di proses_', id)
+                 await tobz.sendFileFromUrl(from, `https://api.vhtear.com/water_maker?text=${watermaker}&apikey=${vhtearkey}`, `${watermaker}.jpg`, `Nih Gambarnya`, id)        
+                 break  
 
              case prefix+'ninja':
                 if (args.length === 0) return tobz.reply(from, `Kirim perintah *${prefix}ninja [ |Teks1|Teks2 ]*, contoh *${prefix}ninja |aqulzz|xinz*`, id)
@@ -2939,7 +3301,7 @@ case prefix+'ytcomment':
                 break
 
                 
-//https://api.vhtear.com/water_maker?text=Veza%20Hani&apikey=V3456hG822937HjHAGS
+//Veza%20Hani&apikey=V3456hG822937HjHAGS
             
         case prefix+'glitch': 
 		if(isReg(obj)) return
@@ -3047,25 +3409,133 @@ case prefix+'ytcomment':
                 const cekapi6 = cekapi1.data.statistik.total_hit
                 const cekapi7 = cekapi1.data.account.nama
                 const cekapi8 = cekapi1.data.account.akses
-                tobz.reply(from, `${monospace(`INFO APIKEY NAUFALHOSTER\n\n[ INFO AKUN ]\n\nNama Akun: ${cekapi7}\nAkses: ${cekapi8}\nTanggal Daftar: ${cekapi2}\nKadaluwarsa: ${cekapi3}\n\n----------------------\n\n[ STATISTIK ]\n\nHit Harian: ${cekapi4}\nLimit: ${cekapi5}\nTotal Hit: ${cekapi6}`)}`, id)
-                break
+                const cekapi9 =  `${monospace(
+`INFO APIKEY NAUFALHOSTER
+
+[ INFO AKUN ]
+
+Nama Akun: ${cekapi7}
+Akses: ${cekapi8}
+Tanggal Daftar: ${cekapi2}
+Kadaluwarsa: ${cekapi3}
+
+----------------------
+
+[ STATISTIK ]
+
+Hit Harian: ${cekapi4}
+Limit: ${cekapi5}
+Total Hit: ${cekapi6}
+
+https://naufalhoster.xyz`)}`
+tobz.reply(from, cekapi9, id) 
+    break
     
            
-            case prefix+'pubglogo':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubglogo [teks]*\nContoh : *${prefix}pubglogo ZXCBOT*`, id)
-            await tobz.reply(from, mess.wait, id)
-            argz = body.trim().split('|')
-            const logopubg1 = argz[1] 
-            const logopubg2 = argz[2]
-            const pubgs1 = await axios.get(`https://tobz-api.herokuapp.com/api/photooxy?theme=pubg&text1=${logopubg1}&text2=${logopubg2}&apikey=${tobzkey}`)
-            const pubgs2 = pubgs1.data
-            tobz.sendFileFromUrl(from, pubgs2.result,`pubglogo.jpg`, `Nih Gambarnya`, id)
-            await limitAdd(serial)
-            break
-            case prefix+'overwatchlg':
+                case prefix+'email':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    //if (!isVip) return tobz.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}email  |Namaserial|TujuanEmail|NamaPenerima|Subjek|IsiPesan*, contoh *${prefix}email  |XINZ|xinzzzz.00@gmail.com|Aqulzz|Minta VIP|Bang minta VIP Bang*`, id)
+                    argz = body.trim().split('|')
+                    if(argz.length === 6){
+                    const email = await axios.get(`https://naufalhoster.xyz/tools/email_sender?apikey=${naufalkey}&sender=${argz[1]}&to=${argz[2]}&penerima=${argz[3]}&subject=${argz[4]}&pesan=${argz[5]}`)
+                    const { status, result } = email.data
+                        if(status == 'sukses') {
+                            tobz.reply(from, `Sukses bang`, id)
+                        }
+                    } else {
+                    tobz.reply(from, `Masukan format dengan benar`, id)
+                    }
+                    break
+                case prefix+'pubg':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubg [|text1|text2]*, contoh *${prefix}pubg |text1|text2*`, id)
+                    argz = body.trim().split('|')
+                    if (argz.length === 3) {
+                        tobz.reply(from, mess.wait, id)
+                        const pubg = argz[1]
+                        const pubg1 = argz[2]
+                        tobz.sendFileFromUrl(from, `https://naufalhoster.xyz/textmaker/pubg?apikey=${naufalkey}&text1=${pubg}&text2=${pubg1}`)
+                        await limitAdd(serial)
+                    } else {
+                        await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}pubg [|text1|text2]*, contoh *${prefix}pubg |text1|text2*`, id)
+                    }
+                    
+                    break
+                case prefix+'football':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}football [|nama|nomor]*, contoh *${prefix}football |xinz|17*`, id)
+                    argz = body.trim().split('|')
+                    if (argz.length === 3) {
+                        tobz.reply(from, mess.wait, id)
+                        const ftbl = argz[1]
+                        const pung = argz[2]
+                        tobz.sendFileFromUrl(from, `https://naufalhoster.xyz/textmaker/football?apikey=${naufalkey}&text1=${ftbl}&text2=${pung}`, `akwokwa.jpg`, `Nihh`, id)
+                        await limitAdd(serial)
+                    } else {
+                        await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}football [|nama|nomor]*, contoh *${prefix}football |xinz|17*`, id)
+                    }
+                    break
+                case prefix+'tweettrump':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}tweettrump text*, contoh *${prefix}tweettrump testtt*`, id)
+                    tobz.reply(from, mess.wait, id)
+                    argz = body.trim().split(' ')
+                    var slicedArgs = Array.prototype.slice.call(argz, 1);
+                    const tweetnya = await slicedArgs.join(' ')
+                    tobz.sendFileFromUrl(from, `https://nekobot.xyz/api/imagegen?type=trumptweet&text=${tweetnya}&raw=1`, `aowkaow.jpg`, `Nihh`, id)
+                    limitAdd(serial)
+                    break
+                case prefix+'changemymind':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}changemymind text*, contoh *${prefix}changemymind testtt*`, id)
+                    tobz.reply(from, mess.wait, id)
+                    argz = body.trim().split(' ')
+                    var slicedArgs = Array.prototype.slice.call(argz, 1);
+                    const mymind = await slicedArgs.join(' ')
+                    tobz.sendFileFromUrl(from, `https://nekobot.xyz/api/imagegen?type=changemymind&text=${mymind}&raw=1`, `awkoawkw.jpg`, `Change my mind 🙄`, id)
+                    limitAdd(serial)
+                    break
+                case prefix+'tweet':
+                    if(isReg(obj)) return
+                    if(cekumur(cekage)) return
+                    if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}tweet [|username|text]*, contoh *${prefix}tweet |juwennn|gg gaming gais*`, id)
+                    argz = body.trim().split('|')
+                    if (argz.length === 3) {
+                        tobz.reply(from, mess.wait, id)
+                        const usertw = argz[1]
+                        const texttw = argz[2]
+                        tobz.sendFileFromUrl(from, `https://nekobot.xyz/api/imagegen?type=tweet&username=${usertw}&text=${texttw}&raw=1`, `akowkwao.jpg`, `Nihh`, id)
+                        await limitAdd(serial)
+                    } else {
+                        await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}tweet [|username|text]*, contoh *${prefix}tweet |juwennn|gg gaming gais*`, id)
+                    }
+                    break
+                    
+
+                    case prefix+'harrypotter':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubglogo [teks]*\nContoh : *${prefix}pubglogo ZXCBOT*`, id)
+                tobz.reply(from, mess.wait, id)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const harryp = await slicedArgs.join(' ')
+                await tobz.sendFileFromUrl(from, `https://naufalhoster.xyz/textmaker/harrypotter?apikey=${naufalkey}&text=${harryp}`, `harrypotter.jpg`, `Nih Gambarnya`, id)
+                await limitAdd(serial)
+                break
+            case prefix+'overwatchlg': //
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
                 if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
@@ -3077,6 +3547,23 @@ case prefix+'ytcomment':
                 const overwatch1 = await axios.get(`https://tobz-api.herokuapp.com/api/photooxy?theme=overwatch&text=${overwatch}&apikey=${tobzkey}`)
                 const overwatch2 = overwatch1.data
                 tobz.sendFileFromUrl(from, overwatch2.result,`pubglogo.jpg`, `Nih Gambarnya`, id)
+                await limitAdd(serial)
+                break
+                case prefix+'ytm3': //=https://youtu.be/Iody_E2xujo
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubglogo [teks]*\nContoh : *${prefix}pubglogo ZXCBOT*`, id)
+                tobz.reply(from, mess.wait, id)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const linknya = await slicedArgs.join(' ')
+                const linknya1 = await axios.get(`https://api.vhtear.com/ytmp3?query=${linknya}&apikey=${vhtearkey}`)
+                const linknya2 = linknya1.data.result
+                const infonya =  `*「 YOUTUBE MP3 」*\n\n*Judul:* ${linknya2.title}\n*Size:* ${linknya2.size}\n*Durasi:* ${linknya2.duration}\n*Ext:* ${linknya2.ext}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                if(Number(linknya2.size.split(' MB')[0]) >= 10.00) return tobz.sendFileFromUrl(from, linknya2.image, `thumb.jpg`, `*「 YOUTUBE MP3 」*\n\n• *Judul* : ${linknya2.title}\n• *Filesize* : ${linknya2.size}\n\n_Maaf, Durasi audio melebihi 10 MB. Silahkan download audio melalui link dibawah_.\n${linknya2.mp3}`, id)
+                tobz.sendFileFromUrl(from, linknya2.image, `ytmp3.jpg`, infonya, id)
+                tobz.sendFileFromUrl(from, linknya2.mp3, ``, ``, id)
                 await limitAdd(serial)
                 break
            case prefix+'nulis':
@@ -3554,19 +4041,21 @@ case prefix+'ytcomment':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pornhub [ |Teks1|Teks2 ]*, contoh *${prefix}pornhub |juwen|keren*`, id)
-            argz = body.trim().split('|')
-            if (argz.length >= 2) {
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pornhub |Teks1|Teks2 *, contoh *${prefix}pornhub |juwen|keren*`, id)
+           // argz = body.trim().split('|')
+            //if (argz.length >= 2) {
+                argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const lpornhubb = await slicedArgs.join(' ')
+                if (!lpornhubb.includes('|')) return await tobz.reply(from, `Kirim perintah *${prefix}pornhub teks 1|teks 2*`, id)
+                const lpornhub = lpornhubb.split('|')[0]
+                const lpornhub2 = lpornhubb.split('|')[1]
                 tobz.reply(from, mess.wait, id)
-                const lpornhub = argz[1]
-                const lpornhub2 = argz[2]
                 if (lpornhub.length > 10) return tobz.reply(from, '*Teks1 Terlalu Panjang!*\n_Maksimal 10 huruf!_', id)
-                if (lpornhub2.length > 10) return tobz.reply(from, '*Teks2 Terlalu Panjang!*\n_Maksimal 10 huruf!_', id)
-                tobz.sendFileFromUrl(from, `https://api.vhtear.com/pornlogo?text1=${lpornhub}&text2=${lpornhub2}&apikey=${vhtearkey}`, 'blackpink.jpg', 'Nih Gambarnya', id)
+                if (lpornhub2.length > 10) return tobz.reply(from, '*Teks2 Terlalu Panjang!*\n_Maksimal 10 huruf!_', id)//
+                tobz.sendFileFromUrl(from, `https://api.vhtear.com/pornlogo?text1=${lpornhub}&text2=${lpornhub2}&apikey=${vhtearkey}`, 'pornlogo.jpg', 'Nih Gambarnya', id)
                 await limitAdd(serial)
-            } else {
-                await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}pornhub [ |Teks1|Teks2 ]*, contoh *${prefix}pornhub |juwen|keren*`, id)
-            }
+
             break
             case prefix+'logoml':
                 if(isReg(obj)) return
@@ -3578,7 +4067,7 @@ case prefix+'ytcomment':
                     tobz.reply(from, mess.wait, id)
                     const heronya = argz[1]
                     const namanya = argz[2]
-                    tobz.sendFileFromUrl(from, `https://api.vhtear.com/logoml?hero=${heronya}&text=${namanya}&apikey=${vhtearkey}`, 'blackpink.jpg', 'Nih Gambarnya', id)
+                    tobz.sendFileFromUrl(from, `https://api.vhtear.com/logoml?hero=${heronya}&text=${namanya}&apikey=${vhtearkey}`, 'awokaowak.jpg', 'Nih Gambarnya', id)
                     await limitAdd(serial)
                 } else {
                     await tobz.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}pornhub [ |Teks1|Teks2 ]*, contoh *${prefix}pornhub |juwen|keren*`, id)
@@ -3595,15 +4084,10 @@ case prefix+'ytcomment':
                         const quer = body.slice(7).toString()
                         tobz.reply(from, mess.wait, id)
                         try {
-                            //tobz.reply(from, '_Sedang mencari data..._', id)
                             const jsonsercmu = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(quer)}`).json()
-                            // console.log(jsonsercmu)
-                            // if (!resmus.ok) throw new Error(`unexpected response ${resmus.statusText}`)
-                            // const jsonsercmu = await resmus.json()
                             const { result } = await jsonsercmu
                             let berhitung = 1
                             let xixixi = `*Hasil pencarian from ${quer}*\n\n_Note : Apabila kesusahan mengambil data id, untuk download musik tag pesan ini dan berikan perintah : *${prefix}getmusik urutan* contoh : *${prefix}getmusik 2*_\n`
-                            //console.log(result)
                             for (let i = 0; i < result.length; i++) {
                                 xixixi += `\n═════════════════\n\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Channel* : ${result[i].author}\n*Durasi* : ${result[i].timestamp}\n*Perintah download* :\n_${prefix}getmusik ${result[i].id}_\n`
                             }
@@ -3859,31 +4343,33 @@ case prefix+'ytcomment':
                console.log(err)
            }
            break 
-                                    case prefix+'bass':
-                                        //if (!isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
-                                       // if (isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
-                                        //if (!isGroupMsg) return tobz.reply(from, menuPriv, id)
-                                        if (isQuotedAudio) {
-                                            let dB = 58
-                                            let freq = 75
-                                            // if (this.args[1]) dB = clamp(parseInt(this.args[1]) || 20, 0, 50)
-                                            // if (this.args[2]) freq = clamp(parseInt(this.args[2]) || 20, 20, 500)
-                                            console.log(color('[WAPI]', 'green'), 'Downloading and decrypt media...')
-                                            const mediaData = await decryptMedia(quotedMsg)
-                                            const bass = await stream2Buffer(write => {
-                                                ffmpeg(buffer2Stream(mediaData))
-                                                    .audioFilter('equalizer=f=' + freq + ':width_type=o:width=2:g=' + dB)
-                                                    .format('mp3')
-                                                    .on('start', commandLine => console.log(color('[FFmpeg]'), commandLine))
-                                                    .on('progress', progress => console.log(color('[FFmpeg]'), progress))
-                                                    .on('end', () => console.log(color('[FFmpeg]'), 'Processing finished!'))
-                                                    .stream(write)
-                                            })
-                                           tobz.sendPtt(from, baseURI(bass, 'audio/mp3'), id)
+
+            case prefix+'bass':
+                            //if (!isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
+                            // if (isAdmin) return tobz.reply(from, `Udah bang, nanti error :")`, id)
+                            //if (!isGroupMsg) return tobz.reply(from, menuPriv, id)
+                            if (isQuotedAudio) {
+                                let dB = 58
+                                let freq = 75
+                            // if (this.args[1]) dB = clamp(parseInt(this.args[1]) || 20, 0, 50)
+                            // if (this.args[2]) freq = clamp(parseInt(this.args[2]) || 20, 20, 500)
+                                console.log(color('[WAPI]', 'green'), 'Downloading and decrypt media...')
+                                const mediaData = await decryptMedia(quotedMsg)
+                                const bass = await stream2Buffer(write => {
+                                    ffmpeg(buffer2Stream(mediaData))
+                                    .audioFilter('equalizer=f=' + freq + ':width_type=o:width=2:g=' + dB)
+                                    .format('mp3')
+                                    .on('start', commandLine => console.log(color('[FFmpeg]'), commandLine))
+                                    .on('progress', progress => console.log(color('[FFmpeg]'), progress))
+                                    .on('end', () => console.log(color('[FFmpeg]'), 'Processing finished!'))
+                                    .stream(write)
+                                         })
+                                tobz.sendPtt(from, baseURI(bass, 'audio/mp3'), id)
                                         } else {
-                                            tobz.reply(from, `Hanya tag data audio!`, id)
+                                    tobz.reply(from, `Hanya tag data audio!`, id)
                                         }
                                         break
+
                                         case prefix+'tomp3':
                             if (isMedia || isQuotedVideo){
                                 if (mimetype === 'video/mp4') {
@@ -3975,7 +4461,7 @@ case prefix+'ytcomment':
                                             console.log(err)
                                             tobz.reply(from, 'Ups, ada yang error!', id)
                                         }
-                                        break         
+                                        break        
                                     case prefix+'getvideo':
                                      case prefix+'getvidio':
                                         if(isReg(obj)) return
@@ -4003,7 +4489,7 @@ case prefix+'ytcomment':
                                                     axios.get(`https://tinyurl.com/api-create.php?url=${dl_link}`)
                                                     .then((a) => {
                                                     if (Number(filesize) >= 40000) return tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${filesizeF}\n*Link* : ${a.data}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_`, id)
-                                                    const captions = `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Size* : ${filesizeF}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                                                    const captions = `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP4\n*Size* : ${filesizeF}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
                                                     tobz.sendFileFromUrl(from, thumb, `thumb.jpg`, captions, id)
                                                     tobz.sendFileFromUrl(from, dl_link, `${title}.mp4`, `Video berhasil terkirim`, id).catch(() => tobz.reply(from, mess.error.Yt3, id))
                                                 })
@@ -4218,7 +4704,7 @@ Total Pengguna yang telah terdaftar ${pendaftar.length}
 *Model Perangkat* : _${device_model}_
 *OS Build Number* : _${os_build_number}_`, id)
             break     */     
-        case prefix+'runtime':
+/*    case prefix+'runtime':
                 const tanda = '```'
                 const titit1 = moment().millisecond()
                 const timestamp = speed();
@@ -4244,10 +4730,25 @@ ${titit1} Ms
     
 Running : 
 ${format(uptime)}
-    `)}`, id)
+    `)}`, id) */
                 break  
             case prefix+'statswa':
             case prefix+'swa':
+                const titit1 = moment().millisecond()
+                const timestamp = speed();
+                const latensi = speed() - timestamp
+                function format(seconds){
+                function pad(s){
+                return (s < 10 ? '0' : '') + s;
+                }
+                var hours = Math.floor(seconds / (60*60));
+                var minutes = Math.floor(seconds % (60*60) / 60);
+                var seconds = Math.floor(seconds % 60);
+    
+return pad(hours) + ' Jam, ' + pad(minutes) + ' Menit, ' + pad(seconds) + ' Detik';
+                  }
+    
+                var uptime = process.uptime();  
                 const loadedMsg = await tobz.getAmountOfLoadedMessages()
                 const chatIds = await tobz.getAllChatIds()
                 const groups = await tobz.getAllGroups()
@@ -4259,7 +4760,7 @@ ${format(uptime)}
                 const MyPhone = await tobz.getMe()
                 const { battery, plugged, phone } = MyPhone
                 const { wa_version, mcc, mnc, os_version, device_manufacturer, device_model, os_build_number } = phone
-                    tobz.reply(from, `${monospace(`
+tobz.reply(from, `${monospace(`
 ❏ 『 𝐌𝐄𝐒𝐒𝐀𝐆𝐄 𝐁𝐎𝐓 』 
 
 ${loadedMsg} : Pesan Masuk
@@ -4289,7 +4790,18 @@ MNC : ${mnc}
 Versi OS : ${os_version}
 Merk HP : ${device_manufacturer}
 Versi HP : ${device_model}
-    `)}`, id)
+
+---------------------
+❏  『 𝐒𝐏𝐄𝐄𝐃 』 
+${latensi.toFixed(4)} Detik   
+
+❏  『 𝐋𝐀𝐓𝐄𝐍𝐂𝐘 』 
+${titit1} Ms
+
+❏  『 𝐑𝐔𝐍𝐍𝐈𝐍𝐆 』 
+${format(uptime)}
+    `)}`
+    , id)
                 break
 				
         case prefix+'groupinfo' :
@@ -4422,7 +4934,7 @@ ${desc}`, id)
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}shopee [ Query ]*, Contoh : *${prefix}shopee HP Samsul a20*`)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}shopee [ Query ]*, Contoh : *${prefix}shopee HP Samsul a20*`, id)
             const shopek = body.slice(8)
             tobz.reply(from, mess.wait, id)
             try {
@@ -4443,33 +4955,54 @@ ${desc}`, id)
             if(cekumur(cekage)) return
 			const dark = await axios.get('http://api.zeks.xyz/api/darkjokes?apikey=apivinz')
 			tobz.sendFileFromUrl(from, dark.data.result, 'dark.jpg', '', id)
-			break
-            case prefix+'igstory':
-            if(isReg(obj)) return
+
+
+                case prefix+'igstory':
+                    if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}shopee [ Query ]*, Contoh : *${prefix}shopee HP Samsul a20*`)
-            const igs = body.slice(4)
-            tobz.reply(from, mess.wait, id)
-            try {
-                const dataplai = await axios.get(`https://api.vhtear.com/igstory?query=${igs}&count=5&apikey=${vhtearkey}`)
-                const dataplay = dataplai.data.result
-                 let igs2 = `*「 SHOPEE 」*\n\n*Hasil Pencarian : ${igs}*\n`
-                for (let i = 0; i < dataplay.story.length; i++) {
-                    igs2 += `\n─────────────────\n\n• *Tipe* : ${dataplay.itemlist[i].type}\n• Link* : ${dataplay.itemlist[i].urlDownload}`
-                }
-                await tobz.repky(from, igs2, id)
-                await limitAdd(serial)
-            } catch (err){
-                console.log(err)
-            }
-            break
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}igstory [ username ]*\nContoh : *${prefix}igstory spotify*`, id)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const userignya = await slicedArgs.join(' ') 
+                await tobz.reply(from, mess.wait, id);
+                try {
+                    const wanu = await axios.get(`https://api.vhtear.com/igstory?query=${userignya}&apikey=${vhtearkey}`)
+                    const anjay = wanu.data.result.story
+                    for (let i = 0; i < anjay.itemlist.length; i++){
+                    tobz.sendFileFromUrl(from, anjay.itemlist[i].urlDownload, ``, `Berhasil mendapatkan story dari *${userignya}*`, id)
+                    }
+                        } catch (e){
+                        console.log(e)
+                        tobz.reply(from, 'Mungkin user tersebut belum membuat story atau mungkin storynya di privasi.', id)
+                        }
+            break 
 
+            case prefix+'gimage':
+                if(isReg(obj)) return
+        if(cekumur(cekage)) return
+        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+        if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}igstory [ username ]*, Contoh : *${prefix}igstory spotify*`)
+            argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const gimage = await slicedArgs.join(' ') 
+            await tobz.reply(from, mess.wait, id);
+            try {
+                const wanu2 = await axios.get(`https://naufalhoster.xyz/dl/googleimages?apikey=${naufalkey}&query=${gimage}`)
+                const anjay2 = wanu2.data
+                for (let i = 0; i < anjay2.result.length; i++){
+                tobz.sendFileFromUrl(from, anjay2.result[i].url, ``, `Berhasil mendapatkan gambar *${gimage}*`, id)
+                }
+                    } catch (e){
+                    console.log(e)
+                    tobz.reply(from, 'Mungkin user tersebut belum membuat story atau mungkin storynya di privasi.', id)
+                    }
+        break 
             case prefix+'lk21':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}shopee [ Query ]*, Contoh : *${prefix}shopee HP Samsul a20*`)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}lk21 [ Query ]*, Contoh : *${prefix}lk21 cars*`)
             const lk21111 = body.slice(5)
             tobz.reply(from, mess.wait, id)
             try {
@@ -4492,14 +5025,24 @@ ${desc}`, id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}shopee [ Query ]*, Contoh : *${prefix}shopee HP Samsul a20*`)
             const xxx2s = body.slice(10)
             tobz.reply(from, mess.wait, id)
-            try {
-                const dataplai = await axios.get(`https://api.vhtear.com/xxxsearch?query=${xxx2s}&apikey=${vhtearkey}`)
+           /* let berhitung = 1
+            let xixixi = `\n\n*Hasil Pencarian : ${querXXX}*\n\n─────────────────\n\nKetik #getxxx [angka] untuk mengambil ID, Contoh : #getxxx 2\n`
+            for (let i = 0; i < data.length; i++) {
+                xixixi += `\n─────────────────\n\n*Urutan* : ${berhitung+i}\n*Title* : ${data[i].title}\n*Duration* : ${data[i].duration}\n*Perintah download* : *${prefix}getxxx ${data[i].url}*\n` */
+            try { //${encodeURIComponent(querXXX)}
+                const dataplai = await axios.get(`https://api.vhtear.com/xxxsearch?query=${encodeURIComponent(xxx2s)}&apikey=${vhtearkey}`)
                 const dataplay = dataplai.data.result
-                 let xxx1s = `*「 XXX SEARCHING 」*\n\n*Hasil Pencarian : ${xxx2s}*\n`
+                let berhitung = 1
+                 let xxx1s = `*「 XVIDEOS 」*\n\n*Hasil Pencarian : ${xxx2s}*\n`
                 for (let i = 0; i < dataplay.data.length; i++) {
-                    xxx1s += `\n─────────────────\n\n• *Judul* : ${dataplay.data[i].title}\n• *Durasi* : ${dataplay.data[i].duration}\n• *Link*:\n ${dataplay.data[i].url}`
-                }
-                tobz.reply(from, xxx1s, id)
+                    xxx1s += `\n══════════════════\n\n• *Urutan* : ${berhitung+i}\n• *Judul* : ${dataplay.data[i].title}\n• *Durasi* : ${dataplay.data[i].duration}\n• *Perintah download* : *${prefix}getxxx ${dataplay.data[i].url}*`
+            }
+            xxx1s += `\n\n`
+        for (let ii = 0; ii < dataplay.data.length; ii++) {
+            xxx1s += `(#)${dataplay.data[ii].url}`
+        }
+        await tobz.reply(from, xxx1s, id)
+        //await tobz.sendFileFromUrl(from, dataplay.data[0].image, 'thumbxxx.jpg', xxx1s, id)
                 await limitAdd(serial)
             } catch (err){
                 console.log(err)
@@ -4703,16 +5246,6 @@ ${desc}`, id)
                         .catch((err) => {
                             tobz.reply(from, `Maaf, Sepertinya Link Tidak Berhasil Di Bypass\n` + err, id)
                         })
-        case prefix+'quoterandom' :
-        case prefix+'quote' :
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            
-            await limitAdd(serial)
-            tobz.sendText(from, quotedd())
-            break
         case prefix+'tts':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -4740,28 +5273,50 @@ ${desc}`, id)
 		    if(isReg(obj)) return
             if(cekumur(cekage)) return		
                     if (!isGroupMsg) return tobz.reply(from, 'perintah ini hanya dapat digunakan di dalam grup!', id)
-                    if (args.length === 1) {	  
+                    if (args.length === 0) {	  
 					{   const mem = groupMembers
                         const randMem = mem[Math.floor(Math.random() * mem.length)];
                         const sapaa = `*[ RANDOM TAG ]*\n\nDari    :  @${sender.id.replace('@c.us','')}\nUntuk :  @${randMem}\n\nHaii ~ 👋`
                         await tobz.sendTextWithMentions(from, sapaa)
                         await tobz.sendText(from, `Untuk memakai pesan silahkan gunakan ${prefix}randomtag pesan kalian`)
-					} 
-                        }else if (!quotedMsg) {
-                        if (!isGroupMsg) return tobz.reply(from, 'perintah ini hanya dapat digunakan di dalam grup!', id)
-                    if (args.length == 1) return tobz.reply(from, 'Pesan tidak boleh kosong!', id) 
-					{   argz = body.trim().split(' ')
+                    }
+                        }else if (!quotedMsg) {   
+                        argz = body.trim().split(' ')
                         var slicedArgs = Array.prototype.slice.call(argz, 1);
                         const pesan = await slicedArgs.join(' ')
                         const mem = groupMembers
                         const randMem = mem[Math.floor(Math.random() * mem.length)];
                         const sapaa = `*[ RANDOM TAG ]*\n\nDari    :  @${sender.id.replace('@c.us','')}\nUntuk :  @${randMem}\n\n\n*PESAN:*\n${pesan}  `
                         await tobz.sendTextWithMentions(from, sapaa)
-                     }
+                     
                     }
                     break 
 
+			 case prefix+'randomkick':  
+		    if(isReg(obj)) return
+            if(cekumur(cekage)) return		
+            //zif (!isOwner) return tobz.reply(from, 'perintah ini hanya dapat digunakan oleh owner bot!', id)  
+            if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (!isGroupAdmins) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Admin group!`, id)
+            if (!isBotGroupAdmins) return tobz.reply(from, `Perintah ini hanya bisa di gunakan jika Bot menjadi Admin!`, id)
+                    if (!isGroupMsg) return tobz.reply(from, 'perintah ini hanya dapat digunakan di dalam grup!', id)  
+					   const memkick = groupMembers
+                        const randMem = memkick[Math.floor(Math.random() * memkick.length)];
+                        const sapaa = 
+`*[ RANDOM KICK ]*
 
+Oleh Admin   :  @${sender.id.replace('@c.us','')}
+Yang terkick :  @${randMem}
+
+
+YHAHAHA KENA KICK ~ 👋`
+                        tobz.sendTextWithMentions(from, sapaa)
+                        //await tobz.sendText(from, `Untuk memakai pesan silahkan gunakan ${prefix}randomtag pesan kalian`)
+                        await sleep(1500)
+                        await tobz.removeParticipant(groupId, randMem)
+                        break
+
+                        
 			  case prefix+'tagrandom2':  
 			  case prefix+'randomtag2':  		
 			if(isReg(obj)) return
@@ -5070,7 +5625,9 @@ ${desc}`, id)
             } else {
                 tobz.reply(from, 'Pilih enable atau disable!', id)
             }
-            break
+            break //
+            
+                break
             case prefix+'simi':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -5099,6 +5656,23 @@ ${desc}`, id)
                     tobz.reply(from, 'Pilih enable atau disable!', id)
                 }
                 break
+                case prefix+'autovn':
+                if (!isGroupMsg) return await tobz.reply(from, 'Perintah ini hanya bisa dilakukan di dalam group!', id)
+                if (!isGroupAdmins) return await tobz.reply(from, 'Perintah ini hanya bisa dilakukan oleh admin group!', id)
+                if (args[1] === 'enable') {
+                    if (isAutoVn) return await tobz.reply(from, 'Auto VN sudah dinyalakan di grup ini!', id)
+                    _autovn.push(groupId)
+                    fs.writeFileSync('./lib/database/autovn.json', JSON.stringify(_autovn))
+                    await tobz.reply(from, 'Auto VN diaktifkan', id)
+                } else if (args[1] === 'disable') {
+                    var grup = _autovn.indexOf(groupId)
+                    _autovn.splice(grup, 1)
+                    fs.writeFileSync('./lib/database/autovn.json', JSON.stringify(_autovn))
+                    await tobz.reply(from, 'Auto VN dinonaktifkan', id)
+                } else {
+                    await tobz.reply(from, 'Pilih enable atau disable!', id)
+                }
+            break
         case prefix+'group':
 		case prefix+'gc':
             if(isReg(obj)) return
@@ -5126,7 +5700,7 @@ ${desc}`, id)
                 if (!isGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh Admin group!', id)
                 if (args.length === 1) return tobz.reply(from, 'Pilih enable atau disable!', id)
                 if (args[1].toLowerCase() === 'enable') {
-                    if (lefton) return await tobz.reply(from, 'udah diaktifkan pak sebelumnya pak', id)
+                    if (lefton) return await tobz.reply(from, 'Pesan left sudah diaktifkan sebelumnya!', id)
                     left.push(chat.id)
                     fs.writeFileSync('./lib/database/left.json', JSON.stringify(left))
                     tobz.reply(from, 'Fitur left berhasil di aktifkan di group ini!', id)
@@ -5146,7 +5720,7 @@ ${desc}`, id)
                 if (!isGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh Admin group!', id)
                 if (args.length === 1) return tobz.reply(from, 'Pilih enable atau disable!', id)
                 if (args[1].toLowerCase() === 'enable') {
-                    if (welkomon) return await tobz.reply(from, 'udah diaktifkan pak sebelumnya pak', id)
+                    if (welkomon) return await tobz.reply(from, 'Pesan welcome sudah diaktifkan sebelumnya!', id)
                     welkom.push(chat.id)
                     fs.writeFileSync('./lib/database/welcome.json', JSON.stringify(welkom))
                     tobz.reply(from, 'Fitur welcome berhasil di aktifkan di group ini!', id)
@@ -5159,8 +5733,6 @@ ${desc}`, id)
                     tobz.reply(from, 'Pilih enable atau disable!', id)
                 }
                 break
-
-
             case prefix+'setwelcome':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -5274,6 +5846,272 @@ ${desc}`, id)
             await tobz.sendImage(from, base64, 'ptrs.jpg', `*Pinterest*\n\n*Hasil Pencarian : ${ptrsq}*`, id)
             await limitAdd(serial)
             break
+            case prefix+'nhentai':
+            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+            if (!isNsfw) return tobz.reply(from, 'command/Perintah NSFW belum di aktifkan di group ini!', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik #limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#nhentai* [ Query ]')
+            const quernh = body.slice(9)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const resnh = await fetch(`https://api.vhtear.com/nhentaisearch?query=${encodeURIComponent(quernh)}&apikey=${vhtearkey}`)
+                if (!resnh.ok) throw new Error(`unexpected response ${resnh.statusText}`)
+                const jsonnh = await resnh.json()
+                const { doujins } = await jsonnh.result
+                let berhitung = 1
+                let xixixi = `*「 NHENTAI 」*\n\n*Hasil Pencarian* : ${quernh}\n*Sort* : ${jsonnh.result.sort}\n*Total Pencarian* : ${jsonnh.result.totalResults}\n\n─────────────────\n\nKetik #getnhentai [ Angka ] untuk mengambil ID, Contoh : #getnhentai 2\n`
+                for (let i = 0; i < doujins.length; i++) {
+                    xixixi += `\n─────────────────\n\n*Urutan* : ${berhitung+i}\n*Title* : ${doujins[i].title}\n*Bahasa* : ${doujins[i].lang}\n*Perintah download* : *#getnhentai ${doujins[i].id}*\n`
+                }
+                    xixixi += `\n\n`
+                for (let ii = 0; ii < doujins.length; ii++) {
+                    xixixi += `(#)${doujins[ii].id}`
+                }
+                await tobz.sendFileFromUrl(from, doujins[0].cover, 'thumbnh.jpg', xixixi, id)
+                await limitAdd(serial)
+            } catch (err){
+                console.log(err)
+                tobz.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, Nhentai tidak ditemukan')
+                tobz.sendText(ownerNumber, 'Nhentai Error : ' + err)
+            }
+            break
+        case prefix+'getnhentai':
+            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+            if (!isNsfw) return tobz.reply(from, 'command/Perintah NSFW belum di aktifkan di group ini!', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik #limit Untuk Mengecek Kuota Limit Kamu`, id)
+            try {
+                if (quotedMsg && quotedMsg.type == 'image') {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *#getnhentai [ Id Download ]*, untuk contoh silahkan kirim perintah *#readme*`, id)
+                    if (!Number(args[1])) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *#getnhentai 1*`, id)
+                    const dataDownmp3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const pilur = dataDownmp3.split('(#)')
+                    console.log(pilur[args[1]])
+                    tobz.reply(from, mess.wait, id)
+                    const vezasukadoujin = await fetch(`https://api.vhtear.com/nhentaidoujin?query=${pilur[args[1]]}&apikey=${vhtearkey}`)
+                    if (!vezasukadoujin.ok) throw new Error(`Error barbaryt3 ${vezasukadoujin.statusText}`)
+                    const doujinveza = await vezasukadoujin.json()
+                    const nhppdf = await fetch(`https://api.vhtear.com/nhentaipdfdownload?query=${pilur[args[1]]}&apikey=${vhtearkey}`)
+                    if (!nhppdf.ok) throw new Error(`Error barbaryt3 ${nhppdf.statusText}`)
+                    const nhppdf2 = await nhppdf.json()
+                    if (doujinveza.error) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        try{
+                        const { title, artists, categories, secondary_title, languages, images, tags, pages } = await doujinveza.result
+                        console.log(`CHANGE API BARBAR : ${artists}\n${categories}\n${title}`)
+                        const captions = `*「 NHENTAI DOWNLOADER 」*\n\n*Title* : ${title}\n*Secondary Title* : ${secondary_title}\n*Artist* : ${artists}\n*Categories* : ${categories}\n*Pages* : ${pages}\n*Languages* : ${languages}\n*Tags* : ${tags}\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        tobz.sendText(from, captions, id)
+                        tobz.sendFileFromUrl(from, nhppdf2.result.pdf_file, `${secondary_title}.pdf`,id)
+                        limitAdd(serial)
+                        } catch (err){
+                            console.log(err)
+                        }
+                    }    
+                } else if (quotedMsg && quotedMsg.type == 'chat') { 
+                    tobz.reply(from, `*Salah tag! hanya tag pesan berisi data hasil dari penelusuran nhentai.*`, id)
+                } else {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *#getnhentai [ Id Download ]*, untuk contoh silahkan kirim perintah *#readme*`)
+                    if (args[1] <= 25) return tobz.reply(from, `*Apabila ingin mengambil data nhentai dengan nomor urutan, mohon tag pesan bot tentang pencarian nhentai!*`,)
+                    tobz.reply(from, mess.wait, id)
+                    const vezasukadoujin = await fetch(`https://api.vhtear.com/nhentaidoujin?query=${args[1]}&apikey=${vhtearkey}`)
+                    if (!vezasukadoujin.ok) throw new Error(`Error barbaryt3 ${vezasukadoujin.statusText}`)
+                    const doujinveza = await vezasukadoujin.json()
+                    const nhppdf = await fetch(`https://api.vhtear.com/nhentaipdfdownload?query=${args[1]}&apikey=${vhtearkey}`)
+                    if (!nhppdf.ok) throw new Error(`Error barbaryt3 ${nhppdf.statusText}`)
+                    const nhppdf2 = await nhppdf.json()
+                    if (doujinveza.error) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        const { title, artists, categories, secondary_title, languages, images, tags, pages } = await doujinveza.result
+                        console.log(`CHANGE API BARBAR : ${artists}\n${categories}\n${title}`)
+                        const captions = `*「 NHENTAI DOWNLOADER 」*\n\n*Title* : ${title}\n*Secondary Title* : ${secondary_title}\n*Artist* : ${artists}\n*Categories* : ${categories}\n*Pages* : ${pages}\n*Languages* : ${languages}\n*Tags* : ${tags}\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        tobz.sendText(from, captions, id)
+                        tobz.sendFileFromUrl(from, nhppdf2.result.pdf_file, `${secondary_title}.pdf`,id)
+                        limitAdd(serial)
+                   }
+                }
+            } catch (err) {
+                tobz.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
+                console.log(err)
+            }
+            break
+            case prefix+'xvideos':
+                if (!isNsfw) return tobz.reply(from, `command/Perintah NSFW belum di aktifkan di group ini!`, id)
+	    if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}xvideos* [ Judul ]`)
+            const querVID = body.slice(9)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const resvid = await fetch(`https://mnazria.herokuapp.com/api/porn?search=${encodeURIComponent(querVID)}`)
+                if (!resvid.ok) throw new Error(`unexpected response ${resvid.statusText}`)
+                const jsonserxvid = await resvid.json()
+                const { result } = await jsonserxvid
+                let berhitung = 1
+                let xixixi = `*「 XVIDEOS 」*\n\n*Hasil Pencarian : ${querVID}*\n\n─────────────────\n\nKetik #getxvideos [angka] untuk mengambil ID, Contoh : #getxvideos 2\n`
+                for (let i = 0; i < result.length; i++) {
+                    xixixi += `\n─────────────────\n\n*Urutan* : ${berhitung+i}\n*Title* : ${result[i].title}\n*Actors* : ${result[i].actors}\n*Durasi* : ${result[i].duration}\n*Perintah download* : *${prefix}getxvideos ${result[i].url}*\n`
+                }
+                    xixixi += `\n\n`
+                for (let ii = 0; ii < result.length; ii++) {
+                    xixixi += `(#)${result[ii].url}`
+                }
+                await tobz.sendFileFromUrl(from, result[0].image, 'thumbxvid.jpg', xixixi, id)
+                await limitAdd(serial)
+            } catch (err){
+                console.log(err)
+                tobz.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, Xvideos tidak ditemukan')
+                tobz.sendText(ownerNumber, 'Xvideos Error : ' + err)
+            }
+            break
+            case prefix+'getxvideos':
+                if (!isNsfw) return tobz.reply(from, `command/Perintah NSFW belum di aktifkan di group ini!`, id)
+	    if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            try {
+                if (quotedMsg && quotedMsg.type == 'image') {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}getxvideos [ Id Download ]*, untuk contoh silahkan kirim perintah *${prefix}readme*`)
+                    if (!Number(args[1])) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *${prefix}getxvideos 1*`, id)
+                    const datavideo = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const pilur = datavideo.split('(#)')
+                    console.log(pilur[args[1]])
+                    tobz.reply(from, mess.wait, id)
+                    const vidxvid = await fetch(`https://mnazria.herokuapp.com/api/porndownloadxvideos?url=${pilur[args[1]]}`)
+                    if (!vidxvid.ok) throw new Error(`Error Get Video : ${vidxvid.statusText}`)
+                    const vidxvideo = await vidxvid.json()
+                     if (vidxvideo.status == false) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        try{
+                        const { mp4 } = await vidxvideo
+                        const shortvidxv = await urlShortener(mp4)
+                        const captions = `*「 XVIDEOS DOWNLOADER 」*\n\n*Website* : XVideos\n*Ext* : MP3\n\n*Silahkan download file media sedang melalui link yang tersedia.*\n${shortvidxv}`
+                        tobz.sendFileFromUrl(from, `https://sensorstechforum.com/wp-content/uploads/2019/07/xvideos-virus-image-sensorstechforum-com.jpg`, ``, captions, id)
+                        // await tobz.sendFileFromUrl(from, result, `${title}.mp3`, `XVIDEOS BY TOBZ`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                        } catch (err){
+                            console.log(err)
+                        }
+                    }    
+                } else if (quotedMsg && quotedMsg.type == 'chat') { 
+                    tobz.reply(from, `*Salah tag! hanya tag pesan berisi data hasil dari penelusuran videp.*`, id)
+                } else {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}getxvideos [ Id Download ]*, untuk contoh silahkan kirim perintah *${prefix}readme*`)
+                    if (args[1] <= 25) return tobz.reply(from, `*Apabila ingin mengambil data video dengan nomor urutan, mohon tag pesan bot tentang pencarian videp!*`,)
+                    tobz.reply(from, mess.wait, id)
+                    const getvide = await get.get(`https://mnazria.herokuapp.com/api/porndownloadxvideos?url=${pilur[args[1]]}`).json
+                    if (getvide.error) {
+                        tobz.reply(from, getvide.error, id)
+                    } else {
+                        const { mp4 } = await mhankyt35
+                        const shortvidxv2 = await urlShortener(mp4)
+                        console.log(`CHANGE API BARBAR : ${ext}\n${filesize}\n${status}`)
+                        const captions = `*「 XVIDEOS DOWNLOADER 」*\n\n*Website* : XVideos\n\n*Ext* : MP4\n*Link* : ${shortvidxv2}\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        tobz.sendFileFromUrl(from, `https://sensorstechforum.com/wp-content/uploads/2019/07/xvideos-virus-image-sensorstechforum-com.jpg`, ``, captions, id)
+                        // await tobz.sendFileFromUrl(from, result, `${title}.mp3`, `Music telah terkirim ${pushname}`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                   }
+                }
+            } catch (err) {
+                tobz.sendText(ownerNumber, 'Error XVideos : '+ err)
+                tobz.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
+                console.log(err)
+            }
+            break
+            case prefix+'xxx':
+                if (!isNsfw) return tobz.reply(from, `command/Perintah NSFW belum di aktifkan di group ini!`, id)
+	    if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}xxx* [ Judul ]`)
+            const querXXX = body.slice(9)
+            tobz.reply(from, mess.wait, id)
+            try {
+                const resxxx = await fetch(`https://api.vhtear.com/xxxsearch?query=${encodeURIComponent(querXXX)}&apikey=${vhtearkey}`)
+                if (!resxxx.ok) throw new Error(`unexpected response ${resxxx.statusText}`)
+                const resxxx2 = await resxxx.json()
+                const { data } = await resxxx2.result
+                let berhitung = 1
+                let xixixi = `*「 XVIDEOS 」*\n\n*Hasil Pencarian : ${querXXX}*\n\n─────────────────\n\nKetik #getxxx [angka] untuk mengambil ID, Contoh : #getxxx 2\n`
+                for (let i = 0; i < data.length; i++) {
+                    xixixi += `\n─────────────────\n\n*Urutan* : ${berhitung+i}\n*Title* : ${data[i].title}\n*Duration* : ${data[i].duration}\n*Perintah download* : *${prefix}getxxx ${data[i].url}*\n`
+                }
+                    xixixi += `\n\n`
+                for (let ii = 0; ii < data.length; ii++) {
+                    xixixi += `(#)${data[ii].url}`
+                }
+                await tobz.sendFileFromUrl(from, data[0].image, 'thumbxxx.jpg', xixixi, id)
+                await limitAdd(serial)
+            } catch (err){
+                console.log(err)
+                tobz.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, XXX tidak ditemukan')
+                tobz.sendText(ownerNumber, 'XXX Error : ' + err)
+            }
+            break
+            case prefix+'getxxx':
+                if (!isNsfw) return tobz.reply(from, `command/Perintah NSFW belum di aktifkan di group ini!`, id)
+	    if (!isGroupMsg) return tobz.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            try {
+                if (quotedMsg && quotedMsg.type == 'image') {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}getxxx [ Id Download ]*, untuk contoh silahkan kirim perintah *${prefix}readme*`)
+                    if (!Number(args[1])) return tobz.reply(from, `*Apabila ditag hanya cantumkan nomer urutan bukan ID Download!*\nContoh : *${prefix}getxxx 1*`, id)
+                    const dataplay = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const pilur = dataplay.split('(#)')
+                    //console.log(pilur[args[1]])
+                    tobz.reply(from, mess.wait, id)
+                    const getxxx = await fetch(`https://api.vhtear.com/xxxdownload?link=${pilur[args[1]]}&apikey=${vhtearkey}`)
+                    if (!getxxx.ok) throw new Error(`Error XXX : ${getxxx.statusText}`)
+                    const getxxx2 = await getxxx.json()
+                     if (getxxx2.status == false) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        try{
+                        const { title, urlVideo, response } = await getxxx2.result
+                        //console.log(`STATUS API : ${response}`)
+                        let xixixi = `*「 XXX DOWNLOADER 」*\n\n${title}`
+                        for (let i = 0; i < urlVideo.length; i++) {
+                            xixixi += `\n─────────────────\n\n*Title* : ${urlVideo[i].title}\n*Default Quality* : ${urlVideo[i].defaultQuality}\n*Format* : ${urlVideo[i].format}\n*Quality* : ${urlVideo[i].quality}\n*Url Video* : ${urlVideo[i].videoUrl}\n\n`
+                        }
+                        const captions = `*「 XXX DOWNLOADER 」*\n\n*Title* : ${title}\n\n*Ext* : MP4\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        tobz.sendFileFromUrl(from, `https://thumbs.dreamstime.com/b/xxx-neon-sign-dark-background-xxx-neon-sign-dark-background-vector-illustration-129829099.jpg`, `xxx.jpg`, xixixi, id)
+                        // await tobz.sendFileFromUrl(from, result, `${title}.mp3`, `Music telah terkirim ${pushname}`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                        } catch (err){
+                            console.log(err)
+                        }
+                    }    
+                } else if (quotedMsg && quotedMsg.type == 'chat') { 
+                    tobz.reply(from, `*Salah tag! hanya tag pesan berisi data hasil dari penelusuran video.*`, id)
+                } else {
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}getxxx [ Id Download ]*, untuk contoh silahkan kirim perintah *${prefix}readme*`)
+                    if (args[1] <= 25) return tobz.reply(from, `*Apabila ingin mengambil data video dengan nomor urutan, mohon tag pesan bot tentang pencarian video!*`,)
+                    tobz.reply(from, mess.wait, id)
+                    const getxxx = await fetch(`https://api.vhtear.com/xxxsearch?link=${pilur[args[1]]}&apikey=${vhtearkey}`)
+                    if (!getxxx.ok) throw new Error(`Error XXX : ${getxxx.statusText}`)
+                    const getxxx2 = await getxxx.json()
+                     if (getxxx2.status == false) {
+                        tobz.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
+                    } else {
+                        //if (Number(getxxx2.result.data.duration.split(':')[0]) > 5) return tobz.sendFileFromUrl(from, imgUrl, `thumb.jpg`, `*「 XXX DOWNLOADER 」*\n\n*Website* : XVideos\n\n*Ext* : MP4\n*Link* : ${shortvidxv2}\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`, id)
+                        const { title, urlVideo, response } = await getxxx2.result
+                        //console.log(`STATUS API : ${response}`)
+                        let xixixi = `*「 XXX DOWNLOADER 」*\n\n*Title* : ${title}`
+                        for (let i = 0; i < urlVideo.length; i++) {
+                            xixixi += `\n─────────────────\n\n*Default Quality* : ${urlVideo[i].defaultQuality}\n*Format* : ${urlVideo[i].format}\n*Quality* : ${urlVideo[i].quality}\n*Url Video* : ${urlVideo[i].videoUrl}\n\n`
+                        }
+                        const captions = `*「 XXX DOWNLOADER 」*\n\n*Title* : ${title}\n\n*Ext* : MP4\n\n*Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit*`
+                        tobz.sendFileFromUrl(from, `https://thumbs.dreamstime.com/b/xxx-neon-sign-dark-background-xxx-neon-sign-dark-background-vector-illustration-129829099.jpg`, `xxx.jpg`, xixixi, id)
+                        // await tobz.sendFileFromUrl(from, result, `${title}.mp3`, `Music telah terkirim ${pushname}`, id).catch(() => tobz.reply(from, mess.error.Yt4, id))
+                        await limitAdd(serial)
+                   }
+                }
+            } catch (err) {
+                tobz.sendText(ownerNumber, 'Error XVideos : '+ err)
+                tobz.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
+                console.log(err)
+            }
+            break
+
         case prefix+'nhview':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -5346,7 +6184,7 @@ ${desc}`, id)
                 if(cekumur(cekage)) return
                 
                 if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                const nekonime = await axios.get(`https://tobz-api.herokuapp.com/api/nekonime`)
+                const nekonime = await axios.get(`https://tobz-api.herokuapp.com/api/nekonime?apikey=${tobzkey}`)
                 const nekon = nekonime.data
                 if (nekon.result.endsWith('.png')) {
                     var ext = '.png'
@@ -5537,7 +6375,7 @@ ${desc}`, id)
             skya_ = skya.data
             tobz.reply(from, `*Quotes*: _${skya_.result.quotes}_\n\n*Character*:\n${skya_.result.character}\n*Anime*:\n${skya_.result.anime}`, id)
             await limitAdd(serial)
-            break
+            break//
             case prefix+'cersex':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -5565,14 +6403,74 @@ ${desc}`, id)
                 const kawal = await axios.get(`https://coronavirus-19-api.herokuapp.com/countries/${country}`)
                 tobz.reply(from, `Negara: ${kawal.data.country}\nKasus: ${kawal.data.todayCases}\nTotal meninggal: ${kawal.data.deaths}\n`, id)
                 break */
-
+                
+                case prefix+'ceklokasi':
+                    //if (type === 'chat') return tobz.reply(from, `Mohon tag lokasi anda! (sharelok)`, id)
+                    //if (!isGroupMsg) return tobz.reply(from, menuPriv, id)            
+                    try {
+                        tobz.reply(from, mess.wait, id)
+                        if (quotedMsg.type !== 'location') return tobz.reply(from, `Maaf, format pesan salah.\nKirimkan lokasi dan reply dengan caption !ceklokasi`, id)
+                        console.log(`Request Status Zona Penyebaran Covid-19 (${quotedMsg.lat}, ${quotedMsg.lng}).`)
+                        const zoneStatus = await getLocationData(quotedMsg.lat, quotedMsg.lng)
+                        if (zoneStatus.kode !== 200) tobz.reply(from, 'Maaf, Terjadi error ketika memeriksa lokasi yang anda kirim.', id)
+                        console.log(zoneStatus)
+                        let datax = ''
+                        for (let i = 0; i < zoneStatus.data.length; i++) {
+                            const { zone, region } = zoneStatus.data[i]
+                            const _zone = zone == 'green' ? 'Hijau* (Aman) ✅\n' : zone == 'yellow' ? 'Kuning* (Waspada) ⚠️\n' : 'Merah* (Bahaya) 📛\n'
+                            datax += `${i + 1}. Kel. *${region}* Berstatus *Zona ${_zone}`
+                        }
+                        const text = `*CEK LOKASI PENYEBARAN COVID-19*\nHasil pemeriksaan from lokasi yang anda kirim adalah *${zoneStatus.status}* ${zoneStatus.optional}\n\nInformasi lokasi terdampak disekitar anda:\n${datax}`
+                        tobz.reply(from, text, id)
+                    } catch(e){
+                        //ERRLOG(e)
+                        tobz.reply(from, `Mohon tag data lokasi anda! (sharelok) lalu kirim perintah *!ceklokasi*`)
+                    }
+                    break
+                    //
         case prefix+'meme':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            const response = await axios.get('https://meme-api.herokuapp.com/gimme/wholesomeanimemes')
-            const { postlink, title, subreddit, url, nsfw, spoiler } = response.data
-            tobz.sendFileFromUrl(from, `${url}`, 'meme.jpg', `${title}`)
+            const memeindo = await axios.get(`https://naufalhoster.xyz/tools/memeindo?apikey=${naufalkey}`)
+            const memeindo2 = memeindo.data.result
+            tobz.sendFileFromUrl(from, memeindo2.meme, `awokawokwa.jpg`, ``, id)
+            await limitAdd(serial)
+            break
+            case prefix+'cerpen':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            const cerpen1 = await axios.get(`https://masgi.herokuapp.com/api/cerpen`)
+            const cerpen2 = cerpen1.data.data
+            tobz.reply(from, cerpen2, id)
+            await limitAdd(serial)
+            break
+            case prefix+'cerhoror':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            const cerhoror1 = await axios.get(`https://naufalhoster.xyz/tools/story_horror?apikey=${naufalkey}`)
+            const cerhoror2 = cerhoror1.data.result
+            tobz.reply(from, `${cerhoror2.title}\n\n${cerhoror2.story}`, id)
+            await limitAdd(serial)
+            break
+            case prefix+'puisi':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            const puisi1 = await axios.get('https://masgi.herokuapp.com/api/puisi1')
+            const puisi2 = puisi1.data.data
+            tobz.reply(from, puisi2, id)
+            await limitAdd(serial)
+            break
+            case prefix+'puisi2':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            const puisi10 = await axios.get('https://masgi.herokuapp.com/api/puisi2')
+            const puisi20 = puisi10.data.data
+            tobz.reply(from, puisi20, id)
             await limitAdd(serial)
             break
          case prefix+'nekopoi':
@@ -5855,20 +6753,16 @@ ${desc}`, id)
             tobz.sendFileFromUrl(from, `https://api.vhtear.com/ssweb?link=${sspc}&type=pc&apikey=${vhtearkey}`, 'sspc.jpg', '', id)
             await limitAdd(serial)
             break
-        case prefix+'shorturl':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah **${prefix}shorturl [linkWeb]*\nContoh : *${prefix}shorturl https://neonime.vip*`, id)
-            const sorturl = body.slice(10)
-            const surl = await axios.get('https://tobz-api.herokuapp.com/api/shorturl?url=' + sorturl)
-            const surll = surl.data
-            if (surll.error) return tobz.reply(from, ssww.error, id)
-            const surl2 = `Link : ${sorturl}\nShort URL : ${surll.result}`
-            tobz.sendText(from, surl2, id)
-            await limitAdd(serial)
-            break
+            case prefix+'shorturl':
+                if (args.length === 1) return tobz.reply(from, `Ketik ${prefix}shorturl <url>`, id)
+                //let isUrl2 = args[1].match(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/)
+                //let isUrl2 = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi)
+                //if (!isUrl2) return tobz.reply(from, mess.error.Iv, id)
+                //if (url.match(isUrl)) return tobz.reply(from, 'Maaf, url yang kamu kirim tidak valid.', id)
+                const shortlink12 = await urlShortener2(args[1])
+                const surl2 = `*Link :*\n` + args[1] + `\n\n*Short Url :*\n${shortlink12}`
+                await tobz.reply(from, surl2, id)
+                break
            
          case prefix+'weather':
             if(isReg(obj)) return
@@ -5906,11 +6800,8 @@ ${desc}`, id)
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             argz = body.trim().split(' ')
-            //console.log(...argz[1])
             var slicedArgs = Array.prototype.slice.call(argz, 1);
-            //console.log(slicedArgs)
             const country = await slicedArgs.join(' ')
-            //console.log(country)
             const response2 = await axios.get('https://coronavirus-19-api.herokuapp.com/countries/' + country)
             const { cases, todayCases, deaths, todayDeaths, active } = response2.data
             await tobz.reply(from, '🌎️ Covid Info - ' + country + ' 🌍️\n\n✨️ Total Cases: ' + `${cases}` + '\n📆️ Today\'s Cases: ' + `${todayCases}` + '\n☣️ Total Deaths: ' + `${deaths}` + '\n☢️ Today\'s Deaths: ' + `${todayDeaths}` + '\n⛩️ Active Cases: ' + `${active}` + '.', id)
@@ -5921,7 +6812,7 @@ ${desc}`, id)
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
                 //if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
-                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                //if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                 const response3 = await axios.get('https://api.terhambar.com/negara/World')
                 const covidimg = 'https://i.pinimg.com/originals/d4/ec/87/d4ec8796ed2c047abe9cf360f1cddc1b.jpg'
                 const { total, meninggal, kasus_baru, sembuh, meninggal_baru, terakhir, penanganan } = response3.data
@@ -5931,18 +6822,16 @@ ${desc}`, id)
         case prefix+'spamcall':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
-            if (!isAdmin) return tobz.reply(from, 'Perintah ini hanya untuk Owner & Admin bot', id)
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             argz = body.trim().split(' ')
-            console.log(...argz[1])
             var slicedArgs = Array.prototype.slice.call(argz, 1);
-            console.log(slicedArgs)
             const spam = await slicedArgs.join(' ')
-            console.log(spam)
             const call2 = await axios.get(`https://tobz-api.herokuapp.com/api/spamcall?no=${spam}&apikey=${tobzkey}`)
-            const { logs } = call2.data
-                await tobz.sendText(from, `Logs : ${logs}` + '.')
+            const call3 = call2.data.logs
+            await tobz.reply(from, `Logs : ${call3}`, id)
+            await limitAdd(serial)
             break
+           //=echos%20gold
               /*  case prefix+'play':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -5984,6 +6873,12 @@ ${desc}`, id)
                             tobz.reply(from, mess.error.Yt3, id)
                         }
                         break */
+                      /*  case prefix+'play':
+                        if(isReg(obj)) return
+                     if(cekumur(cekage)) return
+                     tobz.reply(from, `Ingin play media apa? Silahkan pilih\n\n> ${prefix}playmusic [judulnya]\n${prefix}playvideo [judulnya]`, id)
+                     break */
+
                     case prefix+'play':
                      if(isReg(obj)) return
                      if(cekumur(cekage)) return
@@ -5991,7 +6886,7 @@ ${desc}`, id)
                      if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                     // if (!isVip) return tobz.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
                     if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
-                    if (args.length === 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play1 judul lagu`, id)
+                    if (args.length === 1) return tobz.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play [judul lagu]`, id)
                     const playy = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(body.slice(6))}`).json()
                     const mulaikah = playy.result[0].url
                     try {
@@ -6014,7 +6909,42 @@ ${desc}`, id)
                         tobz.reply(from, mess.error.Yt3, id)
                     }
                     break 
-              /*      case prefix+'play2':
+                    case prefix+'playvideo':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        if (isPrem) return tobz.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
+                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                        tobz.reply(from, mess.wait, id)
+                        argz = body.trim().split(' ')
+                        var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        const judulnye = await slicedArgs.join(' ')
+                        const playvid = await axios.get(`https://naufalhoster.xyz/dl/ytplayvideo?apikey=${naufalkey}&query=${judulnye}`)
+                        const { title, thumbnail, duration, viewCount, likeCount, dislikeCount, filesize, video } = await playvid.data.result
+                        await tobz.sendFileFromUrl(from, thumbnail, `awokako.jpg`, `*Title:* ${title}\n*Durasi:* ${duration}\n*Size:* ${filesize}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`, id)
+                        await tobz.sendFileFromUrl(from, video, `nyee.mp4`, `Video berhasil di download!`, id)
+                        break
+
+                        case prefix+'playmusic':
+                            if(isReg(obj)) return
+                            if(cekumur(cekage)) return
+                            if (isPrem) return tobz.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
+                            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                            if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                            tobz.reply(from, mess.wait, id)
+                            argz = body.trim().split(' ')
+                            var slicedArgs = Array.prototype.slice.call(argz, 1);
+                            const judulnye2 = await slicedArgs.join(' ')
+                            const playaud = await axios.get(`https://naufalhoster.xyz/dl/ytplayaudio?apikey=${naufalkey}&query=${judulnye2}`)
+                            const dataaud = playaud.data.result
+                            await tobz.sendFileFromUrl(from, dataaud.thumbnail, `awokako.jpg`, `*Title:* ${dataaud.title}\n*Durasi:* ${dataaud.duration}\n*Size:* ${dataaud.filesize}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`, id)
+                            //const responses = await fetch(dataaud.audio);
+                            //const buffer2 = await responses.buffer();   
+                            //await fs.writeFile(`./media/audio.mp3`, buffer2)
+                            //await tobz.sendPtt(from,'./media/audio.mp3', `${dataaud.title}.mp3`, ``,  id)
+                            await tobz.sendFileFromUrl(from, dataaud.audio, `${dataaud.title}.mp3`, ``, id)
+                            break
+                        /*      case prefix+'play2':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
                     //if (!isPrem) return tobz.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
@@ -6134,23 +7064,60 @@ ${desc}`, id)
                         await tobz.reply(from, mess.error.Yt4, id)
                     }
                     break   
+                case prefix+'google2':
+                //if (!isRegistered) return await tobz.reply(from, ind.notRegistered(), id)
+                //if (!q) return await tobz.reply(from, ind.wrongFormat(), id)
+               // if (isBatas(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+               argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const q2 = await slicedArgs.join(' ')
+               await tobz.reply(from, mess.wait, id)
+				const options = {
+				method: 'GET',
+				url: 'https://google-search3.p.rapidapi.com/api/v1/search/q='+ q2 +'&num=5',
+				headers: {
+				'x-rapidapi-key': '796b0b7803msh196643e1abe67abp155916jsne9d9ea9750b7',
+				'x-rapidapi-host': 'google-search3.p.rapidapi.com'
+				}
+				};
+				axios.request(options).then(function (response) {
+				//console.log(response.data)
+				let googles = `Hasil Pencaharian *${q2}*`
+                        for (let i = 0; i < response.data.results.length; i++) {
+                            googles +=  `\n\n➸ *Judul:* : ${response.data.results[i].title}\n➸ *Deskripsi:* : ${response.data.results[i].description}\n➸ *URL*: ${response.data.results[i].link}\n\n________________________\n`
+                        }
+				tobz.reply(from, googles,id)
+				limitAdd(serial)
+				}).catch(async (err) => {
+                    console.error(err)
+                    await tobz.reply(from, 'Error!', id)
+				});
+                break
         case prefix+'google':
             if(isReg(obj)) return
             if(cekumur(cekage)) return  
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             tobz.reply(from, mess.wait, id)
+            
             const googleQuery = body.slice(8)
-            if(googleQuery == undefined || googleQuery == ' ') return tobz.reply(from, `*Hasil Pencarian : ${googleQuery}* tidak ditemukan`, id)
-            google({ 'query': googleQuery }).then(results => {
+             if(googleQuery == undefined || googleQuery == ' ') return tobz.reply(from, `*Hasil Pencarian : ${googleQuery}* tidak ditemukan`, id)
+            /* google({ 'query': googleQuery }).then(results => {
             let vars = `_*Hasil Pencarian : ${googleQuery}*_\n`
             for (let i = 0; i < results.length; i++) {
                 vars +=  `\n═════════════════\n\n*Judul* : ${results[i].title}\n\n*Deskripsi* : ${results[i].snippet}\n\n*Link* : ${results[i].link}\n\n`
             }
                 tobz.reply(from, vars, id);
-                limitAdd(serial)
-            }).catch(e => {
-                console.log(e)
-                tobz.sendText(ownerNumber, 'Google Error : ' + e);
+                limitAdd(serial) */
+                google({ 'query': googleQuery }) .then(async (results) => {
+                        let txt = `-----[ *GOOGLE SEARCH* ]-----\n\n*by: rashidsiregar28*\n\n_*Search results for: ${googleQuery}*_`
+                        for (let i = 0; i < results.length; i++) {
+                            txt += `\n\n➸ *Title*: ${results[i].title}\n➸ *Desc*: ${results[i].snippet}\n➸ *Link*: ${results[i].link}\n\n=_=_=_=_=_=_=_=_=_=_=_=_=`
+                        }
+                        await tobz.reply(from, txt, id)
+                    })
+                    .catch(async (err) => {
+                        console.error(err)
+                        await tobz.reply(from, 'Error!', id)
             })
             break
         case prefix+'translate':
@@ -6170,7 +7137,46 @@ ${desc}`, id)
                 });
             }
             break
-     
+            case prefix+'translate2':
+                //if (!isGroupMsg) return tobz.reply(from, menuPriv, id)
+                if (args.length === 1) return tobz.reply(from, `Penggunaan untuk translate teks\n\nPenggunaan 1 : *!translate [data bahasa] [teks yang akan ditranslate]* _(tanpa tag)_\nPenggunaan 2 : *!translate [data bahasa]* _(dengan tag)_\n\nContoh 1 : *!translate id hello how are you* _(tanpa tag)_\nContoh 2 : *!translate id* _(tag pesan yang akan ditranslate)_`, id)
+               
+                //if (!quotedMsg) return tobz.reply(from, 'Tag pesan yang akan ditranslate!', id)
+                if (quotedMsg) {
+                    const dataTextReal = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
+                    const lang = args[1].toString()
+                        const trans = async (dataText, lang) => {
+                        INFOLOG(`Translate text to ${lang}...`)
+                        const result = await translate(dataTextReal, {
+                            to: lang
+                            })
+                          .then((res) => tobz.reply(from, res.text, id))
+                          .catch((err) => {
+                            //   tobz.reply(from, `Sepertinya tidak ada data bahasa ${lang}\n\n${bahasa_list}`, id)
+                            ERRLOG(err)
+                        })
+                        // console.log(result.data[0])
+                    }
+                    trans(dataTextReal, lang) 
+                } else if (args.length >= 2) {
+                    // !translate id 
+                    const dataTextManu = body.slice(13)
+                    const lang = args[1].toString()
+                        const trans = async (dataText, lang) => {
+                        console.log(`Translate text to ${lang}...`)
+                        const result = await translate(dataTextManu, {
+                            to: lang
+                            })
+                          .then((res) => tobz.reply(from, res.text, id))
+                          .catch((err) => tobz.reply(from, `Sepertinya tidak ada data bahasa ${lang}\n\n${bahasa_list}`, id))
+                        // console.log(result.data[0])
+                    }
+                    trans(dataTextManu, lang)
+                } else {
+                    tobz.reply(from, `Kesalahan mentranslate`, id)
+                }
+                await tobz.sendSeen(from)
+                break
         case prefix+'xnxx':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -6199,24 +7205,28 @@ ${desc}`, id)
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#ramalpasangan [kamu|pasangan]*\nContoh : *#ramalpasangan Juwen|Doi*', id)
-            const argg = body.trim().split('|')
+            //if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#ramalpasangan [kamu|pasangan]*\nContoh : *#ramalpasangan Juwen|Doi*', id)
+           // const hadehhh = body.slice(14)
+            argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const hadehhh = await slicedArgs.join(' ')
+            if (!hadehhh.includes('|')) return await tobz.reply(from, `Kirim perintah *${prefix}ramalpasangan nama kamu|pacar kamu*`, id)
+           const kamu2 = hadehhh.split('|')[0]
+           const pacar = hadehhh.split('|')[1]
+         /*   const argg = body.trim().split('|')
             if (argg.length >= 2) {
             tobz.reply(from, mess.wait, id)
             const kamu = argz[0]
-            const pacar = argz[1]
+            const pacar = argz[1] */
             const rpmn = rate[Math.floor(Math.random() * (rate.length))]
             const rpmn2 = rate[Math.floor(Math.random() * (rate.length))]
             const rpmn3 = rate[Math.floor(Math.random() * (rate.length))]
             const rpmn4 = rate[Math.floor(Math.random() * (rate.length))]
             const rpmn5 = rate[Math.floor(Math.random() * (rate.length))]
             const rpmn6 = rate[Math.floor(Math.random() * (rate.length))]
-            const rjh2 = `*Hasil Pengamatan!*\nPasangan dengan nama ${kamu} dan ${pacar}\n\nCinta : ${rpmn}\nJodoh : ${rpmn2}\nKemiripan : ${rpmn3}\nKesukaan : ${rpmn4}\nKesamaan : ${rpmn5}\nKebucinan ${rpmn6}`
+            const rjh2 = `*Hasil Pengamatan!*\n\nPasangan dengan nama:\n*${kamu2}* dan *${pacar}*\n\nCinta : ${rpmn}\nJodoh : ${rpmn2}\nKemiripan : ${rpmn3}\nKesukaan : ${rpmn4}\nKesamaan : ${rpmn5}\nKebucinan ${rpmn6}`
             tobz.reply(from, rjh2, id)
             limitAdd(serial)
-            } else {
-            await tobz.reply(from, 'Wrong Format!', id)
-            }
             await limitAdd(serial)
             break
         case prefix+'artinama':
@@ -6628,7 +7638,6 @@ ${slothbawah}
                 }
             }
             break
-          break
          case prefix+'tahta':
              if(isReg(obj)) return
              if(cekumur(cekage)) return
@@ -6743,7 +7752,7 @@ www.instagram.com/${username}`
             await limitAdd(serial)
             } catch (err) {
              console.error(err.message)
-             await tobz.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
+             await tobz.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan', id)
              tobz.sendText(ownerNumber, 'IG Profile Error! : ' + err)
            }
           break
@@ -6828,7 +7837,6 @@ ${url_account}`
         case prefix+'smulestalk':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length === 1) return tobz.reply(from, 'Kirim perintah *#smulestalk [@username]*\nContoh : *#smulestalk loli*', id)
             argz = body.trim().split(' ')
@@ -6859,13 +7867,16 @@ ${url_account}`
              tobz.sendText(ownerNumber, 'Error Smulestalk : '+ err)
             }
           break
-          case prefix+'$':
+          case '$':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
             if (!isSimi) return tobz.reply(from, 'command/Perintah Simi belum di aktifkan di group ini!', id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}$ [teks]*\nContoh : *${prefix}$ hai simi*`, id)
-            const que = body.slice(3)
+            argz = body.trim().split(' ')
+
+            var slicedArgs = Array.prototype.slice.call(arg, 1);
+            const que = await slicedArgs.join(' ')
             const sigo = await axios.get(`https://naufalhoster.xyz/tools/simsimi?apikey=${naufalkey}&pesan=${que}`)
             //const gosi = await axios.get(`https://videfikri.com/api/simsimi/?teks=${que}`)
             const sigot = sigo.data.result.response
@@ -6970,6 +7981,64 @@ ${url_account}`
             })
             break 
             
+
+
+
+
+
+            case prefix+'igstory2':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ig [ Link Instagram ]* untuk contoh silahkan kirim perintah *#readme*`)
+                //if (!args[1].match(isUrl) && !args[1].includes('instagram.com')) return tobz.reply(from, `Maaf, link yang kamu kirim tidak valid. [Invalid Link]`, id)
+                await tobz.reply(from, mess.wait, id);
+                const igstory2 = async (url) => new Promise(async (resolve, reject) => {
+                    const api = `https://api.vhtear.com/igstory?query=${url}&apikey=${vhtearkey}`
+                    axios.get(api).then(async(res) => {
+                        const st = res.data.result
+                        if(st.status === false){
+                            resolve(`Media Tidak Di Temukan`)
+                        }else{
+                            resolve(st)
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                        resolve(`Maaf, Server Sedang Error`)
+                    })
+                })
+                igstory2(args[1]).then(async(res) => {
+                    for (let i = 0; i < res.post.length; i++) {
+                    if (res.itemlist[i].type == "image") {
+                            await tobz.sendFileFromUrl(from, res.itemlist[i].urlDownload, "ig.jpg", `*「 INSTAGRAM 」*\n\n*Tipe* : Image/Jpg`, id);
+                            limitAdd(serial)
+                        } else if (res.itemlist[i].type == "video") {
+                            await tobz.sendFileFromUrl(from, res.itemlist[i].urlDownload, "ig.mp4", `*「 INSTAGRAM 」*\n\n*Tipe* : Video/MP4`, id);
+                        }
+                    }
+                }).catch((err) => {
+                    console.log(err);
+                    tobz.reply(from, `Maaf, Terjadi Kesalahan`, id)
+                })
+                break 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         case prefix+'fb':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -7070,15 +8139,15 @@ ${url_account}`
             case prefix+'tiktok':      
             if(isReg(obj)) return        
             if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}ttnowm [linkVideoTikTod]*\nContoh : *${prefix}ttnowm link*`, id)
-            tobz.reply(from, `Tunggu sebentar, sedang di proses...\n\nUntuk mendownload tanpa wm gunakan ${prefix}ttnowm`, id)
+            if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}ttnowm [linkVideoTikTod]*\nContoh : *${prefix}ttnowm link*`, id)
+            juwen.reply(from, `Tunggu sebentar, sedang di proses...\n\nUntuk mendownload tanpa wm gunakan ${prefix}ttnowm`, id)
             argz = body.trim().split(' ')
             var slicedArgs = Array.prototype.slice.call(argz, 1);
             const tiktoknowm0 = await slicedArgs.join(' ')
             const tiktoknowm5 = await axios.get(`https://api.vhtear.com/tiktokdl?link=${tiktoknowm0}&apikey=${vhtearkey}`) 
             const tiktoknowm6 = tiktoknowm5.data
-            tobz.sendFileFromUrl(from, tiktoknowm6.result.video, ``, `*[ Data berhasil di dapatkan! ]*`, id)
+            juwen.sendFileFromUrl(from, tiktoknowm6.result.video, ``, `*[ Data berhasil di dapatkan! ]*`, id)
             await limitAdd(serial)
             break
             case prefix+'ttsong':
@@ -7097,7 +8166,7 @@ ${url_account}`
                 await limitAdd(serial)
                 break
 
-        /*    case prefix+'tiktok':
+            case prefix+'tiktok2':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
                 if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
@@ -7176,7 +8245,7 @@ ${url_account}`
                 tobz.reply(from, `Terjadi kesalahan saat mengakses file tersebut, tidak bisa mengirim video!`)
             }
             await tobz.sendSeen(from)
-            break */
+            break 
         case prefix+'smule':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -7255,6 +8324,29 @@ ${url_account}`
              tobz.sendText(ownerNumber, 'Error Maps : '+ err)
            }
           break
+          case prefix+'spotify':
+            if (!isUser) return tobz.sendTextWithMentions(from, BelumDaftar(serial))
+            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}spotify [judul]*`, id)
+            tobz.reply(from, mess.wait, id)
+            try {
+               
+              /*  const spoti = spotify.data.result
+                for (let i = 0; i < spoti.length; i++){
+                    tobz.sendFileFromUrl(from, spoti[0].url, ``, ``, id)
+                    
+                } */
+                const spotify = await axios.get(`https://api.vhtear.com/spotify?query=${body.slice(9)}&apikey=${vhtearkey}`)
+                const spoti  = spotify.data.result
+                for (let i = 0; i < spoti.length; i++){
+                tobz.sendFileFromUrl(from, spoti[i].url, ``, ``, id)
+                }
+                limitAdd(serial)
+            } catch (err) {
+                tobz.sendText(ownerNumber, 'Error Spotify : '+ err)
+                tobz.reply(from, mess.error.Yt3, id)
+            }
+            break
           case prefix+'joox':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -7626,7 +8718,7 @@ ${url_account}`
                 if(cekumur(cekage)) return
                 
                 if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                arg = body.trim().split('|')
+                argz = body.trim().split('|')
                 tobz.reply(from, '[WAIT] Sedang di proses⏳ silahkan tunggu ± 1 min!', id)
                 if ((isMedia || isQuotedImage) && argz.length >= 2) {
                 const top = argz[1]
@@ -7746,11 +8838,11 @@ ${url_account}`
             tobz.sendFileFromUrl(from, 'https://assets.pokemon.com/assets/cms2/img/pokedex/full/'+q7+'.png','Pokemon.png',)
             await limitAdd(serial)
             break
+            //V3456hG822937HjHAGS
         case prefix+'quote':
         case prefix+'quotes':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             const quotez2 = await axios.get(`https://tobz-api.herokuapp.com/api/randomquotes?apikey=${tobzkey}`)
             tobz.reply(from, `_${quotez2.data.quotes}_\n\n ~ ${quotez2.data.author}`, id)
@@ -7778,7 +8870,7 @@ ${url_account}`
         break
 		
 		
-		case prefix+'lirik':
+	/*	case prefix+'lirik':
 		tobz.reply(from, `Pilih Salah satu:\n\n> ${prefix}lirik1\n> ${prefix}lirik2`, id)
 		break
         case prefix+'lirik1':
@@ -7790,10 +8882,10 @@ ${url_account}`
             const lirik = await liriklagu(lagu)
             tobz.reply(from, lirik, id)
             await limitAdd(serial)
-            break
+            break */
 			
 			
-			case prefix+'lirik2':
+			case prefix+'lirik':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
@@ -7814,9 +8906,9 @@ ${url_account}`
             if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}chord [query]*, contoh *${prefix}chord aku bukan boneka*`, id)
             const query__ = body.slice(7)
-            const chord = await axios.get('https://arugaz.herokuapp.com/api/chord?q='+ query__)
+            const chord = await axios.get(`https://naufalhoster.xyz/tools/chord?apikey=${naufalkey}&query=${query__}`)
             if (chord.data.error) return tobz.reply(from, chord.data.error, id)
-            tobz.reply(from, chord.data.result, id)
+            tobz.reply(from, chord.data.result.chord, id)
             await limitAdd(serial)
             break
         case prefix+'listdaerah':
@@ -7828,7 +8920,7 @@ ${url_account}`
             await limitAdd(serial)
             break
             case prefix+'gift': // Hanya Admin & Owner Elaina yang bisa gift Limit
-            if (!isAdmin) return tobz.reply(from, `Maaf, perintah ini hanya dapat dilakukan oleh AdminBan!`, id)
+            if (!isOwner && !isAdmin) return tobz.reply(from, `Maaf, perintah ini hanya dapat dilakukan oleh AdminBan!`, id)
             const nomernyaa = args[1]
                     let textnyaaa = nomernyaa.replace(/[-\s+@c.us]/g,'')
                     const nomerr = textnyaaa + '@c.us'
@@ -8039,7 +9131,8 @@ PADA: ${usertime}
           
         // ADMIN & OWNER
         case 'prefix':
-            tobz.reply(from, `[ PREFIX YANG SAAT INI DIGUNAKAN ]\n\n    *「* ${prefix} *」*`, id)
+           // tobz.reply(from, `[ PREFIX YANG SAAT INI DIGUNAKAN ]\n\n    *「* ${prefix} *」*`, id)
+            tobz.reply(from, `*「 MULTI PREFIX 」*`, id)
             break
         case prefix+'setpackname':
             if(!isOwner) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!`, id)
@@ -8201,6 +9294,7 @@ PADA: ${usertime}
                     await tobz.reply(from, 'Pilih enable atau disable!', id)
                 }
             break
+
                 case prefix+'level':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -8239,7 +9333,7 @@ PADA: ${usertime}
                             console.error(err)
                             await tobz.reply(from, 'Error!', id)
                         })
-                break
+                break 
                 case prefix+'leaderboard':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -8296,7 +9390,7 @@ PADA: ${usertime}
                     } else {
                         await tobz.reply(from, 'Pilih enable atau disable!', id)
                     }
-                break
+                break 
 
                 case prefix+'tagall':
                     case prefix+'mentionall':
@@ -8417,9 +9511,9 @@ PADA: ${usertime}
         case prefix+'inv':
             case prefix+'add':
             if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
-            if (!quotedMsg && args.length === 1) return tobz.reply(from, `Untuk menggunakan fitur ini, kirim perintah *${prefix}add* 628xxxxx atau reply pesan orang`, id)
             if (!isGroupAdmins) return tobz.reply(from, `Perintah ini hanya bisa di gunakan oleh admin group`, id)
             if (!isBotGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan ketika bot menjadi admin', id)
+            if (!quotedMsg && args.length === 1) return tobz.reply(from, `Untuk menggunakan fitur ini, kirim perintah *${prefix}add* 628xxxxx atau reply pesan orang`, id)
             if (!quotedMsg) {
             try {
             argz = body.trim().split(' ')
@@ -8470,7 +9564,7 @@ PADA: ${usertime}
                 }
             } 
             break
-            case prefix+'edotensei':
+         /*   case prefix+'edotensei':
             if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
             if (!isGroupAdmins) return tobz.reply(from, `Fitur ini hanya bisa di gunakan oleh admin group`, id)
             if (!isBotGroupAdmins) return tobz.reply(from, `Fitur ini hanya bisa di gunakan ketika bot menjadi admin`, id)
@@ -8482,7 +9576,7 @@ PADA: ${usertime}
                 await tobz.addParticipant(from,`${mentionedJidList}`)
 				
             } 
-            break
+            break */
             case prefix+'setkick':
                 if (!isGroupMsg) return tobz.reply(from, 'Fitur ini hanya bisa di gunakan dalam group', id)
                 if (!isGroupAdmins) return tobz.reply(from, `Fitur ini hanya bisa di gunakan oleh admin group`, id)
@@ -8569,7 +9663,9 @@ PADA: ${usertime}
 		 case prefix+'byebot':
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
             if (!isGroupAdmins) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin group!', id)
-            await tobz.sendText(from, `ZXCBOT DIKELUARKAN!\n\nTerima kasih telah menggunakan *ZXCBOT*`) .then(() => tobz.leaveGroup(groupId))
+            tobz.sendText(from, 'ZXCBOT DIKELUARIN DARI GRUP! ~ 👋')
+            await sleep(2500) 
+            tobz.leaveGroup(groupId)
             break
        case prefix+'opromote':
             if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
@@ -8629,7 +9725,7 @@ PADA: ${usertime}
         }
             break
             case prefix+'join':
-                if (!isAdmin) return tobz.reply(from, 'Perintah ini hanya untuk Admin Bot!', id)
+                if (!isOwner) return tobz.reply(from, 'Perintah ini hanya untuk Admin Bot!', id)
                 if (args.length === 1) return tobz.reply(from, 'Silahkan masukan link terlebih dahulu!', id)
                 const link = body.slice(6)
                 const tGr = await tobz.getAllGroups()
@@ -8638,7 +9734,7 @@ PADA: ${usertime}
                 const check = await tobz.inviteInfo(link)
                 if (!isLink) return tobz.reply(from, 'Ini link?', id)
                 if (tGr.length > 256) return tobz.reply(from, 'Maaf jumlah group sudah maksimal!', id)
-                if (check.size < minMem) return tobz.reply(from, 'Member group tidak melebihi 2, bot tidak bisa masuk', id)
+                if (check.size < 2) return tobz.reply(from, 'Member group tidak melebihi 2, bot tidak bisa masuk', id)
                 if (check.status === 200) {
                     await tobz.joinGroupViaLink(link).then(() => tobz.sendText(from, `*ZXCBOT AKAN SEGERA MASUK!*\n\nJANGAN LUPA KETIK ${prefix}help untuk melihat menu`))
                     await sleep(3000) 
@@ -8737,8 +9833,8 @@ PADA: ${usertime}
         case prefix+'limit':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if(isOwner) return tobz.reply(from, 'Lu kan owner bot bego, ngapa cek limit dah', id)
-            if(isAdmin) return tobz.reply(from, 'Admin bot tidak memiliki limit harian / unlimitied limit.', id)
+            //if(isOwner) return tobz.reply(from, 'Lu kan owner bot bego, ngapa cek limit dah', id)
+            //if(isAdmin) return tobz.reply(from, 'Admin bot tidak memiliki limit harian / unlimitied limit.', id)
             var found = false
             const limidat = JSON.parse(fs.readFileSync('./lib/database/limit.json'))
             for(let lmt of limidat){
@@ -8782,12 +9878,12 @@ PADA: ${usertime}
                 setting.restartId = chatId
                 var obj = []
                 //fs.writeFileSync('./lib/setting.json', JSON.stringify(obj, null,2));
-                //fs.writeFileSync('./lib/database/limit.json', JSON.stringify(obj));
+                fs.writeFileSync('./lib/database/limit.json', JSON.stringify(obj));
                 fs.writeFileSync('./lib/database/muted.json', JSON.stringify(obj));
                 fs.writeFileSync('./lib/database/msgLimit.json', JSON.stringify(obj));
                 fs.writeFileSync('./lib/database/banned.json', JSON.stringify(obj));
-                fs.writeFileSync('./lib/database/welcome.json', JSON.stringify(obj));
-                fs.writeFileSync('./lib/database/left.json', JSON.stringify(obj));
+                //fs.writeFileSync('./lib/database/welcome.json', JSON.stringify(obj));
+                //fs.writeFileSync('./lib/database/left.json', JSON.stringify(obj));
                 fs.writeFileSync('./lib/database/Simsimi.json', JSON.stringify(obj));
                 fs.writeFileSync('./lib/database/nsfwz.json', JSON.stringify(obj));
                 const spawn = require('child_process').exec;
@@ -8949,7 +10045,11 @@ const pen = no.replace(' ','')
                     tobz.reply(from, 'Ups, ada yang error!  Mungkin ppnya depresi atau di privasi.', id)
                 }
             break
-
+                case prefix+'totalmem':
+                    if (!isGroupMsg) return tobz.reply(from, `Fitur ini hanya bisa di gunakan dalam group`, id)
+                    var totalMem2 = chat.groupMetadata.participants.length
+                    tobz.reply(from, `Total member sekarang : ${totalMem2}`, id)
+                    break
             case prefix+'getppgrup':
             case prefix+'getpicgrup':
             case prefix+'getppgc':        
@@ -9077,17 +10177,17 @@ const pen = no.replace(' ','')
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (args.length === 1) return tobz.reply(from, 'Kirim perintah *${prefix}bugreport [teks]*\ncontoh : *${prefix}bugreport Permisi Owner, Ada bug pada command ${prefix}nulis, Tolong diperbaiki*')
-           // const reportNumber = '628xxxxxxxx' // ISI DENGAN NO TELEPON KAMU
+           const reportNumber = `6289635687240@c.us`
             argz = body.trim().split(' ')
             var slicedArgs = Array.prototype.slice.call(argz, 1);
             const bug = await slicedArgs.join(' ')
             if(!bug) return
             if(isGroupMsg){
-                tobz.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${sender.id.match(/\d+/g)}\n*GROUP*: ${formattedTitle}\n\nPesan: ${bug}`)
-                tobz.reply(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.' ,id)
+                tobz.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n*GROUP*: ${formattedTitle}\n\nPesan: ${bug}`)
+                tobz.sendText(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.')
             }else{
-                tobz.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${sender.id.match(/\d+/g)}\n\nPesan: ${bug}`)
-                tobz.reply(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.', id)
+                tobz.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n\nPesan: ${bug}`)
+                tobz.sendText(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.')
             }
             break
          case prefix+'profile':
@@ -9132,7 +10232,7 @@ const pen = no.replace(' ','')
                     } else {
                         var namae = contact
                     } 
-                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username: ${namae}*\n• *User Info: ${status}*\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}\n`)
+                        tobz.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username:* ${namae}\n• *User Info:* ${status}\n*• Block :* ${block}\n*• Banned :* ${bend}\n• *Admin Group:* ${adm}\n• *Admin ZXCBOT:* ${donate}\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}*\n`, id)
                     }
                 } else if (quotedMsg) {
                     var qmid = quotedMsgObj.sender.id
@@ -9408,42 +10508,63 @@ case prefix+'menu':
     case prefix+'help':
     if(isReg(obj)) return
      if(cekumur(cekage)) return
+     //const userLevel2 = level.getLevelingLevel(sender.id, _level)
+     //const userXp2 = level.getLevelingXp(sender.id, _level)
+    //*~> Level/Xp* : ${userLevel2} / ${userXp2} 
+   // ├ *${prefix}level [enable|disable]*
+     var prema = isAdmin
 
-tobz.reply(from,
-`Haii *${pushname}* Silahkan cek menu - menu nya dibawah ini
+//if (isGroupMsg) {   
+const menubot = 
+`*Haii User ZXCBOT 👋*
 
 *Telpon = Blocked!*
 *Spam = Banned!*
 
+Kalau kamu belum ngerti cara pakainya, ketik *${prefix}readme* aja biar paham pakainya.
+
+Nb: Perintah tidak perlu menggunakan tanda [ ]
+
+┌──
+│ *~> Nama*  : ${pushname}
+│ *~> User*  :  *${prema ? 'VIP' : 'Free'}*
+│ *~> Link*  : wa.me/${serial.replace('@c.us', '')}
+└────────────────────
+
 ┌───│ ＺＸＣＢＯＴ
 │
-├── *PREFIX:* *「 ${prefix} 」*
+├── *PREFIX:* *「 MULTI PREFIX 」*
 ├── *Total Pengguna : ${pendaftar.length}*
 ├────────────────────
 │
-├─「 *TOOLS MENU* 」
+│
+├─「 *BASIC MENU* 」
 ├ *${prefix}sticker*
 ├ *${prefix}sticker2 (rasio 1:1)*
-├ *${prefix}stickergif*
 ├ *${prefix}snobg*
 ├ *${prefix}snobg2*
-├ *${prefix}snobg3*
 ├ *${prefix}toimg*
 ├ *${prefix}tomp3*
 ├ *${prefix}bass*
 ├ *${prefix}imgtourl*
-├ *${prefix}crop |lebar|tinggi*
+├ *${prefix}emojisticker 😁*
 ├ *${prefix}reminder |waktu|alasan*
+│
 │
 ├─「 *MAKER MENU* 」
 ├ *${prefix}ttp [teks]*
 ├ *${prefix}ttp2 [teks]*
+├ *${prefix}attp [teks]*
 ├ *${prefix}tahta [teks]*
+├ *${prefix}silk [teks]*
+├ *${prefix}sliding [teks]*
 ├ *${prefix}qrcode [optional]*
 ├ *${prefix}glitch [|teks1|teks2]*
+├ *${prefix}logoml [|caracter|teks]*
 ├ *${prefix}tts [kode bhs] [teks]*
 ├ *${prefix}tahtacs [teks1|teks2|teks3]*
 ├ *${prefix}quotemaker [|teks|author|theme]*
+│
 │
 ├─「 *MANIPULATION* 」
 ├ *${prefix}blurr*
@@ -9455,20 +10576,25 @@ tobz.reply(from,
 ├ *${prefix}firee*
 ├ *${prefix}scomic*
 ├ *${prefix}zoomy*
+├ *${prefix}gtav*
+├ *${prefix}pencil*
+├ *${prefix}gtav*
+├ *${prefix}fbpg*
 ├ *${prefix}trigger*
-├ *${prefix}sfire*
 ├ *${prefix}ytcomment [gambar|username|comment|thema]*
 ├ *${prefix}phcomment [@tag|username|comment]*
 ├ *${prefix}phcomment2 [gambar|username|comment]*
-├ *${prefix}memecustom |teks atas|teks bawah*
+├ *${prefix}memecustom [|teks atas|teks bawah]*
+│
 │
 ├─「 *NULIS MENU* 」
 ├ *${prefix}nulis [teks]*
+├ *${prefix}nulis2 [|Nama|Kelas|Teks]*
 ├ *${prefix}nuliskiri [teks]*
 ├ *${prefix}nuliskanan [teks]*
 ├ *${prefix}foliokanan [teks]*
 ├ *${prefix}foliokiri [teks]*
-├ *${prefix}magernulis1 [|Nama|Kelas|Teks]*
+│
 │
 ├─「 *KERANG MENU* 」
 ├ *${prefix}apakah [optional]*
@@ -9476,6 +10602,7 @@ tobz.reply(from,
 ├ *${prefix}bisakah [optional]*
 ├ *${prefix}brppersen [optional]*
 ├ *${prefix}kapankah [optional]*
+│
 │
 ├─「 *FUN MENU / GROUP* 」    
 ├ *${prefix}caklontong*
@@ -9495,20 +10622,24 @@ tobz.reply(from,
 ├ *${prefix}igprofile [@username]*
 ├ *${prefix}heroml [nama hero]*
 │
+│
 ├─「 *DOWNLOADER MENU* 」    
 ├ *${prefix}ytmp3 [linkYt]*
 ├ *${prefix}ytmp4 [linkYt]*
 ├ *${prefix}ig [linkIg]*
-├ *${prefix}fb [linkFb]*
-├ *${prefix}twitter [linkTwitter]*
-├ *${prefix}smule [linkSmule]*
+├ *${prefix}fb [linkFb]* [ERROR!]
+├ *${prefix}twtr [linkTwitter]* [ERROR!]
 ├ *${prefix}tiktok [linkTiktok]*
 ├ *${prefix}ttnowm [linkTiktok]*
+├ *${prefix}lk21 [judul film]*
 ├ *${prefix}joox [lagu]*
-├ *${prefix}play [lagu]*
+├ *${prefix}play [judul lagu]*
+├ *${prefix}play [link yt]*
+├ *${prefix}music [judul lagu]*
+├ *${prefix}video [judul video]*
 ├ *${prefix}gdrive [ BAYPASS ]*
 ├ *${prefix}playstore [query]*
-├ *${prefix}play [judul lagu]*
+│
 │
 ├─「 *ANIME MENU* 」 
 ├ *${prefix}loli*
@@ -9519,8 +10650,6 @@ tobz.reply(from,
 ├ *${prefix}randomTrapNime*
 ├ *${prefix}randomAnime*
 ├ *${prefix}quotesnime*
-├ *${prefix}wait*
-├ *${prefix}koin*
 ├ *${prefix}malanime [optional]*
 ├ *${prefix}malcharacter [optional]*
 ├ *${prefix}kusonime [optional]*
@@ -9528,21 +10657,29 @@ tobz.reply(from,
 ├ *${prefix}dewabatch [optional]*
 ├ *${prefix}animesearch [query]*
 │
+│
 ├─「 *EDUKASI MENU* 」
 ├ *${prefix}brainly [pertanyaan] [.jumlah]*
 ├ *${prefix}resepmasakan [optional]*
 ├ *${prefix}kbbi [query]*
 ├ *${prefix}wiki [query]*
 │
-├─「 *RANDOM TEKS* 」
+│
+├─「 *RANDOM MENU* 」
 ├ *${prefix}quotes*
 ├ *${prefix}fakta*
 ├ *${prefix}katabijak*
 ├ *${prefix}pantun*
 ├ *${prefix}alay [teks]*
-├ *${prefix}hilih [teks] / reply pesan*
+├ *${prefix}bucin [teks]*
 ├ *${prefix}bacot*
+├ *${prefix}cerpen*
+├ *${prefix}puisi*
 ├ *${prefix}addbacot*
+├ *${prefix}hilih [teks] / reply pesan*
+├ *${prefix}halah [teks] / reply pesan*
+├ *${prefix}holoh [teks] / reply pesan*
+│
 │
 ├─「 *HELPER MENU* 」
 ├ *${prefix}lirik [optional]*
@@ -9554,7 +10691,6 @@ tobz.reply(from,
 ├ *${prefix}checkip [ipaddress]*
 ├ *${prefix}maps [optional]*
 ├ *${prefix}translate [bahasa] [teks]*
-├ *${prefix}pastebin [teks|author]*
 ├ *${prefix}jadwalbola [query]*
 ├ *${prefix}distance [query]*
 ├ *${prefix}ytsearch*
@@ -9562,6 +10698,7 @@ tobz.reply(from,
 ├ *${prefix}news*
 ├ *${prefix}shopee*
 ├ *${prefix}wame*
+│
 │
 ├─「 *GROUP MENU* 」
 ├ *${prefix}sider*
@@ -9583,16 +10720,26 @@ tobz.reply(from,
 ├ *${prefix}setgroupicon [reply]*
 ├ *${prefix}delete [replyChatBot]*
 ├ *${prefix}group [open|close]*
-├ *${prefix}level [enable|disable]*
 ├ *${prefix}autosticker [enable|disable]*
+├ *${prefix}autovn [enable/disable]* *[BETA!]*
+├ *${prefix}leveling [enable|disable]*
 ├ *${prefix}NSFW [enable|disable]*
 ├ *${prefix}left [enable|disable]*
 ├ *${prefix}welcome [enable|disable]*
 ├ *${prefix}simi [enable|disable]*
 ├ *${prefix}antilink [enable|disable]*
-├ *${prefix}antiIG [enable|disable]* *[BETA!]*
+├*${prefix}antiIG [enable|disable]* *[BETA!]*
 │
-└─「 *SET WELCOME* 」
+│
+├─「 *OTHER* 」
+├ *${prefix}iklan*
+├ *${prefix}info*
+└ *${prefix}owner*
+ 
+
+
+*「 SET WELCOME BETA! 」*
+
 - *${prefix}setwelcome @nama @grup*
 - *${prefix}setleft @nama @grup*
 - *${prefix}delwelcome*
@@ -9607,268 +10754,25 @@ tobz.reply(from,
 *@nama - Mention User*
 *@grup - Nama Grup*
 
-│
-│
-└──  _*zxcbot by @juwenajaa*_` , id)
-    
-    break
+
+*Next update:*
+- Welcome / Left Foto Member
 
 
-case prefix+'imagemaker':
-tobz.reply(from, 
-` ► 『 *IMAGE MAKER MENU* 』
-
-✻  *${prefix}thunder [teks]*
-✻  *${prefix}holograph [teks]*
-✻  *${prefix}tahta [teks]*
-✻  *${prefix}glow [teks]*
-✻  *${prefix}vintage [teks]*
-✻  *${prefix}matrix [teks]*
-✻  *${prefix}glue3d [teks]*
-✻  *${prefix}luxury [teks]*
-✻  *${prefix}bokeh [teks]*
-✻  *${prefix}dropwater [teks]*
-✻  *${prefix}oldlogo [teks]*
-✻  *${prefix}firework [teks]*
-✻  *${prefix}lavatext [teks]*
-✻  *${prefix}3dtext [teks]*
-✻  *${prefix}toxict [teks]*
-✻  *${prefix}realcloud [teks]*
-✻  *${prefix}ninja [teks]*
-✻  *${prefix}cloudsky [teks]*
-✻  *${prefix}love [teks]*
-✻  *${prefix}blackpink [teks]*
-✻  *${prefix}sandwriting [teks]*
-✻  *${prefix}foilbalon [teks]*
-✻  *${prefix}logomarvel [teks1|teks2]*
-✻  *${prefix}glitch [teks1|teks2]*
-✻  *${prefix}pornhub [|teks1|teks2]*
-✻  *${prefix}searchteks [|teks|teks2|teks3]*
-✻  *${prefix}quotemaker [|teks|author|theme]*
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-case prefix+'creatormenu':
-tobz.reply(from, 
-`► 『 *CREATOR MENU* 』
-
-✻  *${prefix}sticker*
-✻  *${prefix}stickergif*
-✻  *${prefix}ttp [teks]*
-✻  *${prefix}ttp2 [teks]*
-✻  *${prefix}snobg*
-✻  *${prefix}toimg*
-✻  *${prefix}slightning*
-✻  *${prefix}sfire*
-✻  *${prefix}qrcode [optional]*
-✻  *${prefix}tts [kode bhs] [teks]*
+Ada fitur yang error?, PC OWNER!
 
 
-_*zxcbot by @juwenajaa*_`, id)
-break
+ _*zxcbot by @juwenajaa*_` 
 
-case prefix+'kerangmenu':
-tobz.reply(from, 
-`► 『 *KERANG MENU* 』
-
-✻  *${prefix}apakah [optional]*
-✻  *${prefix}rate [optional]*
-✻  *${prefix}bisakah [optional]*
-✻  *${prefix}brppersen [optional]*
-✻  *${prefix}kapankah [optional]*
-
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'islammenu':
-tobz.reply(from, 
-`► 『 *PRAY (ISLAM)* 』
-
-✻  *${prefix}quran [urutan surah]*
-✻  *${prefix}infosurah [nama surah]*
-✻  *${prefix}tafsir [nama surah] [ayat]*
-✻  *${prefix}jadwalsholat [daerah]*
-✻  *${prefix}listsurah*
-✻  *${prefix}listdaerah*
-
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'downloadermenu':
-tobz.reply(from, 
-`► 『 *DOWNLOADER* 』
-
-✻  *${prefix}ytmp3 [linkYt]*
-✻  *${prefix}ytmp4 [linkYt]*
-✻  *${prefix}ig [linkIg]*
-✻  *${prefix}fb [linkFb]*
-✻  *${prefix}twitter [linkTwitter]*
-✻  *${prefix}smule [linkSmule]*
-✻  *${prefix}tiktok [linkTiktok]*
-✻  *${prefix}starmaker [linkStarmaker]*
-✻  *${prefix}nhder [kodeNuclear]*
-✻  *${prefix}joox [lagu]*
-✻  *${prefix}play [lagu]*
-
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'animemenu':
-tobz.reply(from, 
-`► 『 *ANIME MENU* 』
-
-✻  *${prefix}loli*
-✻  *${prefix}shota*
-✻  *${prefix}waifu*
-✻  *${prefix}husbu*
-✻  *${prefix}randomNekoNime*
-✻  *${prefix}randomTrapNime*
-✻  *${prefix}randomAnime*
-✻  *${prefix}quotesnime*
-✻  *${prefix}wait*
-✻  *${prefix}koin*
-✻  *${prefix}malanime [optional]*
-✻  *${prefix}malcharacter [optional]*
-✻  *${prefix}kusonime [optional]*
-✻  *${prefix}otakudesu [optional]*
-✻  *${prefix}dewabatch [optional]*
-✻  *${prefix}animesearch [query]*
-
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'edumenu':
-tobz.reply(from, 
-`► 『 *EDUCATIONAL MENU* 』
-
-✻  *${prefix}brainly [pertanyaan] [.jumlah]*
-✻  *${prefix}resepmasakan [optional]*
-✻  *${prefix}kbbi [query]*
-✻  *${prefix}wiki [query]*
-
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'randomteksmenu':
-tobz.reply(from, 
-`► 『 *RANDOM TEKS MENU* 』
-
-✻  *${prefix}puisi1*
-✻  *${prefix}puisi2*
-✻  *${prefix}cerpen1*
-✻  *${prefix}cerpen2*
-✻  *${prefix}motivasi*
-✻  *${prefix}quotes*
-✻  *${prefix}fakta*
-✻  *${prefix}katabijak*
-✻  *${prefix}pantun*
-
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'helpermenu':
-tobz.reply(from, 
-`► 『 *HELPER MENU* 』
-
-✻  *${prefix}lirik [optional]*
-✻  *${prefix}chord [optional]*
-✻  *${prefix}covid [negara]*
-✻  *${prefix}shorturl [linkWeb]*
-✻  *${prefix}ssphone [linkWeb]* 
-✻  *${prefix}sspc [linkWeb]* 
-✻  *${prefix}checkip [ipaddress]*
-✻  *${prefix}maps [optional]*
-✻  *${prefix}translate [bahasa] [teks]*
-✻  *${prefix}pastebin [teks|author]*
-✻  *${prefix}jadwalbola [query]*
-✻  *${prefix}distance [query]*
-✻  *${prefix}ytsearch*
-✻  *${prefix}infoGempa*
-✻  *${prefix}news*
-✻  *${prefix}shopee*
-✻  *${prefix}wame*
-
-
-_*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'menugrup':
-tobz.reply(from, 
-`┌───│ ＺＸＣＢＯＴ
-│
-├─「 *GROUP MENU* 」
-├ *${prefix}sider*
-├ *${prefix}wame*
-├ *${prefix}groupinfo*
-├ *${prefix}add 62858xxxxx*
-├ *${prefix}kick @tagmember*
-├ *${prefix}promote @tagmember*
-├ *${prefix}demote @tagadmin*
-├ *${prefix}edotensei @tagmember*
-├ *${prefix}getpic @tagsomeone* 
-├ *${prefix}tagall [pesan]*
-├ *${prefix}afk [reason]*
-├ *${prefix}adminList*
-├ *${prefix}ownerGroup*
-├ *${prefix}leave*
-├ *${prefix}setgroupname [teks]*
-├ *${prefix}setgroupicon [reply]*
-├ *${prefix}delete [replyChatBot]*
-├ *${prefix}group [open|close]*
-├ *${prefix}level [enable|disable]*
-├ *${prefix}autosticker [enable|disable]*
-├ *${prefix}NSFW [enable|disable]*
-├ *${prefix}left [enable|disable]*
-├ *${prefix}welcome [enable|disable]*
-├ *${prefix}simi [enable|disable]*
-├ *${prefix}antilink [enable|disable]*
-├ *${prefix}antiIG [enable|disable]* *[BETA!]*
-│
-├─「 *SET WELCOME* 」
-├ *${prefix}setwelcome @nama @grup*
-├ *${prefix}setleft @nama @grup*
-├ *${prefix}delwelcome*
-├ *${prefix}delldeft*
-
-*Contoh atur set welcome:*
-*${prefix}setwelcome Haii @nama selamat datang di @grup*
-
-*@nama - Mention User*
-*@grup - Nama Grup*
-
-│
-│
-└──  _*zxcbot by @juwenajaa*_`, id)
-break
-
-case prefix+'funmenu':
-tobz.reply(from, 
-`► 『 *FUN MENU / GROUP* 』
-
-✻  *${prefix}caklontong*
-✻  *${prefix}family100*
-✻  *${prefix}tebakgambar*
-✻  *${prefix}ramalpasangan [kamu|pasangan]*
-✻  *${prefix}zodiak [zodiak kamu]*
-✻  *${prefix}artinama [nama]*
-✻  *${prefix}artinama [nama]*
-✻  *${prefix}artimimpi [mimpi]*
-✻  *${prefix}randomtag [pesan]*
-✻  *${prefix}cocok*
-✻  *${prefix}hug [tag]*
-✻  *${prefix}dadu*
-✻  *${prefix}koin*
-✻  *${prefix}igprofile [@username]*
-✻  *${prefix}heroml [nama hero]*
-
-
-_*zxcbot by @juwenajaa*_`, id)
+/* const updatebot = 
+`┌「 *NEW FITUR* 」
+├ *${prefix}autovn [enable/disable]*
+├ *${prefix}igstory*
+└ *${prefix}*` */
+ tobz.reply(from, menubot, id)
+ //await sleep(900)
+ //tobz.reply(from, updatebot, id)
+ 
 break
 
 case prefix+'adminmenu':
@@ -10304,14 +11208,9 @@ case prefix+'wame':
                 if (isGroupMsg) {
                     tobz.reply(from, `Iya? Ada yang bisa dibantu?\nKetik *${prefix}help* untuk melihat commands`, id)
                 }
+
+                
             }
-       
-                /*   
-            if (command.startsWith('ya')) {
-                tobz.sendText(from, `bot`, id)
-    
-            } */
-			 
             await tobz.sendSeen(from) 
             }
         }
