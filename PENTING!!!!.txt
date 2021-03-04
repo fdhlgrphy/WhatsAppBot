@@ -8,13 +8,22 @@ INI PENTING, DAN WAJIB DI INSTALL KALAU GAMAU GAGAL.
 BINGUNG PAS INSTALL? HUBUNGI GUE VIA WHATSAPP.( wa.me/6289635687240 )
 ADA CASE BERMASALAH? HUBUNGI GUE VIA WHATSAPP.( wa.me/6289635687240 )
 --------
-KALAU MISALNYA CASE WORK TAPI MALAH KELUARNYA BEDA, MUNGKIN KARENA ERRORNYA DI API
-BELI APIKEYNYA DISINI:
 
+
+API - API YANG DIGUNAKAN DALAM SC INI:
+
+
+API BERBAYAR:
 https://naufalhoster.xyz/docs/
-http://tobz-api.herokuapp.com
-http://api.zeks.xyz/
 https://api.vhtear.com/
+http://lolhuman.herokuapp.com/
+
+--------
+
+API YANG FREE:
+http://tobz-api.herokuapp.com
+https://videfikri.com/api/
+http://api-melodicxt-2.herokuapp.com/
 
 ---------------------------------
 
