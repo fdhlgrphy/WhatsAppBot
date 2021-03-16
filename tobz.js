@@ -284,7 +284,7 @@ module.exports = tobz = async (tobz, message) => {
         const uaOverride = 'WhatsApp/2.2029.4 Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36'
         const isUrl = new RegExp(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&/=]*)/gi)
         const url = args.length !== 0 ? args[0] : ''
-        const prefix = /^[°•π÷×¶∆£¢€¥®™✓_=|~!?#$%^&+()<>.\/\\©^]/.test(command) ? command.match(/^[°•π÷×¶∆£¢€¥®™✓_=|~!?#$%^&+()<>.\/\\©^]/gi) : '#'
+        const prefix = /^[°•π÷×¶∆£¢€¥®™✓_=|~!?#$%^&+()<>.\\\©^-]/.test(command) ? command.match(/^[°•π÷×¶∆£¢€¥®™✓_=|~!?#$%^&+()<>.\\\©^-]/gi) : '#'
 
         global.prefix
 
@@ -1447,6 +1447,7 @@ function addMsgLimit(id){
                  }
                     break
             case prefix+'takestick': 
+            case prefix+'ts': 
             if(isReg(obj)) return
             if(cekumur(cekage)) return
           // if (!isOwner) return tobz.reply(from, `Fitur ini sedang dalam perbaikan.`, id)
@@ -1614,7 +1615,7 @@ function addMsgLimit(id){
                 //if (!isGroupMsg) return tobz.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', message.id)
                 try
                 {
-                    const string = body.toLowerCase().includes('#ttp') ? encodeURIComponent(body.slice(5)) : encodeURIComponent(body.slice(5))
+                    const string = body.toLowerCase().includes('#ttp') ? body.slice(5) : body.slice(5) 
                     if(args)
                     {
                         if(quotedMsgObj == null)
@@ -2145,23 +2146,23 @@ tobz.setGroupToAdminsOnly(groupId, true)
 			case prefix+'alay':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+           // if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             try {
                 if (quotedMsgObj == null) {
-                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}alay [ Teks ]*, contoh *${prefix}alay aku bukan boneka*\n\nAtau reply pesan seseorang lalu ketik ${prefix}alay\n\nFitur ini tidak bisa support emoji dan simbol2 lainnya`, id)   
+                    if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}alay [ Teks ]*, contoh *${prefix}alay aku bukan boneka*\n\nAtau reply pesan seseorang lalu ketik ${prefix}alay`, id)   
                     argz = body.trim().split(' ')
                     var slicedArgs = Array.prototype.slice.call(argz, 1);
                     const alay = await slicedArgs.join(' ')
-                    const alay1 = await axios.get(`https://api.terhambar.com/bpk?kata=${alay}`)
+                    const alay1 = await axios.get(`https://api.terhambar.com/bpk?kata=${encodeURIComponent(alay)}`)
                     const alay2 = alay1.data.text
                     tobz.reply(from, alay2, id) 
-                        limitAdd(serial)
+                       // limitAdd(serial)
                 } else {
                     const alay3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
-                    const alay4 = await axios.get(`https://api.terhambar.com/bpk?kata=${alay3}`)
+                    const alay4 = await axios.get(`https://api.terhambar.com/bpk?kata=${encodeURIComponent(alay3)}`)
                     const alay5 = alay4.data.text
                     tobz.reply(from, alay5, id)
-                    limitAdd(serial)
+                   // limitAdd(serial)
                 }
             } catch(e) {
                 console.log(e)
@@ -2410,7 +2411,7 @@ case prefix+'totitle':
        try {
         if (isMedia && isAudio || isQuotedAudio) {
             const acr = new acrcloud({ host: "identify-eu-west-1.acrcloud.com", access_key: "5b5a985ba8255d764ad78b17c740504f", access_secret: "obnbRuhQBqpM5fKna3jZE7FE6tUzmgnSmWk36CRQ"})
-            await tobz.reply(from, '_Mengindetifikasi lagu.. 🔍_', id)
+            await tobz.reply(from, '_Mengindetifikasi lagu.. 🔍_\n\nBila prosesnya lama, mungkin lagu tidak dapat dikenal', id)
             const encryptMedia = isQuotedAudio || isQuotedVoice ? quotedMsg : message
             console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
             const mediaData = await decryptMedia(encryptMedia, uaOverride)
@@ -2418,16 +2419,19 @@ case prefix+'totitle':
             await sleep(5000)
             const sampleq = fs.readFileSync(`./temp/audio.mp3`)
             acr.identify(sampleq).then(metadata => {
-            console.log(metadata.metadata.music[0]);
+           // console.log(metadata.metadata.music[0]);
+            const headernya = '*「  DATA BERHASIL DIDAPAT!  」*'
             const jawabanlagunya =  monospace(
-`「 DATA BERHASIL DIDAPAT 」
-
-
-Judul Lagu: ${metadata.metadata.music[0].title}
+`Judul Lagu: ${metadata.metadata.music[0].title}
 Artis: ${metadata.metadata.music[0].artists[0].name}
 Album: ${metadata.metadata.music[0].album.name}
-Rilis: ${metadata.metadata.music[0].release_date}`)
-tobz.reply(from, jawabanlagunya, id)
+Rilis: ${metadata.metadata.music[0].release_date}
+Genre: ${metadata.metadata.music[0].genres[0].name}
+Label: ${metadata.metadata.music[0].label}`)
+tobz.reply(from, 
+`${headernya}
+
+${jawabanlagunya}`, id)
         })		
             setTimeout(() => {
                             fs.unlinkSync(`./temp/audio.mp3`)
@@ -7943,7 +7947,7 @@ Jumlah limit : ${ceklumut(serial)}`)}`, id)
                     }
                             gameAdd(serial)
                             break
-                        case prefix+'slot':
+                        case prefix+'slotlimit':
                             if(isReg(obj)) return
                             if(cekumur(cekage)) return
                             if (isLimitg(serial)) return tobz.reply(from, limitgame, id)
@@ -7958,7 +7962,7 @@ Jumlah limit : ${ceklumut(serial)}`)}`, id)
                                 addbalance(pemain, hadiah1)
                                 var j = getbalance(pemain)
 tobz.reply(from,
-` [  🎰 | SLOTS ]
+` [  🎰 | SLOTS LIMIT ]
 ------------------
 ${slothAtas}
 ${slotOne} : ${slotTwo} : ${slotThree} <==
@@ -7968,7 +7972,7 @@ ${slothbawah}
 *Hadiah : $${hadiah1}*
 *Jumlah balance : ${j}*`, id)
 } else {
-tobz.reply(from,` [  🎰 | SLOTS ]
+tobz.reply(from,` [  🎰 | SLOTS LIMIT ]
 ------------------
 ${slothAtas}
 ${slotOne} : ${slotTwo} : ${slotThree} <==
@@ -7977,6 +7981,34 @@ ${slothbawah}
 *Coba lagi lain kali*`, id)
 } gameAdd(serial)
                     break
+                    case prefix+'slot':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        var pemain = sender.app_id
+                        const slotOne1 = slots[Math.floor(Math.random() * slots.length)]
+                        const slotTwo1 = slots[Math.floor(Math.random() * slots.length)]
+                        const slotThree1 = slots[Math.floor(Math.random() * slots.length)]
+                        const slothAtas1 = sotoy1[Math.floor(Math.random() * sotoy1.length)]
+                        const slothbawah1 = sotoy1[Math.floor(Math.random() * sotoy2.length)]
+                        if(slotOne === slotTwo && slotTwo === slotThree){
+tobz.reply(from,
+` [  🎰 | SLOTS ]
+------------------
+${slothAtas1}
+${slotOne1} : ${slotTwo1} : ${slotThree1} <==
+${slothbawah1}
+------------------
+*JACKPOT`, id)
+} else {
+tobz.reply(from,` [  🎰 | SLOTS ]
+------------------
+${slothAtas1}
+${slotOne1} : ${slotTwo1} : ${slotThree1} <==
+${slothbawah1}
+------------------
+*Coba lagi lain kali*`, id)
+} 
+                break
          case prefix+'tebakgambar':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -8958,7 +8990,7 @@ tobz.sendFileFromUrl(from, post.url, `Insta`, captig, id)
             try {
                 const spotify = await axios.get(`https://api.vhtear.com/spotify?query=${wahyus}&apikey=${vhtearkey}`)
                 const spoti  = spotify.data.result
-                console.log(spoti)
+                //console.log(spoti);
                 for (let i = 0; i < spoti.length; i++){
                 tobz.sendFileFromUrl(from, spoti[0].url, ``, ``, id)
                 }
@@ -10089,7 +10121,7 @@ break
                             hehe2 += `${i+1}. ` 
                             hehe2 += `@${groupMem[i].id.replace(/@c.us/g, '')}\n`
                         }
-                        await tobz.sendText(from, 'Tunggu! Scanning Anggota ~', id)
+                        //await tobz.sendText(from, 'Tunggu! Scanning Anggota ~', id)
                         await tobz.sendTextWithMentions(from, hehe2)
                     }
                     break
