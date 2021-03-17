@@ -2224,31 +2224,6 @@ tobz.setGroupToAdminsOnly(groupId, true)
                     tobz.reply(from, 'Maaf, Server sedang Error', id)
                 }
                 break
-			
-			
-           // http://lolhuman.herokuapp.com/api/ninja/LoLHuman?apikey=cfecfd54d952c84a0a7f6bfb
-			
-			case prefix+'namaninja':
-			if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-			if (args.length == 1) return tobz.reply(from, `Kirim perintah *${prefix}lirik2 [optional]*, contoh *${prefix}lirik2 aku bukan boneka*`, id)
-			const namaninja = async (ninjaa) => new Promise((resolve, reject) => {
-			axios.get(`https://scrap.terhambar.com/lirik?word=${ninjaa}`)
-				.then((ress2) => {
-				resolve(ress2.data.result)
-				})
-			.catch((err) => {
-				reject(err)
-			})
-				})
-			 namaninja(body.slice(10))
-			.then(async(ress2) => {
-				await tobz.reply(from, `${ress2}`, id)
-			})
-			break
-		
-		
             case prefix+'hilih':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -2264,7 +2239,6 @@ tobz.setGroupToAdminsOnly(groupId, true)
             }
             limitAdd(serial)
             break
-//https://api.terhambar.com/ninja?nama=juwen
             case prefix+'holoh':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -2725,38 +2699,7 @@ await tobz.sendFileFromUrl(from,  getUrli, `facetrack.jpg`, `${jawabannya}`, id)
                     await limitAdd(serial)
                     break
 
-                  /*  case prefix+'':
-                        if(isReg(obj)) return
-                        if(cekumur(cekage)) return
-                        if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                        tobz.reply(from, mess.wait, id)
-                        if (isMedia && type === 'image') {
-                            if (args.length === 1) return await tobz.reply(from, `Beri nama untuk pdfnya!\n\nContoh:\n${prefix}imgtopdf penting`, id)
-                            argz = body.trim().split(' ')
-                            var slicedArgs = Array.prototype.slice.call(argz, 1);
-                            const namanya = await slicedArgs.join(' ')
-                            const mediaData = await decryptMedia(message, uaOverride)
-                            const getUrli = await uploadImages(mediaData, false)
-                            const imgnya = await axios.get(`https://naufalhoster.xyz/tools/imagepdf?apikey=${naufalkey}&url=${getUrli}`)
-                            const pdfnya = imgnya.data.result.pdf
-                            await tobz.sendFileFromUrl(from, pdfnya, `${namanya}.pdf`, ``, id)
-                        } else if (quotedMsg && quotedMsg.type == 'image') {
-                            if (args.length === 1) return await tobz.reply(from, `Beri nama untuk pdfnya!\n\nContoh:\n${prefix}imgtopdf penting`, id)
-                            argz = body.trim().split(' ')
-                            var slicedArgs = Array.prototype.slice.call(argz, 1);
-                            const namanya = await slicedArgs.join(' ')
-                            const mediaData = await decryptMedia(quotedMsg, uaOverride)
-                            const getUrli = await uploadImages(mediaData, false)
-                            const imgnya = await axios.get(`https://naufalhoster.xyz/tools/imagepdf?apikey=${naufalkey}&url=${getUrli}`)
-                            const pdfnya = imgnya.data.result.pdf
-                            await tobz.sendFileFromUrl(from, pdfnya, `${namanya}.pdf`, ``, id)
-                        } else {
-                            await tobz.reply(from, `Wrong Format!\nHarap Kirim Gambar Dengan ${prefix}imgtopdf`, id)
-                        }
-                        await limitAdd(serial)
-                        break */
-    
-
+ 
             case prefix+'fighter':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -2779,8 +2722,6 @@ await tobz.sendFileFromUrl(from,  getUrli, `facetrack.jpg`, `${jawabannya}`, id)
                 }
                 await limitAdd(serial)
                 break
-               // https://naufalhoster.xyz/tools/falling_hearts?apikey=matchingajaa&url=https://naufalhoster.xyz/media/example.jpg&type=mp4
-            
                case prefix+'lovefil':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -3814,35 +3755,14 @@ Timestamp: ${yhahah.timestamp}`)
             await tobz.sendFileFromUrl(from, `https://api.vhtear.com/blackpinkicon?text=${blpk}&apikey=${vhtearkey}`, 'blackpink.jpg', 'Nih Logonya', id)
             await limitAdd(serial)
             break
-
-            // api baru nyadar bgst
-            //https://rest.farzain.com/api/random.php?min=1&max=100&apikey=
-           // https://tobz-api.herokuapp.com/api/photooxy?theme=csgo&text=Tobz&apikey=APIKEYLU
-           //pikri%20gans
-          
-           case prefix+'csgologo':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}csgologo [teks]*\nContoh : *${prefix}csgologo ZXCBOT*`, id)
-            tobz.reply(from, mess.wait, id)
-            const csgologo = body.slice(9)
-            const csgologo1 = await axios.get(`https://tobz-api.herokuapp.com/api/photooxy?theme=csgo&text=${csgologo}&apikey=${tobzkey}`)
-            const csgologo2 = csgologo1.data
-            tobz.sendFileFromUrl(from, csgologo2.result,`csgologo.jpg`, `Nih Gambarnya`, id)
-            await limitAdd(serial)
-            break
            case prefix+'namaninja':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
-            if (isLimit(serial)) return tobz.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if (args.length === 1) return tobz.reply(from, `Kirim perintah *${prefix}pubglogo [teks]*\nContoh : *${prefix}pubglogo ZXCBOT*`, id)
-            tobz.reply(from, mess.wait, id)
             const ninjaa = body.slice(10)
             const ninjaa2 = await axios.get(`https://api.terhambar.com/ninja?nama=${ninjaa}`)
             const ninjaa3 = ninjaa2.data.result
-           tobz.reply(from, ninjaa3.ninja, id)
-            await limitAdd(serial)
+            tobz.reply(from, ninjaa3.ninja, id)
             break
 
             case prefix+'ceknaufalkey':
@@ -10748,203 +10668,9 @@ contoh get video & music:
 
 *INGET DOSA YA BANG*`, id)
 break
-                /*
-   『 *IMAGE MAKER MENU* 』
-
-✻  *${prefix}thunder [teks]*
-✻  *${prefix}holograph [teks]*
-
-✻  *${prefix}glow [teks]*
-✻  *${prefix}vintage [teks]*
-✻  *${prefix}matrix [teks]*
-✻  *${prefix}glue3d [teks]* 
-✻  *${prefix}luxury [teks]*
-✻  *${prefix}bokeh [teks]*
-✻  *${prefix}dropwater [teks]*
-✻  *${prefix}oldlogo [teks]*
-✻  *${prefix}firework [teks]*
-✻  *${prefix}lavatext [teks]*
-✻  *${prefix}3dtext [teks]*
-✻  *${prefix}toxict [teks]*
-✻  *${prefix}realcloud [teks]*
-✻  *${prefix}ninja [teks]*
-✻  *${prefix}cloudsky [teks]* 
-✻  *${prefix}love [teks]*
-✻  *${prefix}blackpink [teks]*
-✻  *${prefix}sandwriting [teks]*
-✻  *${prefix}foilbalon [teks]*
-✻  *${prefix}logomarvel [teks1|teks2]*
-✻  *${prefix}glitch [teks1|teks2]*
-✻  *${prefix}searchteks [|teks|teks2|teks3]*
-
-
-
- */
 case prefix+'textkosong':
 tobz.reply(from, '‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎', id)
 break
-/*case prefix+'menu':
-    case prefix+'help':
-    case prefix+'commands':
-    if(isReg(obj)) return
-     if(cekumur(cekage)) return
-        tobz.reply(from, 
-`‎‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎
-‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎     ＺＸＣＢＯＴ 
-
-
-*Hai  ${pushname} 👋*
-Untuk menu kalian bisa lihat dibawah ini ya.     
-
-
-|  *PREFIX* = *${prefix}*
-
-JANGAN MENELPON BOT!!
-*TELPON BOT : AUTO BLOCK*
-
-
-     『 *CREATOR MENU* 』
-
-✻  *${prefix}sticker*
-✻  *${prefix}stickergif*
-✻  *${prefix}ttp [teks]*
-✻  *${prefix}ttp2 [teks]*
-✻  *${prefix}snobg*
-✻  *${prefix}toimg*
-✻  *${prefix}slightning*
-✻  *${prefix}sfire*
-✻  *${prefix}tahta [teks]*
-✻  *${prefix}qrcode [optional]*
-✻  *${prefix}tts [kode bhs] [teks]*
-✻  *${prefix}quotemaker [|teks|author|theme]*
-
-
-    『 *NULIS MENU* 』
-
-✻  *${prefix}nulis [teks]*
-✻  *${prefix}nuliskiri [teks]*
-✻  *${prefix}nuliskanan [teks]*
-✻  *${prefix}foliokanan [teks]*
-✻  *${prefix}foliokiri [teks]*
-✻  *${prefix}magernulis1 [|Nama|Kelas|Teks]
-
-
-    『 *KERANG MENU* 』
-
-✻  *${prefix}apakah [optional]*
-✻  *${prefix}rate [optional]*
-✻  *${prefix}bisakah [optional]*
-✻  *${prefix}brppersen [optional]*
-✻  *${prefix}kapankah [optional]*
-
-
-    『 *FUN MENU / GROUP* 』
-
-✻  *${prefix}caklontong*
-✻  *${prefix}family100*
-✻  *${prefix}tebakgambar*
-✻  *${prefix}ramalpasangan [kamu|pasangan]*
-✻  *${prefix}zodiak [zodiak kamu]*
-✻  *${prefix}artinama [nama]*
-✻  *${prefix}artimimpi [mimpi]*
-✻  *${prefix}randomtag [pesan]*
-✻  *${prefix}cocok*
-✻  *${prefix}hug [tag]*
-✻  *${prefix}dadu*
-✻  *${prefix}koin*
-✻  *${prefix}flip*
-✻  *${prefix}tod* *[TRUTH OR DARE]*
-✻  *${prefix}igprofile [@username]*
-✻  *${prefix}heroml [nama hero]*
-
-
-    『 *DOWNLOADER* 』
-
-✻  *${prefix}ytmp3 [linkYt]*
-✻  *${prefix}ytmp4 [linkYt]*
-✻  *${prefix}ig [linkIg]*
-✻  *${prefix}fb [linkFb]*
-✻  *${prefix}twitter [linkTwitter]*
-✻  *${prefix}smule [linkSmule]*
-✻  *${prefix}tiktok [linkTiktok]*
-✻  *${prefix}starmaker [linkStarmaker]*
-✻  *${prefix}nhder [kodeNuclear]*
-✻  *${prefix}joox [lagu]*
-✻  *${prefix}play [lagu]*
-✻  *${prefix}gdrive [linkGDrive]*
-✻  *${prefix}playstore*
-✻  *${prefix}play [lagu]*
-
-    『 *ANIME MENU* 』
-
-✻  *${prefix}loli*
-✻  *${prefix}shota*
-✻  *${prefix}waifu*
-✻  *${prefix}husbu*
-✻  *${prefix}randomNekoNime*
-✻  *${prefix}randomTrapNime*
-✻  *${prefix}randomAnime*
-✻  *${prefix}quotesnime*
-✻  *${prefix}wait*
-✻  *${prefix}koin*
-✻  *${prefix}malanime [optional]*
-✻  *${prefix}malcharacter [optional]*
-✻  *${prefix}kusonime [optional]*
-✻  *${prefix}otakudesu [optional]*
-✻  *${prefix}dewabatch [optional]*
-✻  *${prefix}animesearch [query]*
-
-
-
-    『 *EDUCATIONAL MENU* 』
-
-✻  *${prefix}brainly [pertanyaan] [.jumlah]*
-✻  *${prefix}resepmasakan [optional]*
-✻  *${prefix}kbbi [query]*
-✻  *${prefix}wiki [query]*
-
-
-    『 *RANDOM TEKS MENU* 』
-
-✻  *${prefix}fancyfont*
-✻  *${prefix}quotes*
-✻  *${prefix}fakta*
-✻  *${prefix}katabijak*
-✻  *${prefix}pantun*
-✻  *${prefix}alay [teks]*
-✻  *${prefix}hilih [teks] / reply pesan*
-✻  *${prefix}bacot*
-✻  *${prefix}addbacot*
-
-
-    『 *HELPER MENU* 』
-
-✻  *${prefix}lirik [optional]*
-✻  *${prefix}chord [optional]*
-✻  *${prefix}covid [negara]*
-✻  *${prefix}shorturl [linkWeb]*
-✻  *${prefix}ssphone [linkWeb]* 
-✻  *${prefix}sspc [linkWeb]* 
-✻  *${prefix}checkip [ipaddress]*
-✻  *${prefix}maps [optional]*
-✻  *${prefix}translate [bahasa] [teks]*
-✻  *${prefix}pastebin [teks|author]*
-✻  *${prefix}jadwalbola [query]*
-✻  *${prefix}distance [query]*
-✻  *${prefix}ytsearch*
-✻  *${prefix}infoGempa*
-✻  *${prefix}news*
-✻  *${prefix}shopee*
-✻  *${prefix}wame*
-
-
-
-_*zxcbot by @juwenajaa*_`, id)
-.then(() => ((isGroupMsg)) ? tobz.sendText(from, `► 『 *MENU GROUP* 』\n\n ✻  ${prefix}menugrup`) : null)
-break 
-
-
-*/
 case prefix+'animemenu':
         tobz.reply(from,
 ` 
