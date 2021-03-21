@@ -4,22 +4,21 @@ const left = require('./lib/left')
 const cron = require('node-cron')
 const color = require('./lib/color')
 const fs = require('fs')
-// const msgHndlr = require ('./tobz')
+// const msgHndlr = require ('./juwen')
 const figlet = require('figlet')
 const lolcatjs = require('lolcatjs')
 const options = require('./options')
+const juwen = require('./juwen.js')
 const { prefix } = JSON.parse(fs.readFileSync('./lib/database/setting.json'))
 const ownerNumber = 'no_kamu'
 
 // AUTO UPDATE BY NURUTOMO
 // THX FOR NURUTOMO
 // Cache handler and check for file change
-require('./tobz.js')
-nocache('./tobz.js', module => console.log(`'${module}' Updated!`))
-require('./lib/help.js')
-nocache('./lib/help.js', module => console.log(`'${module}' Updated!`))
+require('./juwen.js')
+nocache('./juwen.js', module => console.log(`'${module}' Berhasil di Updated!`))
 require('./lib/database/setting.json')
-nocache('./lib/database/setting.json', module => console.log(`'${module}' Updated!`))
+nocache('./lib/database/setting.json', module => console.log(`'${module}' Berhasil di Updated!`))
 
 const adminNumber = JSON.parse(fs.readFileSync('./lib/database/admin.json'))
 const setting = JSON.parse(fs.readFileSync('./lib/database/setting.json'))
@@ -34,10 +33,10 @@ let {
     restartState: isRestart
     } = setting
 
-function restartAwal(tobz){
+function restartAwal(juwen){
     setting.restartState = false
     isRestart = false
-    tobz.sendText(setting.restartId, 'Restart Succesfull!')
+    juwen.sendText(setting.restartId, 'Restart Succesfull!')
     setting.restartId = 'undefined'
     //fs.writeFileSync('./lib/setting.json', JSON.stringify(setting, null,2));
 }
@@ -45,77 +44,77 @@ function restartAwal(tobz){
 lolcatjs.options.seed = Math.round(Math.random() * 1000);
 lolcatjs.options.colors = true;
 
-const start = async (tobz = new Client()) => {
+const start = async (juwen = new Client()) => {
         console.log('------------------------------------------------')
         lolcatjs.fromString(color(figlet.textSync('ZXCBOT', { horizontalLayout: 'full' })))
         console.log('------------------------------------------------')
         lolcatjs.fromString('[OWNER] @JUWENAJAA')
         lolcatjs.fromString('[SERVER] Server Started!')
-        tobz.onAnyMessage((fn) => messageLog(fn.fromMe, fn.type))
+        juwen.onAnyMessage((fn) => messageLog(fn.fromMe, fn.type))
         // Force it to keep the current session
-        tobz.onStateChanged((state) => {
+        juwen.onStateChanged((state) => {
             console.log('[Client State]', state)
-            if (state === 'CONFLICT' || state === 'UNLAUNCHED') tobz.forceRefocus()
+            if (state === 'CONFLICT' || state === 'UNLAUNCHED') juwen.forceRefocus()
         })
         // listening on message
-        tobz.onMessage((async (message) => {
+        juwen.onMessage((async (message) => {
 
-        tobz.getAmountOfLoadedMessages() // Cut message Cache if cache more than 3K
+        juwen.getAmountOfLoadedMessages() // Cut message Cache if cache more than 3K
             .then((msg) => {
                 if (msg >= 3000) {
                     console.log('[CLIENT]', color(`Loaded Message Reach ${msg}, cuting message cache...`, 'yellow'))
-                    tobz.cutMsgCache()
+                    juwen.cutMsgCache()
                 }
             })
-        // msgHndlr(tobz, message)
+        // msgHndlr(juwen, message)
         // Message Handler (Loaded from recent cache)
-        require('./tobz.js')(tobz, message)
+        require('./juwen.js')(juwen, message)
     }))
            
 
-        tobz.onGlobalParticipantsChanged((async (heuh) => {
-            await welcome(tobz, heuh) 
-            left(tobz, heuh)
+        juwen.onGlobalParticipantsChanged((async (heuh) => {
+            welcome(juwen, heuh) 
+            left(juwen, heuh)
             }))
         
-        tobz.onAddedToGroup(async (chat) => {
-            if(isWhite(chat.id)) return tobz.sendText(chat.id, `*ZXCBOT BERHASIL MASUK!*\nUntuk melihat menu ketik *${prefix}help*\n\nSelamat menggunakan bot :D\nDipakai dengan bijak yaaa.`)
+        juwen.onAddedToGroup(async (chat) => {
+            if(isWhite(chat.id)) return juwen.sendText(chat.id, `*ZXCBOT BERHASIL MASUK!*\nUntuk melihat menu ketik *${prefix}help*\n\nSelamat menggunakan bot :D\nDipakai dengan bijak yaaa.`)
             if(mtcState === false){
-                const groups = await tobz.getAllGroups()
+                const groups = await juwen.getAllGroups()
                 // BOT group count less than
                 if(groups.length > groupLimit){
-                    await tobz.sendText(chat.id, 'Maaf, Batas group yang dapat bot tampung sudah full.').then(async () =>{
-                        tobz.deleteChat(chat.id)
-                        tobz.leaveGroup(chat.id)
+                    await juwen.sendText(chat.id, 'Maaf, Batas group yang dapat bot tampung sudah full.').then(async () =>{
+                        juwen.deleteChat(chat.id)
+                        juwen.leaveGroup(chat.id)
                     })
                 }else{
                     if(chat.groupMetadata.participants.length < memberLimit){
-                        await tobz.sendText(chat.id, `Maaf, BOT keluar jika member group tidak melebihi ${memberLimit} orang`).then(async () =>{
-                            tobz.deleteChat(chat.id)
-                            tobz.leaveGroup(chat.id)
+                        await juwen.sendText(chat.id, `Maaf, BOT keluar jika member group tidak melebihi ${memberLimit} orang`).then(async () =>{
+                            juwen.deleteChat(chat.id)
+                            juwen.leaveGroup(chat.id)
                         })
                     }else{
-                        if(!chat.isReadOnly) tobz.sendText(chat.id, `*ZXCBOT BERHASIL MASUK!*\nUntuk melihat menu ketik *${prefix}help*\n\nSelamat menggunakan bot :D\nDipakai dengan bijak yaaa.`)
+                        if(!chat.isReadOnly) juwen.sendText(chat.id, `*ZXCBOT BERHASIL MASUK!*\nUntuk melihat menu ketik *${prefix}help*\n\nSelamat menggunakan bot :D\nDipakai dengan bijak yaaa.`)
                     }
                 }
             }else{
-                await tobz.sendText(chat.id, 'ZXCBOT sedang maintenance, coba lain hari').then(async () => {
-                    tobz.deleteChat(chat.id)
-                    tobz.leaveGroup(chat.id)
+                await juwen.sendText(chat.id, 'ZXCBOT sedang maintenance, coba lain hari').then(async () => {
+                    juwen.deleteChat(chat.id)
+                    juwen.leaveGroup(chat.id)
                 })
             }
         })
 
-        /*tobz.onAck((x => {
+        /*juwen.onAck((x => {
             const { from, to, ack } = x
-            if (x !== 3) tobz.sendSeen(to)
+            if (x !== 3) juwen.sendSeen(to)
         }))*/
 
         // listening on Incoming Call
-        tobz.onIncomingCall(( async (call) => {
-            await tobz.sendText(call.peerJid, 'Maaf, saya tidak bisa menerima panggilan. nelfon = block!.\nJika ingin membuka block harap chat Owner!')
-            tobz.sendContact(from, ownerNumber)
-            .then(() => tobz.contactBlock(call.peerJid))
+        juwen.onIncomingCall(( async (call) => {
+            await juwen.sendText(call.peerJid, 'Maaf, saya tidak bisa menerima panggilan. nelfon = block!.\nJika ingin membuka block harap chat Owner!')
+            juwen.sendContact(from, ownerNumber)
+            .then(() => juwen.contactBlock(call.peerJid))
         }))
     }
 
@@ -148,5 +147,5 @@ function uncache(module = '.') {
 }
 
 create(options(true, start))
-    .then(tobz => start(tobz))
+    .then(juwen => start(juwen))
     .catch((error) => console.log(error))
