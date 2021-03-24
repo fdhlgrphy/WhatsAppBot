@@ -1,25 +1,25 @@
 {
   "name": "ZXCBOT",
   "version": "3.0.0",
-  "description": "THX FOR MHANKBARBAR AS MY FRIEND, REEDIT BY TOBZ",
+  "description": "THANKS FOR TOBZ",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "TOBZ",
+  "author": "TOBZ & RECODE BY @JUWENAJAA",
   "license": "Apache-2.0",
   "dependencies": {
-    "@adiwajshing/baileys": "^3.4.1",
-    "@open-wa/wa-automate": "^3.9.6",
+    "@open-wa/wa-automate": "^3.9.13",
     "@open-wa/wa-decrypt": "^3.0.1",
     "@vitalets/google-translate-api": "^5.0.0",
     "acrcloud": "^1.4.0",
     "await-exec": "^0.1.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bent": "^7.3.10",
     "brainly-scraper": "^1.0.2",
     "canvacord": "^5.1.0",
+    "child_process": "^1.0.2",
     "dotenv": "^8.2.0",
     "download-file": "^0.1.5",
     "emoji-regex": "^9.0.0",
@@ -74,7 +74,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TobyG74/ElainaBOT",
+    "url": "git+https://github.com/juwenaja/WhatsAppBot",
     "babel-eslint": "^10.1.0",
     "eslint": "^7.9.0",
     "eslint-config-standard": "^14.1.1",
@@ -87,7 +87,7 @@
     "Whatsapp-Bot"
   ],
   "bugs": {
-    "url": "https://github.com/TobyG74/ElainaBOT/issues"
+    "url": "https://github.com/juwenaja/WhatsAppBot/issues"
   },
-  "homepage": "https://github.com/TobyG74/ElainaBOT"
+  "homepage": "https://github.com/juwenaja/WhatsAppBot"
 }
