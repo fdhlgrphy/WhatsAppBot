@@ -92,6 +92,14 @@ It will give us a callback like `SUCCESS: specified value was saved`.
 ```
 ## 🔍 Installing the dependencies
 
+# Installation
+
+## 📝 Cloning this repo
+```cmd
+> git clone https://github.com/SlavyanDesu/BocchiBot.git
+> cd BocchiBot
+```
+
 Install the dependencies:
 
 ```bash
