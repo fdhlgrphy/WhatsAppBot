@@ -96,8 +96,8 @@ It will give us a callback like `SUCCESS: specified value was saved`.
 
 ## 📝 Cloning this repo
 ```cmd
-> git clone https://github.com/SlavyanDesu/BocchiBot.git
-> cd BocchiBot
+> git clone https://github.com/juwenaja/WhatsAppBot.git
+> cd WhatsAppBot
 ```
 
 Install the dependencies:
