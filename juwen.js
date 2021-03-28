@@ -1,5 +1,4 @@
 /*
-/*
 THX BUAT YANG UDAH GUNAIN SCRIPT INI!
 
 BAGI YANG NANYA2 MASANG APIKEY DIMANA??
@@ -33,7 +32,7 @@ const google = require('google-it')
 const isPorn = require('is-porn')
 const translatte = require('translatte')
 const translate2 = require('@vitalets/google-translate-api');
-const { stdout } = require('process')
+const { stdout, report } = require('process')
 const translate = require('translatte')
 const Math_js = require('mathjs');
 const imageToBase64 = require('image-to-base64')
@@ -320,7 +319,7 @@ module.exports = juwen = async (juwen, message) => {
         const serial = sender.id
         const isAdmin = adminNumber.includes(sender.id) // Admin Number
 		const isPrem = premNumber.includes(sender.id) // Premium Number
-        //const reportNumber = '6289635687240@c.us'
+        const reportNumber = '6289635687240@c.us'
         //const ownerNumber = '6289635687240@c.us' // Owner Number 1 = Utama 
         const ownerNumber = ["6289635687240@c.us", "6285157661229@c.us"] // Owner Number 2 = Assistan Owner
         const isOwner = ownerNumber.includes(sender.id) // Owner Number 1
@@ -3698,7 +3697,6 @@ Timestamp: ${yhahah.timestamp}`)
             juwen.reply(from, kataa2, id)
             }
         break  
-		
 		 case prefix+'love':
 			if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -3710,6 +3708,19 @@ Timestamp: ${yhahah.timestamp}`)
              juwen.reply(from, '_Tunggu sebentar sedang di proses_', id)
              await juwen.sendFileFromUrl(from, `https://api.vhtear.com/lovemessagetext?text=${love}&apikey=${vhtearkey}`,`${love}.jpg`,`Nih Gambarnya`, id)        
              break  
+        case prefix+'foiltxt':
+			if(isReg(obj)) return
+            if(cekumur(cekage)) return
+             //if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+             if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis!*\nKetik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+             await limitAdd(serial)
+             argz = body.trim().split(' ')
+             var slicedArgs = Array.prototype.slice.call(argz, 1);
+             const foil_text = await slicedArgs.join(' ')
+             if (!foil_text) return juwen.reply(from, `Kirim perintah ${prefix}ove [teks]\n\nContoh ${prefix}foiltxt juwen`, id)
+             juwen.reply(from, '_Tunggu sebentar sedang di proses_', id)
+             await juwen.sendFileFromUrl(from, `https://api.vhtear.com/foil_text?text=${foil_text}&apikey=${vhtearkey}`,`${foil_text}.jpg`,`Nih Gambarnya`, id)        
+             break  
 			 
 			 case prefix+'silk':
 			if(isReg(obj)) return
@@ -3717,7 +3728,9 @@ Timestamp: ${yhahah.timestamp}`)
              //if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
              if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis!*\nKetik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
              await limitAdd(serial)
-             const silk = body.slice(5)
+             argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const silk = await slicedArgs.join(' ')
              if (!silk) return juwen.reply(from, `Kirim perintah ${prefix}juwen [teks]\n\nContoh ${prefix}silk juwen`, id)
              juwen.reply(from, '_Tunggu sebentar sedang di proses_', id)
              await juwen.sendFileFromUrl(from, `https://api.vhtear.com/silktext?text=${silk}&apikey=${vhtearkey}`,`${silk}.jpg`,`Nih Gambarnya`, id)        
@@ -3728,7 +3741,9 @@ Timestamp: ${yhahah.timestamp}`)
              //if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
              if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis!*\nKetik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
              await limitAdd(serial)
-             const sliding = body.slice(9)
+             argz = body.trim().split(' ')
+             var slicedArgs = Array.prototype.slice.call(argz, 1);
+             const sliding = await slicedArgs.join(' ')
              if (!sliding) return juwen.reply(from, `Kirim perintah ${prefix}ttpgif [teks]\n\nContoh ${prefix}ttpgif`, id)
              juwen.reply(from, 'Tunggu sebentar sedang di proses...', id)
              await juwen.sendFileFromUrl(from, `https://api.vhtear.com/slidingtext?text=${sliding}&apikey=${vhtearkey}`, ``, `Nihh`, id) .catch(() => juwen.reply(from, 'Ada yang error', id))
@@ -4050,15 +4065,16 @@ juwen.reply(from, cekapi9, id)
                             juwen.sendFileFromUrl(from, thatiswhat.result, `awkowak.jpg`, `Nihh`, id)
                             limitAdd(serial)
                             break
+                            //https://juwenajaa.herokuapp.com/api/textmaker/alam?text=Juwenn&theme=flower&apikey=idkbro
                             case prefix+'neontext':
                                 if(isReg(obj)) return
                                 if(cekumur(cekage)) return
                                 if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                                juwen.reply(from, mess.wait, id)
                                 argz = body.trim().split(' ')
                                 var slicedArgs = Array.prototype.slice.call(argz, 1);
                                 const neonbgt = await slicedArgs.join(' ')
-                                if (!neonbgt.includes('|')) return await juwen.reply(from, `Kirim perintah *${prefix}neontext text1|text2*`, id)
+                                if (!neonbgt.includes('|')) return await juwen.reply(from, `Kirim perintah *${prefix}neontext text1|text2*\n\nContoh: ${prefix}neontext yadi|mengontol`, id)
+                                juwen.reply(from, mess.wait, id)
                                     const neont1 = neonbgt.split('|')[0]
                                     const neont2 = neonbgt.split('|')[1]
                                 const thisiswhat2 = await axios.get(`https://fzn-gaz.herokuapp.com/api/neon-writing?text=${neont1}&text2=${neont2}`)
@@ -4066,7 +4082,21 @@ juwen.reply(from, cekapi9, id)
                                 juwen.sendFileFromUrl(from, thatiswhat2.result, `awkowak.jpg`, `Nihh`, id)
                                 limitAdd(serial)
                                 break
-                        case prefix+'ktpmaker':
+            case prefix+'flowertxt':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}changemymind text*, contoh *${prefix}flowertxt juwennn*`, id)
+                juwen.reply(from, mess.wait, id)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const textflower = await slicedArgs.join(' ')
+                const flower1 = await axios.get(`https://xinzbot-api.herokuapp.com/api/textmaker/alam?text=${encodeURIComponent(textflower)}&theme=flower&apikey=XinzBot`)
+                const flower2 = flower1.data.result.url
+                juwen.sendFileFromUrl(from, flower2, `awkowak.jpg`, `Nihh`, id)
+                limitAdd(serial)
+                break
+            case prefix+'ktpmaker':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
                 if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
@@ -4437,11 +4467,11 @@ juwen.reply(from, cekapi9, id)
                          if(isReg(obj)) return
                          if(cekumur(cekage)) return
                         // if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                         if (!isAdmin) return juwen.reply(from, 'Silahkan daftar menjadi premium untuk menggunakan fitur ini', id)
-                         if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                        // if (!isAdmin) return juwen.reply(from, 'Silahkan daftar menjadi premium untuk menggunakan fitur ini', id)
+                         if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                         if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}musik* _Judul lagu yang akan dicari_`)
                         const quer = body.slice(7).toString()
-                        juwen.reply(from, mess.wait, id)
+                        //juwen.reply(from, mess.wait, id)
                         try {
                             const jsonsercmu = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(quer)}`).json()
                             const { result } = await jsonsercmu
@@ -4501,12 +4531,12 @@ juwen.reply(from, cekapi9, id)
                                             if(isReg(obj)) return
                          if(cekumur(cekage)) return
                          //if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                         if (!isAdmin) return juwen.reply(from, 'Silahkan daftar menjadi premium untuk menggunakan fitur ini', id)
+                         //if (!isAdmin) return juwen.reply(from, 'Silahkan daftar menjadi premium untuk menggunakan fitur ini', id)
                          if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                         if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}musik* _Judul lagu yang akan dicari_`)
                         
                                             const querv = body.slice(7)
-                                            juwen.reply(from, mess.wait, id)
+                                            //juwen.reply(from, mess.wait, id)
                                             try {
                                                 //juwen.reply(from, '_Sedang mencari data..._', id)
                                                 const jsonsercmuv = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(querv)}`).json()
@@ -7273,7 +7303,7 @@ YHAHAHA KENA KICK ~ 👋`
                      juwen.reply(from, `Ingin play media apa? Silahkan pilih\n\n> ${prefix}playmusic [judulnya]\n${prefix}playvideo [judulnya]`, id)
                      break */
 
-                    case prefix+'play':
+                   /* case prefix+'play':
                      if(isReg(obj)) return
                      if(cekumur(cekage)) return
                      //if (!isPrem) return juwen.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
@@ -7302,12 +7332,68 @@ YHAHAHA KENA KICK ~ 👋`
                         juwen.sendText(ownerNumber, 'Error ytmp3 : '+ err)
                         juwen.reply(from, mess.error.Yt3, id)
                     }
-                    break 
+                    break */
+                    case prefix+'play':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        //if (isPrem) return juwen.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
+                        if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                        //juwen.reply(from, mess.wait, id)
+                        //argz = body.trim().split(' ')
+                        //var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        //const judulnyenih = await slicedArgs.join(' ')
+                        argz = body.trim().split(' ')
+                        var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        const perantarnya = await slicedArgs.join(' ')
+                        const menubitrate = 
+`Untuk mencari lagu di youtube, silahkan kirim perintah
+*${prefix}play judulnya|bitratenya*
+
+Contoh: *${prefix}play rumah ke rumah|2*
+
+Bitrate adalah kualitas dari suaranya. makin bagus, makin besar juga file audioya.
+
+0 - Paling Bagus (320 kbps)
+1 - Lumayan (256 kbps)
+2 - Normal (192 kbps)
+3 - Rendah (128 kbps)
+4 - Paling rendah (64 kbps)`
+                        if (!perantarnya.includes('|')) return await juwen.reply(from, menubitrate, id)
+                        const judulnyenih = perantarnya.split('|')[0]
+                        const bitratenya = perantarnya.split('|')[1]
+                        if (bitratenya > 4) return juwen.reply(from, 'Menu bitrate hanya sampai 4 saja!', id)
+                        if (bitratenya.length > 2) return juwen.reply(from, 'Maximal bitrate hanya sampa 4 saja!', id)
+                        juwen.reply(from, mess.wait, id)
+                        try{
+                        const playlol = await axios.get(`http://lolhuman.herokuapp.com/api/ytplay?apikey=${lolkey}&query=${judulnyenih}`)
+                        const hasil404 = playlol.data.result
+                        const tekslagunya = 
+`*Title:* ${hasil404.info.title}
+*Uploader:* ${hasil404.info.uploader}
+*Views:* ${hasil404.info.view}
+*Likes:* ${hasil404.info.like}
+*Dislike* ${hasil404.info.dislike}
+*Durasi:* ${hasil404.info.duration}
+*Size:* ${hasil404.audio[bitratenya].size}
+*Bitrate:* ${hasil404.audio[bitratenya].bitrate}
+
+_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                        await juwen.sendFileFromUrl(from, hasil404.info.thumbnail, `awokako.jpg`, tekslagunya, id)
+                        await juwen.sendFileFromUrl(from, hasil404.audio[bitratenya].link, ``, ``, id)
+                        } catch (err) {
+                            const reportNumber = '6289635687240@c.us'
+                        juwen.sendText(reportNumber, 'Error Play : '+ err)
+                        juwen.reply(from, `Hmm error, mungkin anda salah memasukan format bitratenya. Silahkan ulangi dengan bitrate yang benar.`, id)
+                        }
+                        await limitAdd(serial)
+                        break
+
                     case prefix+'playvideo':
                         if(isReg(obj)) return
                         if(cekumur(cekage)) return
                         if (isPrem) return juwen.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
-                        if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                        //if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                         if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                         juwen.reply(from, mess.wait, id)
                         argz = body.trim().split(' ')
@@ -7323,7 +7409,7 @@ YHAHAHA KENA KICK ~ 👋`
                             if(isReg(obj)) return
                             if(cekumur(cekage)) return
                             if (isPrem) return juwen.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
-                            if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                           // if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                             if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                             juwen.reply(from, mess.wait, id)
                             argz = body.trim().split(' ')
@@ -9380,7 +9466,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
             if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
             if(!args.lenght >= 2) return
             let qrcodes = body.slice(8)
-            await juwen.sendFileFromUrl(from, `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${qrcodes}`, 'gambar.png', 'Process sukses!', id)
+            await juwen.sendFileFromUrl(from, `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(qrcodes)}`, 'gambar.png', 'Process sukses!', id)
             await limitAdd(serial)
             break
             
@@ -10841,20 +10927,23 @@ Status :
             }
             break
         case prefix+'bugreport':
+            case prefix+'reportbug':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (args.length === 1) return juwen.reply(from, 'Kirim perintah *${prefix}bugreport [teks]*\ncontoh : *${prefix}bugreport Permisi Owner, Ada bug pada command ${prefix}nulis, Tolong diperbaiki*')
-           const reportNumber = `6289635687240@c.us`
+            //const reportNumber = `6289635687240@c.us`
             argz = body.trim().split(' ')
             var slicedArgs = Array.prototype.slice.call(argz, 1);
             const bug = await slicedArgs.join(' ')
             if(!bug) return
             if(isGroupMsg){
+                const reportNumber = '6289635687240@c.us'
                 juwen.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n*GROUP*: ${formattedTitle}\n\nPesan: ${bug}`)
-                juwen.sendText(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.')
+                juwen.reply(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.', id)
             }else{
+                const reportNumber = '6289635687240@c.us'
                 juwen.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n\nPesan: ${bug}`)
-                juwen.sendText(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.')
+                juwen.reply(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.', id)
             }
             break
          case prefix+'profile':
@@ -11128,7 +11217,6 @@ Nb: Perintah tidak perlu menggunakan tanda [ ]
 ├ *${prefix}ytmp3 [linkYt]*
 ├ *${prefix}ytmp4 [linkYt]*
 ├ *${prefix}ig [linkIg]*
-├ *${prefix}ig2 [linkIg]*
 ├ *${prefix}fb [linkFb]* [ERROR!]
 ├ *${prefix}twitter [link vid Twtr]* 
 ├ *${prefix}tiktok [linkTiktok]*
@@ -11137,7 +11225,6 @@ Nb: Perintah tidak perlu menggunakan tanda [ ]
 ├ *${prefix}lk21 [judul film]*
 ├ *${prefix}joox [lagu]*
 ├ *${prefix}play [judul lagu]*
-├ *${prefix}play [link yt]*
 ├ *${prefix}music [judul lagu]*
 ├ *${prefix}video [judul video]*
 │
@@ -11251,7 +11338,12 @@ Ada fitur yang error?, PC OWNER!
 ├ *${prefix}autovn [enable/disable]*
 ├ *${prefix}igstory*
 └ *${prefix}*` */
+const linkbot = monospace(
+`Jangan lupa kunjungi website kami
+
+http://juwenajaa.my.id/zxcbot.html`)
  juwen.reply(from, menubot, id)
+ //juwen.sendLinkWithAutoPreview(from, linkbot)
  //await sleep(900)
  //juwen.reply(from, updatebot, id)
  
