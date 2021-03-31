@@ -69,6 +69,7 @@ const _reminder2 = JSON.parse(fs.readFileSync('./lib/database/setgroup.json'))
 const _autosticker = JSON.parse(fs.readFileSync('./lib/database/autosticker.json'))
 const _autostickervideo = JSON.parse(fs.readFileSync('./lib/database/autostickervideo.json'))
 const _autovn = JSON.parse(fs.readFileSync('./lib/database/autovn.json'))
+const _getvn = JSON.parse(fs.readFileSync('./lib/database/getvn.json'))
 const _stickon = JSON.parse(fs.readFileSync('./lib/database/stickon.json'))
 const _stick = JSON.parse(fs.readFileSync('./lib/database/keywordsticker.json'))
 const _antivirtex = JSON.parse(fs.readFileSync('./lib/database/antivirtex.json'))
@@ -107,6 +108,7 @@ let svimage = JSON.parse(fs.readFileSync('./lib/database/svimage.json'))
 let glimit = JSON.parse(fs.readFileSync('./lib/database/glimit.json'))
 let slimit = JSON.parse(fs.readFileSync('./lib/database/glimit.json'))
 let balance = JSON.parse(fs.readFileSync('./lib/database/balance.json'))
+let listvn = JSON.parse(fs.readFileSync('./lib/database/listvn.json'))
 
 // PROTECT
 let antilink = JSON.parse(fs.readFileSync('./lib/database/antilink.json'))
@@ -285,6 +287,7 @@ module.exports = juwen = async (juwen, message) => {
         const isSimi = isGroupMsg ? simi_.includes(chat.id) : false
         const isAutoVn = isGroupMsg ? _autovn.includes(groupId) : false
         const isAntiV = isGroupMsg ? _antivirtex.includes(groupId) : false
+        const isGetvn = isGroupMsg ? _getvn.includes(groupId) : false
         const isKeywordStickerOn = isGroupMsg ? _autovn.includes(groupId) : false
         const isAutoStickerOn = isGroupMsg ? _autosticker.includes(groupId) : false
         const isAutoStickerVideoOn = isGroupMsg ? _autostickervideo.includes(groupId) : false
@@ -314,7 +317,6 @@ module.exports = juwen = async (juwen, message) => {
         const isCmd = command.startsWith(prefix)
 
         const gcount = '10'
-        const tobzkey = 'BotWeA'
         const limitgame = 'Maaf limit kamu tidak cukup untuk memainkan game ini'
         const serial = sender.id
         const isAdmin = adminNumber.includes(sender.id) // Admin Number
@@ -572,11 +574,11 @@ module.exports = juwen = async (juwen, message) => {
 
 
       // Sticker keywords by: @hardianto02_
-        if (isGroupMsg && isUser) {
+       /* if (isGroupMsg && isUser && isKeywordStickerOn) {
             if (_stick.includes(chats)) {
                 await juwen.sendImageAsSticker(from, `./temp/sticker/${chats}.webp`, { author: `${autorwm}`,pack: `${packnamewm}` })
             }
-        } 
+        }  */
 
         // Anti V Menggunakan Length, Kurang Worth It Tapi Yasudalah Ya
         if (isGroupMsg && isAntiV && isUser && !isAdmin && !isOwner){
@@ -591,6 +593,15 @@ module.exports = juwen = async (juwen, message) => {
                     return juwen.reply(from, "Tolong Jangan Ngirim Virtex Min 😇", id)
                 }
             }
+        }
+
+    // COMMAND VN    
+    try{
+       if (isGroupMsg && isUser && isGetvn){ 
+		   const getvn = await fs.readFileSync('./media/for_sound/' + message.body +'.mp3', { encoding: "base64" })
+		   juwen.sendAudio(from, `data:audio/mp3;base64,${getvn.toString('base64')}`, id)
+        } 
+          } catch (err) {
         }
         // AUTO VN
         if (isGroupMsg && isUser && isAutoVn) {
@@ -1509,8 +1520,8 @@ case prefix+'p1':
                 break
             case prefix+'exif':
                 if (!isOwner) return await juwen.reply(from, 'Fitur ini hanya khusus owner bot', id)
+                 try {
                 const stikerwm2 = body.slice(5)
-                try {
                 if (!stikerwm2.includes('|')) return await juwen.reply(from, `Kirim perintah *${prefix}exif nama|author*`, id)
                 const namaPack = stikerwm2.split('|')[0]
                 const authorPack = stikerwm2.split('|')[1]
@@ -1526,10 +1537,10 @@ case prefix+'p1':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
            //if (!isOwner) return juwen.reply(from, `Fitur ini sedang dalam perbaikan.`, id)
+            try {
             argz = body.trim().split(' ')
             var slicedArgs = Array.prototype.slice.call(argz, 1);
             const pembawm = await slicedArgs.join(' ')
-            try {
             if (!pembawm.includes('|')) return await juwen.reply(from, `Kirim perintah *${prefix}takestick nama|author*`, id)
             if (quotedMsg && quotedMsg.type == 'sticker') {
                 const mediaDataTake = await decryptMedia(quotedMsg, uaOverride)
@@ -2232,7 +2243,7 @@ juwen.setGroupToAdminsOnly(groupId, true)
                         case prefix+'stickeremoji':
                             if(isReg(obj)) return
                             if(cekumur(cekage)) return
-                            if (!isGroupMsg) return juwen.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+                            //if (!isGroupMsg) return juwen.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
                           if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                         //const emoji2 = emojiUnicode(body.slice(13))
                        // const q = args.join(' ')
@@ -2258,7 +2269,7 @@ juwen.setGroupToAdminsOnly(groupId, true)
                         case prefix+'emo2stik':
                                 if(isReg(obj)) return
                                 if(cekumur(cekage)) return
-                                if (!isGroupMsg) return juwen.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
+                                //if (!isGroupMsg) return juwen.reply(from, `Perintah ini hanya bisa di gunakan dalam group!`, id)
                               if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                             if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}emojistiker [Emote]*\nContoh : ${prefix}emojistiker 😭`, id)
                             const emoji = (args[1])
@@ -2891,6 +2902,66 @@ await juwen.sendFileFromUrl(from,  getUrli, `facetrack.jpg`, `${jawabannya}`, id
                     const imgnya = await axios.get(`https://naufalhoster.xyz/tools/falling_hearts?apikey=${naufalkey}&url=${encodeURIComponent(getUrli)}`)
                     const slove = imgnya.data.result.media
                     await juwen.sendStickerfromUrl(from, slove)
+                } else {
+                    await juwen.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan ${prefix}lovefil`, id)
+                }
+            }catch(error) {
+                console.log(error)
+                juwen.reply(from, `Ups, ada yang error!`, id)
+            }
+                await limitAdd(serial)
+                break
+            case prefix+'thuglife':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                try {
+                juwen.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                if (isMedia || isImage || isQuotedImage) {
+                    const encrypt = isQuotedImage ? quotedMsg : message
+						const mediaData = await decryptMedia(encrypt, uaOverride)
+						const inimage = await uploadImages(mediaData, `${sender.id}_img`)
+                    await juwen.sendFileFromUrl(from, `http://zekais-api.herokuapp.com/thuglife?url=${encodeURIComponent(inimage)}`, 'thuglife.jpg', 'Nihh', id)
+                } else {
+                    await juwen.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan ${prefix}lovefil`, id)
+                }
+            }catch(error) {
+                console.log(error)
+                juwen.reply(from, `Ups, ada yang error!`, id)
+            }
+                await limitAdd(serial)
+                break
+                case prefix+'tobecont':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                try {
+                juwen.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                if (isMedia || isImage || isQuotedImage) {
+                    const encrypt = isQuotedImage ? quotedMsg : message
+						const mediaData = await decryptMedia(encrypt, uaOverride)
+						const inimage = await uploadImages(mediaData, false)
+                    await juwen.sendFileFromUrl(from, `http://zekais-api.herokuapp.com/tobecontinue?url=${encodeURIComponent(inimage)}`, 'tobecontinue.jpg', 'Nihh', id)
+                } else {
+                    await juwen.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan ${prefix}lovefil`, id)
+                }
+            }catch(error) {
+                console.log(error)
+                juwen.reply(from, `Ups, ada yang error!`, id)
+            }
+                await limitAdd(serial)
+                break
+                case prefix+'comunism':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                try {
+                juwen.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
+                if (isMedia || isImage || isQuotedImage) {
+                    const encrypt = isQuotedImage ? quotedMsg : message
+						const mediaData = await decryptMedia(encrypt, uaOverride)
+						const inimage = await uploadImages(mediaData, `${sender.id}_img`)
+                    await juwen.sendFileFromUrl(from, `http://zekais-api.herokuapp.com/comunism?url=${encodeURIComponent(inimage)}`, 'comunism.jpg', 'Nihh', id)
                 } else {
                     await juwen.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan ${prefix}lovefil`, id)
                 }
@@ -4096,6 +4167,19 @@ juwen.reply(from, cekapi9, id)
                 juwen.sendFileFromUrl(from, flower2, `awkowak.jpg`, `Nihh`, id)
                 limitAdd(serial)
                 break
+                case prefix+'sbburn':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}changemymind text*, contoh *${prefix}flowertxt juwennn*`, id)
+                juwen.reply(from, mess.wait, id)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const sbburn2 = await slicedArgs.join(' ')
+                juwen.sendFileFromUrl(from, `http://zekais-api.herokuapp.com/sbburn?text=${encodeURIComponent(sbburn2)}`, `sbburn.jpg`, `Nihh`, id)
+                limitAdd(serial)
+                break
+               
             case prefix+'ktpmaker':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -4462,7 +4546,7 @@ juwen.reply(from, cekapi9, id)
                     await juwen.reply(from, `Wrong Format!\n[❗] Kirim perintah *${prefix}pornhub [ |Teks1|Teks2 ]*, contoh *${prefix}pornhub |juwen|keren*`, id)
                 }
                 break
-                case prefix+'musik':
+             /*   case prefix+'musik':
                     case prefix+'music':
                          if(isReg(obj)) return
                          if(cekumur(cekage)) return
@@ -4490,7 +4574,7 @@ juwen.reply(from, cekapi9, id)
                         }
                         await limitAdd(serial)
                         await juwen.sendSeen(from)
-                        break
+                        break */
                         case prefix+'musik2':
                             case prefix+'music2':
                                  if(isReg(obj)) return
@@ -4526,7 +4610,7 @@ juwen.reply(from, cekapi9, id)
                                 await juwen.sendSeen(from)
                                 break
             
-                        case prefix+'vidio':
+                    /*    case prefix+'vidio':
                                         case prefix+'video':
                                             if(isReg(obj)) return
                          if(cekumur(cekage)) return
@@ -4619,7 +4703,7 @@ juwen.reply(from, cekapi9, id)
                                     }
                                     break
    
-  /*           case prefix+'video': // SEARCH VIDEO FROM YOUTUBE
+             case prefix+'video': // SEARCH VIDEO FROM YOUTUBE
              case prefix+'vidio':
              if(isReg(obj)) return
              if(cekumur(cekage)) return
@@ -4677,7 +4761,7 @@ juwen.reply(from, cekapi9, id)
            } catch (err){
                console.log(err)
            }
-           break */
+           break 
            case prefix+'yts':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -4734,6 +4818,8 @@ juwen.reply(from, cekapi9, id)
            break 
 
             case prefix+'bass':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
                             //if (!isAdmin) return juwen.reply(from, `Udah bang, nanti error :")`, id)
                             // if (isAdmin) return juwen.reply(from, `Udah bang, nanti error :")`, id)
                             //if (!isGroupMsg) return juwen.reply(from, menuPriv, id)
@@ -4768,6 +4854,142 @@ juwen.reply(from, cekapi9, id)
                                 }
                             }
                             break
+            case prefix+'nightcore':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isQuotedAudio) {
+                    const encryptMedia = isQuotedAudio ? quotedMsg : message
+                    console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
+                    juwen.reply(from, mess.wait, id)
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    const temp = './temp'
+                    const name = new Date() * 1
+                    const fileInputPath = path.join(temp, `${name}.mp3`)
+                    const fileOutputPath = path.join(temp, 'audio', `${name}.mp3`)
+                    fs.writeFile(fileInputPath, mediaData, (err) => {
+                        if (err) return console.error(err)
+                        ffmpeg(fileInputPath)
+                            .audioFilter('asetrate=44100*1.25')
+                            .format('mp3')
+                            .on('start', (commandLine) => console.log(color('[FFmpeg]', 'green'), commandLine))
+                            .on('progress', (progress) => console.log(color('[FFmpeg]', 'green'), progress))
+                            .on('end', async () => {
+                                console.log(color('[FFmpeg]', 'green'), 'Processing finished!')
+                                await juwen.sendPtt(from, fileOutputPath, id)
+                                console.log(color('[WAPI]', 'green'), 'Success sending audio!')
+                                setTimeout(() => {
+                                    fs.unlinkSync(fileInputPath)
+                                    fs.unlinkSync(fileOutputPath)
+                                }, 30000)
+                            })
+                            .save(fileOutputPath)
+                    })
+                } else {
+                    await juwen.reply(from, 'Hanya tag audio!', id)
+                }
+            break
+            case prefix+'speedvoice':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isQuotedAudio) {
+                    const encryptMedia = isQuotedAudio ? quotedMsg : message
+                    console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
+                    juwen.reply(from, mess.wait, id)
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    const temp = './temp'
+                    const name = new Date() * 1
+                    const fileInputPath = path.join(temp, `${name}.mp3`)
+                    const fileOutputPath = path.join(temp, 'audio', `${name}.mp3`)
+                    fs.writeFile(fileInputPath, mediaData, (err) => {
+                        if (err) return console.error(err)
+                        ffmpeg(fileInputPath)
+                            .audioFilter('atempo=sqrt(3),atempo=sqrt(3)')
+                            .format('mp3')
+                            .on('start', (commandLine) => console.log(color('[FFmpeg]', 'green'), commandLine))
+                            .on('progress', (progress) => console.log(color('[FFmpeg]', 'green'), progress))
+                            .on('end', async () => {
+                                console.log(color('[FFmpeg]', 'green'), 'Processing finished!')
+                                await juwen.sendPtt(from, fileOutputPath, id)
+                                console.log(color('[WAPI]', 'green'), 'Success sending audio!')
+                                setTimeout(() => {
+                                    fs.unlinkSync(fileInputPath)
+                                    fs.unlinkSync(fileOutputPath)
+                                }, 30000)
+                            })
+                            .save(fileOutputPath)
+                    })
+                } else {
+                    await juwen.reply(from, 'Hanya tag audio!', id)
+                }
+            break
+ case prefix+'delayvoice':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isQuotedAudio) {
+                    const encryptMedia = isQuotedAudio ? quotedMsg : message
+                    console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
+                    juwen.reply(from, mess.wait, id)
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    const temp = './temp'
+                    const name = new Date() * 1
+                    const fileInputPath = path.join(temp, `${name}.mp3`)
+                    const fileOutputPath = path.join(temp, 'audio', `${name}.mp3`)
+                    fs.writeFile(fileInputPath, mediaData, (err) => {
+                        if (err) return console.error(err)
+                        ffmpeg(fileInputPath)
+                            .audioFilter('aecho=0.8:0.9:1000|1800:0.3|0.25')
+                            .format('mp3')
+                            .on('start', (commandLine) => console.log(color('[FFmpeg]', 'green'), commandLine))
+                            .on('progress', (progress) => console.log(color('[FFmpeg]', 'green'), progress))
+                            .on('end', async () => {
+                                console.log(color('[FFmpeg]', 'green'), 'Processing finished!')
+                                await juwen.sendPtt(from, fileOutputPath, id)
+                                console.log(color('[WAPI]', 'green'), 'Success sending audio!')
+                                setTimeout(() => {
+                                    fs.unlinkSync(fileInputPath)
+                                    fs.unlinkSync(fileOutputPath)
+                                }, 30000)
+                            })
+                            .save(fileOutputPath)
+                    })
+                } else {
+                    await juwen.reply(from, 'Hanya tag audio!', id)
+                }
+            break
+            case prefix+'testvoice':
+                if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (isQuotedAudio) {
+                    const encryptMedia = isQuotedAudio ? quotedMsg : message
+                    console.log(color('[WAPI]', 'green'), 'Downloading and decrypting media...')
+                    juwen.reply(from, mess.wait, id)
+                    const mediaData = await decryptMedia(encryptMedia, uaOverride)
+                    const temp = './temp'
+                    const name = new Date() * 1
+                    const fileInputPath = path.join(temp, `${name}.mp3`)
+                    const fileOutputPath = path.join(temp, 'audio', `${name}.mp3`)
+                    fs.writeFile(fileInputPath, mediaData, (err) => {
+                        if (err) return console.error(err)
+                        ffmpeg(fileInputPath)
+                            .audioFilter('afade=t=out:st=875:d=25')
+                            .format('mp3')
+                            .on('start', (commandLine) => console.log(color('[FFmpeg]', 'green'), commandLine))
+                            .on('progress', (progress) => console.log(color('[FFmpeg]', 'green'), progress))
+                            .on('end', async () => {
+                                console.log(color('[FFmpeg]', 'green'), 'Processing finished!')
+                                await juwen.sendPtt(from, fileOutputPath, id)
+                                console.log(color('[WAPI]', 'green'), 'Success sending audio!')
+                                setTimeout(() => {
+                                    fs.unlinkSync(fileInputPath)
+                                    fs.unlinkSync(fileOutputPath)
+                                }, 30000)
+                            })
+                            .save(fileOutputPath)
+                    })
+                } else {
+                    await juwen.reply(from, 'Hanya tag audio!', id)
+                }
+            break
                             case prefix+'triggered':
                                 case prefix+'triggred':
                                 case prefix+'trigger':
@@ -6093,6 +6315,23 @@ YHAHAHA KENA KICK ~ 👋`
                     await juwen.reply(from, 'Pilih enable atau disable!', id)
                 }
             break
+            case prefix+'vncommand':
+                if (!isGroupMsg) return await juwen.reply(from, 'Perintah ini hanya bisa dilakukan di dalam group!', id)
+                if (!isGroupAdmins) return await juwen.reply(from, 'Perintah ini hanya bisa dilakukan oleh admin group!', id)
+                if (args[1] === 'enable') {
+                    if (isGetvn) return await juwen.reply(from, 'Auto VN sudah dinyalakan di grup ini!', id)
+                    _getvn.push(groupId)
+                    fs.writeFileSync('./lib/database/getvn.json', JSON.stringify(_getvn))
+                    await juwen.reply(from, 'Command VN diaktifkan', id)
+                } else if (args[1] === 'disable') {
+                    var grup = _getvn.indexOf(groupId)
+                    _getvn.splice(grup, 1)
+                    fs.writeFileSync('./lib/database/getvn.json', JSON.stringify(_getvn))
+                    await juwen.reply(from, 'Command VN dinonaktifkan', id)
+                } else {
+                    await juwen.reply(from, 'Pilih enable atau disable!', id)
+                }
+            break
             case prefix+'antivirtex':
                 if (!isGroupMsg) return await juwen.reply(from, 'Perintah ini hanya bisa dilakukan di dalam group!', id)
                 if (!isGroupAdmins) return await juwen.reply(from, 'Perintah ini hanya bisa dilakukan oleh admin group!', id)
@@ -7264,11 +7503,11 @@ YHAHAHA KENA KICK ~ 👋`
                     if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                         juwen.reply(from, `Untuk mencari lagu dari youtube\nPenggunaan: ${prefix}play1 judul lagu\n\nSilahkan pilih:\n\n> *${prefix}play1*\n> *${prefix}play2*  \n> *${prefix}play3 (dengan file vn, voice note)*\n\nNb: Bila ingin mendownload dengan file kecil, kamu bisa pakai *${prefix}play2*`, id)
                         break */
-             /*           case prefix+'play'://silahkan kalian custom sendiri jika ada yang ingin diubah
+                       case prefix+'play'://silahkan kalian custom sendiri jika ada yang ingin diubah
                         if(isReg(obj)) return
                         if(cekumur(cekage)) return
                        // if (!isVip) return juwen.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
-                       if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                       //if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                        if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                         if (args.length === 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play judul lagu`, id)
                         try {
@@ -7296,7 +7535,7 @@ YHAHAHA KENA KICK ~ 👋`
                             juwen.sendText(ownerNumber, 'Error Play : '+ err)
                             juwen.reply(from, mess.error.Yt3, id)
                         }
-                        break */
+                        break 
                       /*  case prefix+'play':
                         if(isReg(obj)) return
                      if(cekumur(cekage)) return
@@ -7333,7 +7572,7 @@ YHAHAHA KENA KICK ~ 👋`
                         juwen.reply(from, mess.error.Yt3, id)
                     }
                     break */
-                    case prefix+'play':
+                /*    case prefix+'play':
                         if(isReg(obj)) return
                         if(cekumur(cekage)) return
                         //if (isPrem) return juwen.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
@@ -7387,7 +7626,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
                         juwen.reply(from, `Hmm error, mungkin anda salah memasukan format bitratenya. Silahkan ulangi dengan bitrate yang benar.`, id)
                         }
                         await limitAdd(serial)
-                        break
+                        break  */
 
                     case prefix+'playvideo':
                         if(isReg(obj)) return
@@ -8996,8 +9235,8 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
             joox(body.slice(6)).then(async(res) => {
                 let { penyanyi, judul, album, linkImg, linkMp3, filesize, ext, duration } = await res
                 let tjoox = `*「 JOOX DOWNLOADER 」*\n\n*Penyanyi:* ${penyanyi}\n*Judul:* ${judul}\n*Album:* ${album}\n*Ext:* ${ext}\n*Size:* ${filesize}\n*Durasi:* ${duration}\n\n_Silahkan tunggu sebentar proses pengiriman file membutuhkan waktu beberapa menit._`
-                juwen.sendImage(from, linkImg, judul, tjoox)
-                juwen.sendFileFromUrl(from, linkMp3, `${judul}.${ext}`, '', id).catch(() => juwen.reply(from, mess.error.Yt4, id))
+                await juwen.sendImage(from, linkImg, judul, tjoox)
+                await juwen.sendFileFromUrl(from, linkMp3, `${judul}.${ext}`, '', id).catch(() => juwen.reply(from, mess.error.Yt4, id))
                 await limitAdd(serial)
             }).catch((err) => {
                 console.log(err);
@@ -9139,29 +9378,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
             await limitAdd(serial)
             break
 
-
-            case prefix+'addstk': // by @hardianto02_
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-            if (!isGroupMsg) return await juwen.reply(from, `Maaf fitur ini hanya bisa dilakukan didalam group!`, id) 
-            if (args.length === 1) return juwen.reply(from, `Hai ${pushname} untuk menggunakan fitur save stiker ketik *${prefix}savestiker* _Nama nya_`, id)
-            argz = body.trim().split(' ')
-            var slicedArgs = Array.prototype.slice.call(argz, 1);
-            const namaestickernya = await slicedArgs.join(' ')
-            if (isQuotedSticker) {
-                if (_stick.includes(namaestickernya)) {
-                    await juwen.reply(from, 'This sticker is already saved.', id)
-                } else { 
-                    _stick.push(namaestickernya)
-                    fs.writeFileSync('./lib/database/keywordsticker.json', JSON.stringify(_stick))
-                    const mediaData = await decryptMedia(quotedMsg, uaOverride)
-                    fs.writeFileSync(`./temp/sticker/${namaestickernya}.webp`, mediaData)
-                    await juwen.reply(from, 'Sticker has been successfully saved!', id)
-                }
-            } else {
-                await juwen.reply(from, `Format salah!`, id)
-            }
-        break
+            
         case prefix+'stickerlist2':
         case prefix+'liststicker2':
             if(isReg(obj)) return
@@ -9209,8 +9426,59 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
 				}else{
 					juwen.reply(from, 'Reply gambar atau sticker', id)
 				}
-				
             break
+            case prefix+'getvn':
+            try { 
+             argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const comamndgetvn = await slicedArgs.join(' ')
+            const soundgetvn = await fs.readFileSync('./media/for_sound/' + comamndgetvn +'.mp3', { encoding: "base64" })
+			juwen.sendAudio(from, `data:audio/mp3;base64,${soundgetvn.toString('base64')}`, id)
+                } catch (e){
+                    argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const comamndgetvn = await slicedArgs.join(' ')
+                    console.log(e)
+                    juwen.reply(from, `Maaf Vn *${comamndgetvn}*, tidak ada di database`, id)
+                }
+            break
+            case prefix+'addvn':
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const comamndgetvnnow = await slicedArgs.join(' ')
+                if (listvn.includes(comamndgetvnnow)) {
+                    await juwen.reply(from, 'Nama vn sudah ada sebelumnya, silahkan namai vn dengan nama yang berbeda', id)
+				} else if (quotedMsg && quotedMsg.type === 'audio' || quotedMsg && quotedMsg.type === 'ptt') {
+					var mediaData = await decryptMedia(quotedMsg, uaOverride)
+					var filename = `./media/for_sound/${comamndgetvnnow}.mp3`
+					await fs.writeFile(filename, mediaData)
+					juwen.reply(from, `vn dengan nama ${comamndgetvnnow} berhasil disimpan didalam database!`, id)
+				} else if (isMedia && type === 'audio' || isMedia && type === 'ptt') {
+					var mediaData = await decryptMedia(message, uaOverride)
+					var filename = `./media/for_sound/${comamndgetvnnow}.mp3`
+					await fs.writeFileSync(filename, mediaData)
+					await juwen.reply(from, `vn dengan nama ${comamndgetvnnow} berhasil disimpan didalam database!`, id)
+				} else {
+					return juwen.reply(from, `Error! silahkan coba kembali...`, id)
+				}
+				listvn.push(comamndgetvnnow)
+				fs.writeFileSync('./lib/database/listvn.json', JSON.stringify(listvn))
+				break
+			case prefix+'delallvn':
+			if (!isOwnerB) return juwen.reply(from, 'Fitur ini khusus Owner Bot', id)
+			let dellall = listvn.includes(chats)
+			listvn.splice(dellall)
+			fs.writeFileSync('./lib/database/listvn.json', JSON.stringify(listvn))
+			juwen.reply(from, `semua vn didalam database berhasil dihapus`, id)
+			break
+			case prefix+'delvn':
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const deli = await slicedArgs.join(' ')
+				listvn.splice(deli, 1)
+				fs.writeFileSync('./lib/database/listvn.json', JSON.stringify(listvn))
+				juwen.reply(from, 'vn berhasil didelete dari database', id)
+				break
             case prefix+'savestiker':
                 if(!isAdmin) return juwen.reply(from, 'Khusus admin bot doang yang bisa!', id)
                 //if (!isGroupMsg) return juwen.reply(from, menuPriv, id)
