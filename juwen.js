@@ -7515,7 +7515,7 @@ YHAHAHA KENA KICK ~ 👋`
                     if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                         juwen.reply(from, `Untuk mencari lagu dari youtube\nPenggunaan: ${prefix}play1 judul lagu\n\nSilahkan pilih:\n\n> *${prefix}play1*\n> *${prefix}play2*  \n> *${prefix}play3 (dengan file vn, voice note)*\n\nNb: Bila ingin mendownload dengan file kecil, kamu bisa pakai *${prefix}play2*`, id)
                         break */
-                       case prefix+'play'://silahkan kalian custom sendiri jika ada yang ingin diubah
+                       /*case prefix+'play'://silahkan kalian custom sendiri jika ada yang ingin diubah
                         if(isReg(obj)) return
                         if(cekumur(cekage)) return
                        // if (!isVip) return juwen.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
@@ -7547,14 +7547,14 @@ YHAHAHA KENA KICK ~ 👋`
                             juwen.sendText(reportNumber, 'Error Play : '+ err)
                             juwen.reply(from, mess.error.Yt3, id)
                         }
-                        break 
+                        break */
                       /*  case prefix+'play':
                         if(isReg(obj)) return
                      if(cekumur(cekage)) return
                      juwen.reply(from, `Ingin play media apa? Silahkan pilih\n\n> ${prefix}playmusic [judulnya]\n${prefix}playvideo [judulnya]`, id)
                      break */
 
-                   /* case prefix+'play':
+                    case prefix+'play':
                      if(isReg(obj)) return
                      if(cekumur(cekage)) return
                      //if (!isPrem) return juwen.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
@@ -7562,9 +7562,14 @@ YHAHAHA KENA KICK ~ 👋`
                     // if (!isVip) return juwen.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
                     if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                     if (args.length === 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play [judul lagu]`, id)
-                    const playy = await get.get(`http://nzcha-apii.herokuapp.com/ytsearch?q=${encodeURIComponent(body.slice(6))}`).json()
-                    const mulaikah = playy.result[0].url
-                    try {
+                    try { 
+                        argz = body.trim().split(' ')
+                        var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        const querv2 = await slicedArgs.join(' ')
+                    const resmusv2 = await fetch(`https://api.vhtear.com/youtube?query=${encodeURIComponent(querv2)}&apikey=${vhtearkey}`)
+                    const jsonserc = await resmusv2 .json()
+                    const { result } = await jsonserc
+                    const mulaikah = result[0].urlyt
                         juwen.reply(from, mess.wait, id)
                         yta(mulaikah)
                         .then((res) => {
@@ -7580,10 +7585,11 @@ YHAHAHA KENA KICK ~ 👋`
                             })
                         })
                     } catch (err) {
+                        console.log(err)
                         juwen.sendText(reportNumber, 'Error ytmp3 : '+ err)
                         juwen.reply(from, mess.error.Yt3, id)
                     }
-                    break */
+                    break 
                 /*    case prefix+'play':
                         if(isReg(obj)) return
                         if(cekumur(cekage)) return
@@ -11422,7 +11428,9 @@ case prefix+'menu':
      if(cekumur(cekage)) return
      const userLevel2 = level.getLevelingLevel(sender.id, _level)
      const userXp2 = level.getLevelingXp(sender.id, _level)
-
+     const ramadhan   = new Date('2021-04-12') - new Date('2021-03-31')
+     const result_ramdhan = ramadhan / (1000 * 60 * 60 * 24);
+     //console.log(`${result} hari menuju Ramadhan 1442 H`)
      var prema = isAdmin
 
 /* if (isGroupMsg) {  ├ *${prefix}gtav*
@@ -11439,14 +11447,13 @@ case prefix+'menu':
 ├ *${prefix}foliokiri [teks]*
 │*/ 
 const menubot = 
-`*Haii ${pushname} 👋*
+`*Selamat Datang Di ZXCBOT*
+*${result_ramdhan} Hari lagi menuju Ramadhan 1442 H*
 
 *Telpon = Blocked!*
 *Spam = Banned!*
 
-Kalau kamu belum ngerti cara pakainya, ketik *${prefix}readme* aja biar paham pakainya.
-
-Nb: Perintah tidak perlu menggunakan tanda [ ]
+*Perintah tidak memakai tanda [ ]*
 
 ┌──
 │ *~> Nama*  : ${pushname}
