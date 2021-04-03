@@ -103,6 +103,7 @@ let msgLimit = JSON.parse(fs.readFileSync('./lib/database/msgLimit.json'))
 let adminNumber = JSON.parse(fs.readFileSync('./lib/database/admin.json'))
 let premNumber = JSON.parse(fs.readFileSync('./lib/database/premium.json'))
 let dbcot = JSON.parse(fs.readFileSync('./lib/database/bacot.json'))
+let antivnya = JSON.parse(fs.readFileSync('./lib/database/buat_anti_virtex.json'))
 let dsay = JSON.parse(fs.readFileSync('./lib/database/say.json'))
 let svimage = JSON.parse(fs.readFileSync('./lib/database/svimage.json'))
 let glimit = JSON.parse(fs.readFileSync('./lib/database/glimit.json'))
@@ -587,7 +588,9 @@ module.exports = juwen = async (juwen, message) => {
                     return juwen.reply(from, "「 ANTI VIRTEX 」\nKamu mengirimkan Virtex , maaf kamu di kick dari grup 🙁", id)
                     .then(() => juwen.removeParticipant(groupId, sender.id))
                     .then(() => {
-                        juwen.sendText(from, ` `, id)
+                    const kataa2v = antivnya[Math.floor(Math.random() * (antivnya.length))];
+                    juwen.sendText(from, kataa2v)
+                    juwen.sendText(from, kataa2v)
                     }).catch(() => juwen.sendText(from, `Untung bot bukan admin, Kalo Jadi admin Udah Aku Kick Tuh! 😑`))
                 } else {
                     return juwen.reply(from, "Tolong Jangan Ngirim Virtex Min 😇", id)
@@ -1708,8 +1711,8 @@ case prefix+'p1':
             juwen.reply(from, mess.wait2, id)
              const mediaData = await decryptMedia(quotedMsg, uaOverride)
              await juwen.sendMp4AsSticker(from, mediaData, {crop: false, fps: 10, startTime: `00:00:00.0`, endTime : `00:00:10.0`,loop: 0}, { author: `${autorwm}`, pack: `${packnamewm}` })
-            }
-          /*  } else if  (quotedMsg.type == 'chat' ) {
+            
+            } else if  (quotedMsg.type == body.massage ) {
             const alay3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
             //const alay4 = await axios.get(`https://api.terhambar.com/bpk?kata=${alay3}`)
             const lttp2 = ["Orange","White","Green","Black","Purple","Red","Yellow","Blue","Navy","Grey","Magenta","Brown","Gold"]
@@ -1718,7 +1721,7 @@ case prefix+'p1':
             //const alay5 = alay4.data.text
             //juwen.reply(from, alay5, id)
             limitAdd(serial)
-            } */
+            } 
         
         }catch(error) {
             console.log(error)
@@ -2152,7 +2155,7 @@ juwen.setGroupToAdminsOnly(groupId, true)
 				if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
 				if (args.length === 1) return juwen.reply(from, `Kirim ${prefix}nuliskiri [teks], contoh: ${prefix}nuliskiri hari ini sangat cerah`, id) 
                         const tulisann = body.slice(11)
-                        juwen.reply(from, '_Tunggu Sebentar..._', id)
+                        juwen.reply(from, 'Tunggu sebentar ya kak, lagi diproses.', id)
                         const splitTexttt = tulisann.replace(/(\S+\s*){1,9}/g, '$&\n')
                         const fixxHeight = splitTexttt.split('\n').slice(0, 31).join('\n')
                         spawn('convert', [
@@ -2183,7 +2186,7 @@ juwen.setGroupToAdminsOnly(groupId, true)
 				if (args.length === 1) return juwen.reply(from, `Kirim ${prefix}nuliskiri [teks], contoh: ${prefix}nuliskiri hari ini sangat cerah`, id) 
                 await limitAdd(serial)
                         const tulisannn = body.slice(12)
-                        juwen.reply(from, '_Tunggu Sebentar..._', id)
+                        juwen.reply(from, 'Tunggu sebentar ya kak, lagi diproses.', id)
                         const splitTextttt = tulisannn.replace(/(\S+\s*){1,9}/g, '$&\n')
                         const fixxHeightt = splitTextttt.split('\n').slice(0, 31).join('\n')
                         spawn('convert', [
@@ -2212,7 +2215,7 @@ juwen.setGroupToAdminsOnly(groupId, true)
 				if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
 				if (args.length === 1) return juwen.reply(from, `Kirim ${prefix}nuliskanan [teks], contoh: ${prefix}nuliskanan hari ini sangat cerah`, id)     
                 {		const tulisannn = body.slice(12)
-                    juwen.reply(from, '_Tunggu Sebentar..._', id)
+                    juwen.reply(from, 'Tunggu sebentar ya kak, lagi diproses.', id)
                     const splitTextt = tulisannn.replace(/(\S+\s*){1,9}/g, '$&\n')
                     const fixHeight = splitTextt.split('\n').slice(0, 31).join('\n')
                     spawn('convert', [
@@ -3767,7 +3770,8 @@ Timestamp: ${yhahah.timestamp}`)
             const kataa2 = dbcot[Math.floor(Math.random() * (dbcot.length))];
             juwen.reply(from, kataa2, id)
             }
-        break  
+        break 
+               
 		 case prefix+'love':
 			if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -4698,7 +4702,7 @@ juwen.reply(from, cekapi9, id)
                                             })
                                         }
                                     } catch (err) {
-                                        juwen.sendText(ownerNumber, 'Error ytmp3 : '+ err)
+                                        juwen.sendText(reportNumber, 'Error ytmp3 : '+ err)
                                         juwen.reply(from, `_Kesalahan! Pastikan id download sudah benar._`, id)
                                     }
                                     break
@@ -5126,7 +5130,7 @@ juwen.reply(from, cekapi9, id)
                                                 })
                                             }
                                         } catch (err) {
-                                            juwen.sendText(ownerNumber, 'Error getvid4 : '+ err)
+                                            juwen.sendText(reportNumber, 'Error getvid4 : '+ err)
                                             juwen.reply(from, mess.error.Yt4, id)
                                         }
                                         break
@@ -5162,7 +5166,7 @@ juwen.reply(from, cekapi9, id)
 				janjing + ' *peyuuuk* ' + argggg[1])
                 break
             case prefix+'daftar':  // NAMBAHIN NOMOR DI DATABASE
-         // if (isGroupMsg) return juwen.reply(from, `Maaf perintah ini hanya bisa dilakukan di personal chat bot.\nAtau kalian bisa klik dibawah ini\n\nwa.me/${botnumber}?text=${prefix}daftar+|NAMA+KAMU|17\n\nUmur bisa diganti dengan umur kalian`, id)
+         // if (isGroupMsg) return juwen.reply(from, `Maaf perintah ini hanya bisa dilakukan di personal chat bot.`, id)
                 argz = body.trim().split('|')
                 if (argz.length >= 2) {
                 const nonye = sender.id
@@ -5415,7 +5419,15 @@ ${format(uptime)}
     `)}`
     , id)
                 break
-				
+				case prefix+'uptime':
+        var uptime = process.uptime();  
+        const uptimebot =
+`${monospace(
+`❏ 𝙐𝙋𝙏𝙄𝙈𝙀 :
+${format(uptime)}
+    `)}`
+    juwen.reply(from, uptimebot, id)
+    break
         case prefix+'groupinfo' :
             case prefix+'infogroup' :
             if(isReg(obj)) return
@@ -5477,7 +5489,7 @@ ${desc}`, id)
             } catch (err) {
                     console.log(err)
                     await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Video tidak ditemukan')
-                    juwen.sendText(ownerNumber, 'YT Search Error : ' + err)
+                    juwen.sendText(reportNumber, 'YT Search Error : ' + err)
             }
             break
             case prefix+'maluser':
@@ -5539,7 +5551,7 @@ ${desc}`, id)
                 } catch (err) {
                     console.error(err.message)
                     await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Lokasi tidak ditemukan')
-                    juwen.sendText(ownerNumber, 'Distance Error : ' + err)
+                    juwen.sendText(reportNumber, 'Distance Error : ' + err)
                 }
                 break
         case prefix+'shopee':
@@ -5736,7 +5748,7 @@ ${desc}`, id)
         }).catch ((err) => {
         console.error(err.message)
         juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔 Maaf, film tidak ditemukan')
-        juwen.sendText(ownerNumber, 'Error lk21 : '+ err)
+        juwen.sendText(reportNumber, 'Error lk21 : '+ err)
         })
 
  limitAdd(serial)
@@ -5774,7 +5786,7 @@ ${desc}`, id)
             } catch (err) {
                     console.log(err)
                     await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Video tidak ditemukan')
-                    juwen.sendText(ownerNumber, 'Berita Error : ' + err)
+                    juwen.sendText(reportNumber, 'Berita Error : ' + err)
             }
             break
         case prefix+'news':
@@ -5796,7 +5808,7 @@ ${desc}`, id)
             } catch (err) {
                     console.log(err)
                     await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Video tidak ditemukan')
-                    juwen.sendText(ownerNumber, 'Berita Error : ' + err)
+                    juwen.sendText(reportNumber, 'Berita Error : ' + err)
             }
             break
 			case prefix+'alkitab':
@@ -5838,7 +5850,7 @@ ${desc}`, id)
             } catch (err) {
                     console.log(err)
                     await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Jadwal tidak ditemukan')
-                    juwen.sendText(ownerNumber, 'Jadwal Bola Error : ' + err)
+                    juwen.sendText(reportNumber, 'Jadwal Bola Error : ' + err)
             }
             break
             case prefix+'gdrive':
@@ -6567,7 +6579,7 @@ YHAHAHA KENA KICK ~ 👋`
             } catch (err){
                 console.log(err)
                 juwen.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, Nhentai tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Nhentai Error : ' + err)
+                juwen.sendText(reportNumber, 'Nhentai Error : ' + err)
             }
             break
         case prefix+'getnhentai':
@@ -6656,7 +6668,7 @@ YHAHAHA KENA KICK ~ 👋`
             } catch (err){
                 console.log(err)
                 juwen.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, Xvideos tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Xvideos Error : ' + err)
+                juwen.sendText(reportNumber, 'Xvideos Error : ' + err)
             }
             break
             case prefix+'getxvideos':
@@ -6708,7 +6720,7 @@ YHAHAHA KENA KICK ~ 👋`
                    }
                 }
             } catch (err) {
-                juwen.sendText(ownerNumber, 'Error XVideos : '+ err)
+                juwen.sendText(reportNumber, 'Error XVideos : '+ err)
                 juwen.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
                 console.log(err)
             }
@@ -6767,7 +6779,7 @@ YHAHAHA KENA KICK ~ 👋`
             } catch (err){
                 console.log(err)
                 juwen.sendFileFromUrl(from, errorurl, 'error.png', '💔️ Maaf, XXX tidak ditemukan')
-                juwen.sendText(ownerNumber, 'XXX Error : ' + err)
+                juwen.sendText(reportNumber, 'XXX Error : ' + err)
             }
             break
             case prefix+'getxxx':
@@ -6829,7 +6841,7 @@ YHAHAHA KENA KICK ~ 👋`
                    }
                 }
             } catch (err) {
-                juwen.sendText(ownerNumber, 'Error XVideos : '+ err)
+                juwen.sendText(reportNumber, 'Error XVideos : '+ err)
                 juwen.reply(from, `*Kesalahan! Pastikan id download sudah benar.*`, id)
                 console.log(err)
             }
@@ -7206,7 +7218,7 @@ YHAHAHA KENA KICK ~ 👋`
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Video tidak ditemukan')
-             juwen.sendText(ownerNumber, 'Nekopoi Error : ' + err)
+             juwen.sendText(reportNumber, 'Nekopoi Error : ' + err)
            } 
             break
         case prefix+'quoteanime':
@@ -7532,7 +7544,7 @@ YHAHAHA KENA KICK ~ 👋`
                                await limitAdd(serial)
                             }
                         } catch (err) {
-                            juwen.sendText(ownerNumber, 'Error Play : '+ err)
+                            juwen.sendText(reportNumber, 'Error Play : '+ err)
                             juwen.reply(from, mess.error.Yt3, id)
                         }
                         break 
@@ -7568,7 +7580,7 @@ YHAHAHA KENA KICK ~ 👋`
                             })
                         })
                     } catch (err) {
-                        juwen.sendText(ownerNumber, 'Error ytmp3 : '+ err)
+                        juwen.sendText(reportNumber, 'Error ytmp3 : '+ err)
                         juwen.reply(from, mess.error.Yt3, id)
                     }
                     break */
@@ -7722,7 +7734,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
                     await limitAdd(serial)
                 }
             } catch (err) {
-                juwen.sendText(ownerNumber, 'Error Play : '+ err)
+                juwen.sendText(reportNumber, 'Error Play : '+ err)
                 juwen.reply(from, mess.error.Yt3, id)
             }
             break   
@@ -7750,7 +7762,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
 
                 })
             } catch (err) {
-                juwen.sendText(ownerNumber, 'Error ytmp3 : '+ err)
+                juwen.sendText(reportNumber, 'Error ytmp3 : '+ err)
                 juwen.reply(from, mess.error.Yt3, id)
             }
             break   
@@ -7778,7 +7790,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
         
                         })
                     } catch (err) {
-                        juwen.sendText(ownerNumber, 'Error ytmp4 : '+ err)
+                        juwen.sendText(reportNumber, 'Error ytmp4 : '+ err)
                         await juwen.reply(from, mess.error.Yt4, id)
                     }
                     break   
@@ -7917,7 +7929,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
             } catch (err) {
                 console.log(err)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Video tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Xnxx Error : ' + err)
+                juwen.sendText(reportNumber, 'Xnxx Error : ' + err)
             }
             break
         case prefix+'ramalpasangan':
@@ -7963,7 +7975,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
             } catch (err) {
                 console.error(err.message)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Artinama Error : ' + err)
+                juwen.sendText(reportNumber, 'Artinama Error : ' + err)
            }
             break
         case prefix+'zodiak':
@@ -7980,7 +7992,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
             } catch (err) {
                 console.error(err.message)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Zodiak tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Zodiak Error : ' + err)
+                juwen.sendText(reportNumber, 'Zodiak Error : ' + err)
            }
            await limitAdd(serial)
            break
@@ -8006,7 +8018,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
             } catch (err) {
                 console.error(err.message)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Soal Quiz tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Zodiak Error : ' + err)
+                juwen.sendText(reportNumber, 'Zodiak Error : ' + err)
            }
            await limitAdd(serial)
            break
@@ -8214,8 +8226,8 @@ ${slothbawah1}
             limitAdd(serial)
             } catch (err) {
                 console.error(err.message)
-                await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Soal eo-=uiz tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Tebak Gambar Error : ' + err)
+                await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Soal quiz tidak ditemukan')
+                juwen.sendText(reportNumber, 'Tebak Gambar Error : ' + err)
            }
            break
          case prefix+'family100':
@@ -8240,7 +8252,7 @@ ${slothbawah1}
             } catch (err) {
                 console.error(err.message)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Soal Quiz tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Family100 Error : ' + err)
+                juwen.sendText(reportNumber, 'Family100 Error : ' + err)
            }
            break 
 
@@ -8285,7 +8297,7 @@ ${slothbawah1}
             } catch (err) {
                 console.error(err.message)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Hero tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Heroml Error : ' + err)
+                juwen.sendText(reportNumber, 'Heroml Error : ' + err)
            }
             break
         case prefix+'nomorhoki':
@@ -8303,7 +8315,7 @@ ${slothbawah1}
             } catch (err) {
                 console.error(err.message)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Nomor Hoki tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Nomorhoki Error : ' + err)
+                juwen.sendText(reportNumber, 'Nomorhoki Error : ' + err)
            }
             break
         case prefix+'artimimpi':
@@ -8320,7 +8332,7 @@ ${slothbawah1}
             } catch (err) {
                 console.error(err.message)
                 await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Mimpi tidak ditemukan')
-                juwen.sendText(ownerNumber, 'Artimimpi Error : ' + err)
+                juwen.sendText(reportNumber, 'Artimimpi Error : ' + err)
            }
             break
 
@@ -8455,7 +8467,7 @@ ${cara}`
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, Resep tidak ditemukan')
-             juwen.sendText(ownerNumber, 'Resepmasakan Error : ' + err)
+             juwen.sendText(reportNumber, 'Resepmasakan Error : ' + err)
            }
            break
         case prefix+'twitterstalk':
@@ -8488,7 +8500,7 @@ ${cara}`
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
-             juwen.sendText(ownerNumber, 'Twitter Error : ' + err)
+             juwen.sendText(reportNumber, 'Twitter Error : ' + err)
            }
           break
           case prefix+'igstalk':
@@ -8570,7 +8582,7 @@ www.instagram.com/${username}`
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan', id)
-             juwen.sendText(ownerNumber, 'IG Profile Error! : ' + err)
+             juwen.sendText(reportNumber, 'IG Profile Error! : ' + err)
            }
           break
           case prefix+'igprofile2':
@@ -8607,7 +8619,7 @@ www.instagram.com/${username}`
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
-             juwen.sendText(ownerNumber, 'IG Profile Error! : ' + err)
+             juwen.sendText(reportNumber, 'IG Profile Error! : ' + err)
            }
           break
         case prefix+'tiktokstalk':
@@ -8648,7 +8660,7 @@ ${url_account}`
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
-             juwen.sendText(ownerNumber, 'Error Tiktokstalk : '+ err)
+             juwen.sendText(reportNumber, 'Error Tiktokstalk : '+ err)
            }
           break
         case prefix+'smulestalk':
@@ -8681,7 +8693,7 @@ ${url_account}`
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
-             juwen.sendText(ownerNumber, 'Error Smulestalk : '+ err)
+             juwen.sendText(reportNumber, 'Error Smulestalk : '+ err)
             }
           break
           case '$':
@@ -9093,7 +9105,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
               })
             })
             } catch (err){
-                juwen.sendText(ownerNumber, 'Error tiktod = '+err)
+                juwen.sendText(reportNumber, 'Error tiktod = '+err)
                 juwen.reply(from, `Terjadi kesalahan saat mengakses file tersebut, tidak bisa mengirim video!`)
             }
             await juwen.sendSeen(from)
@@ -9166,6 +9178,27 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
                 juwen.reply(from, `Maaf, Terjadi Kesalahan`, id)
             })
             break */
+            case prefix+'takegif':
+            case prefix+'tsgif':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isQuotedSticker) {
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const wokwok = await slicedArgs.join(' ')
+                if (!wokwok.includes('|')) return await juwen.reply(from, `Kirim perintah dengan ${prefix}takegif packname|autor`, id)
+                await juwen.reply(from, mess.wait, id)
+                    const packname12 = wokwok.split('|')[0]
+                    const author12 = wokwok.split('|')[1]
+                    _stick.push('awikwok')
+                    fs.writeFileSync('./lib/database/keywordsticker.json', JSON.stringify(_stick))
+                    const mediaData = await decryptMedia(quotedMsg, uaOverride)
+                    fs.writeFileSync(`./temp/sticker/awikwok.webp`, mediaData)
+                    await juwen.sendImageAsSticker(from, `./temp/sticker/awikwok.webp`, { author: `${author12}`,pack: `${packname12}` })
+            } else {
+                await juwen.reply(from, `Reply stickernya!`, id)
+            }
+        break
         case prefix+'maps':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -9188,7 +9221,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
-             juwen.sendText(ownerNumber, 'Error Maps : '+ err)
+             juwen.sendText(reportNumber, 'Error Maps : '+ err)
            }
           break
           case prefix+'spotify':
@@ -9208,7 +9241,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
                 }
                 limitAdd(serial)
             } catch (err) {
-                juwen.sendText(ownerNumber, 'Error Spotify : '+ err)
+                juwen.sendText(reportNumber, 'Error Spotify : '+ err)
                 juwen.reply(from, mess.error.Yt3, id)
             }
             break
@@ -9274,7 +9307,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
             juwen.reply(from, mess.wait, id)
             argz = body.trim().split(' ')
             console.log(...argz[1])
-            var slicedArgs = Array.prototype.slice.call(arg, 1);
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
             console.log(slicedArgs)
             const cekip = await slicedArgs.join(' ')
             console.log(cekip)
@@ -9301,7 +9334,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
             } catch (err) {
              console.error(err.message)
              await juwen.sendFileFromUrl(from, errorurl2, 'error.png', '💔️ Maaf, User tidak ditemukan')
-             juwen.sendText(ownerNumber, 'Error Check IP : '+ err)
+             juwen.sendText(reportNumber, 'Error Check IP : '+ err)
            }
           break
         /*case prefix+'nhentai':
@@ -9465,11 +9498,11 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
 				fs.writeFileSync('./lib/database/listvn.json', JSON.stringify(listvn))
 				break
 			case prefix+'delallvn':
-			if (!isOwnerB) return juwen.reply(from, 'Fitur ini khusus Owner Bot', id)
+			if (!isOwner) return juwen.reply(from, 'Fitur ini khusus Owner Bot', id)
 			let dellall = listvn.includes(chats)
 			listvn.splice(dellall)
 			fs.writeFileSync('./lib/database/listvn.json', JSON.stringify(listvn))
-			juwen.reply(from, `semua vn didalam database berhasil dihapus`, id)
+			juwen.reply(from, `Semua VN didalam database berhasil dihapus`, id)
 			break
 			case prefix+'delvn':
                 argz = body.trim().split(' ')
@@ -9477,7 +9510,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
                 const deli = await slicedArgs.join(' ')
 				listvn.splice(deli, 1)
 				fs.writeFileSync('./lib/database/listvn.json', JSON.stringify(listvn))
-				juwen.reply(from, 'vn berhasil didelete dari database', id)
+				juwen.reply(from, 'VN berhasil didelete dari database', id)
 				break
             case prefix+'savestiker':
                 if(!isAdmin) return juwen.reply(from, 'Khusus admin bot doang yang bisa!', id)
@@ -9516,7 +9549,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
                 if (args.length === 1) return juwen.reply(from, `Hai ${pushname} untuk menggunakan fitur get stiker ketik *!getstiker* _Nama nya_`, id)
                 try {
                     const get_stick = await fs.readFileSync('./media/saved_stickers/' + body.slice(11) + '.jpg', { encoding: "base64" })
-                    await juwen.sendImageAsSticker(from, `data:image/jpeg;base64,${get_stick.toString('base64')}`, ``, ``, id)
+                    await juwen.sendImageAsStsicker(from, `data:image/jpeg;base64,${get_stick.toString('base64')}`, ``, ``, id)
                 } catch (e){
                     juwen.reply(from, `Kesalahan mengambil stiker! cek kembali nama stiker dengan ketik *!liststiker*`)
                 }
@@ -9533,6 +9566,7 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
     
                 }
                 break
+                // LIST IMGGGG
 			case prefix+'listsvimg':
             if (!isAdmin) return juwen.reply(from, `Perintah ini hanya bisa di gunakan oleh Admin ZXCBOT!`, id)
                 const badd = fs.readFileSync('./lib/database/svimage.json')
@@ -10736,7 +10770,7 @@ break
                 const isLink = link.match(/(https:\/\/chat.whatsapp.com)/gi)
                 const check = await juwen.inviteInfo(link)
                 if (!isLink) return juwen.reply(from, 'Ini link?', id)
-                if (key !== `${groupkey}`) return juwen.reply(from, '*GROUP KEY SALAH!*\n\nSilahkan chat owner bot untuk mendapatkan key yang valid', id)
+                if (key !== `${groupkey}`) return juwen.reply(from, '*GROUP KEY SALAH!*\n\nSilahkan chat owner bot untuk mendapatkan key yang valid, btw gratis kok buat masukin ke grup, chat gw aja di wa.me/6289635687240', id)
                 if (tGr.length > 256) return juwen.reply(from, 'Maaf jumlah group sudah maksimal!', id)
                 if (check.size < 2) return juwen.reply(from, 'Member group tidak melebihi 2, bot tidak bisa masuk', id)
                 if (check.status === 200) {
@@ -11194,6 +11228,29 @@ Status :
                 juwen.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan *${prefix}setgroupicon`, id)
             }
             break
+            case prefix+'pcto':
+            if(isGroupMsg){
+            argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const buatapa = await slicedArgs.join(' ')
+            if (!buatapa.includes('|')) return await juwen.reply(from, `Kirim perintah *${prefix}takestick nama|author*`, id)
+                const nomorbuatpersonalchat = buatapa.split('|')[0]
+                const pesannyagan = buatapa.split('|')[1]
+                const personalchat = `${nomorbuatpersonalchat}@c.us`
+                juwen.sendTextWithMentions(personalchat, `*[PERSONAL CHAT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n*GROUP*: ${formattedTitle}\n\nPesan: ${pesannyagan}`)
+                juwen.reply(from, `Pesan berhasil dikirim ke wa.me/${nomorbuatpersonalchat}`, id)
+            }else{
+                argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const buatapa = await slicedArgs.join(' ')
+            if (!buatapa.includes('|')) return await juwen.reply(from, `Kirim perintah *${prefix}takestick nama|author*`, id)
+                const nomorbuatpersonalchat = buatapa.split('|')[0]
+                const pesannyagan = buatapa.split('|')[1]
+                const personalchat = `${nomorbuatpersonalchat}@c.us`
+                juwen.sendTextWithMentions(personalchat, `*[PERSONAL CHAT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n\nPesan: ${pesannyagan}`)
+                juwen.reply(from, `Pesan berhasil dikirim ke wa.me/${nomorbuatpersonalchat}`, id)
+            }
+                break
         case prefix+'bugreport':
             case prefix+'reportbug':
             if(isReg(obj)) return
