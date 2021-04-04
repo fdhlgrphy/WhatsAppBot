@@ -7558,20 +7558,16 @@ YHAHAHA KENA KICK ~ 👋`
                      case prefix+'play':
                      if(isReg(obj)) return
                      if(cekumur(cekage)) return
-                     //if (!isPrem) return juwen.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
                      if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                    // if (!isVip) return juwen.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
                     if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                     if (args.length === 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play [judul lagu]`, id)
-                    try { 
-                        argz = body.trim().split(' ')
-                        var slicedArgs = Array.prototype.slice.call(argz, 1);
-                        const querv2 = await slicedArgs.join(' ')
-                    const resmusv2 = await fetch(`https://api.vhtear.com/youtube?query=${encodeURIComponent(querv2)}&apikey=${vhtearkey}`)
-                    const jsonserc = await resmusv2 .json()
-                    const { result } = await jsonserc
-                    const mulaikah = result[0].urlyt
-                        juwen.reply(from, mess.wait, id)
+                    try {
+                    argz = body.trim().split(' ')
+                    var slicedArgs = Array.prototype.slice.call(argz, 1);
+                    const yt3 = await slicedArgs.join(' ')
+                    juwen.reply(from, mess.wait, id)
+                    const yt = await yts(yt3)
+                    const mulaikah = yt.all[0].url
                         yta(mulaikah)
                         .then((res) => {
                             const { dl_link, thumb, title, filesizeF, filesize } = res
@@ -7596,17 +7592,15 @@ YHAHAHA KENA KICK ~ 👋`
                         if(cekumur(cekage)) return
                         //if (!isPrem) return juwen.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
                         if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                       // if (!isVip) return juwen.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
                        if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                        if (args.length === 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play [judul lagu]`, id)
                        try { 
-                           argz = body.trim().split(' ')
-                           var slicedArgs = Array.prototype.slice.call(argz, 1);
-                           const querv2 = await slicedArgs.join(' ')
-                       const resmusv2 = await fetch(`https://api.vhtear.com/youtube?query=${encodeURIComponent(querv2)}&apikey=${vhtearkey}`)
-                       const jsonserc = await resmusv2 .json()
-                       const { result } = await jsonserc
-                       const mulaikah = result[0].urlyt
+                        argz = body.trim().split(' ')
+                        var slicedArgs = Array.prototype.slice.call(argz, 1);
+                        const yt3 = await slicedArgs.join(' ')
+                        juwen.reply(from, mess.wait, id)
+                        const yt = await yts(yt3)
+                        const mulaikah = yt.all[0].url
                            juwen.reply(from, mess.wait, id)
                            ytv(mulaikah)
                            .then((res) => {
