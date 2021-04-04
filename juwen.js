@@ -46,9 +46,7 @@ const urlShortener2 = require('./lib/shortener2')
 const { addFilter, isFiltered } = require('./lib/msgFilter')
 //const game = require('./lib/game.js')
 const cariKasar = require('./lib/kataKotor')
-const { yta, ytv, buffer2Stream, ytsr, baseURI, stream2Buffer, noop } = require('./lib/ytdl')
 const emojiUnicode = require('emoji-unicode')
-const { RemoveBgResult, removeBackgroundFromImageBase64, removeBackgroundFromImageFile } = require('remove.bg')
 const lolcatjs = require('lolcatjs')
 const figlet = require('figlet')
 const tiktok = require('tiktok-scraper')
@@ -58,6 +56,9 @@ const ms = require('parse-ms')
 const toMs = require('ms')
 const yts = require('yt-search')
 const acrcloud = require("acrcloud")
+const { yta, ytv, buffer2Stream, ytsr, baseURI, stream2Buffer, noop } = require('./lib/ytdl')
+const { RemoveBgResult, removeBackgroundFromImageBase64, removeBackgroundFromImageFile } = require('remove.bg')
+
 
 // CONST DATABASE
 const _afk = JSON.parse(fs.readFileSync('./lib/database/afk.json'))
@@ -7554,7 +7555,7 @@ YHAHAHA KENA KICK ~ 👋`
                      juwen.reply(from, `Ingin play media apa? Silahkan pilih\n\n> ${prefix}playmusic [judulnya]\n${prefix}playvideo [judulnya]`, id)
                      break */
 
-                    case prefix+'play':
+                     case prefix+'play':
                      if(isReg(obj)) return
                      if(cekumur(cekage)) return
                      //if (!isPrem) return juwen.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
@@ -7590,6 +7591,42 @@ YHAHAHA KENA KICK ~ 👋`
                         juwen.reply(from, mess.error.Yt3, id)
                     }
                     break 
+                    case prefix+'playvideo':
+                        if(isReg(obj)) return
+                        if(cekumur(cekage)) return
+                        //if (!isPrem) return juwen.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
+                        if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                       // if (!isVip) return juwen.reply(from, `Perintah ini khusus membervip, chat owner untuk berlangganan`, id)
+                       if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                       if (args.length === 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play [judul lagu]`, id)
+                       try { 
+                           argz = body.trim().split(' ')
+                           var slicedArgs = Array.prototype.slice.call(argz, 1);
+                           const querv2 = await slicedArgs.join(' ')
+                       const resmusv2 = await fetch(`https://api.vhtear.com/youtube?query=${encodeURIComponent(querv2)}&apikey=${vhtearkey}`)
+                       const jsonserc = await resmusv2 .json()
+                       const { result } = await jsonserc
+                       const mulaikah = result[0].urlyt
+                           juwen.reply(from, mess.wait, id)
+                           ytv(mulaikah)
+                           .then((res) => {
+                               const { dl_link, thumb, title, filesizeF, filesize } = res
+                               axios.get(`https://tinyurl.com/api-create.php?url=${dl_link}`)
+                               .then(async (a) => {
+                               if (Number(filesize) >= 30000) return juwen.sendFileFromUrl(from, thumb, `thumb.jpg`, `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${filesizeF}\n*Link* : ${a.data}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_`, id)
+                               const captions = `*「Data Berhasil Didapatkan 」*\n\n*Title* : ${title}\n*Ext* : MP4\n*Size* : ${filesizeF}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
+                               juwen.sendFileFromUrl(from, thumb, `thumb.jpg`, captions, id)
+                               // INFOLOG(dl_link)
+                               await juwen.sendFileFromUrl(from, dl_link, `${title}.mp3`, `Video berhasil dikirim!`, id).catch(() => juwen.reply(from, mess.error.Yt3, id))
+                               await limitAdd(serial)
+                               })
+                           })
+                       } catch (err) {
+                           console.log(err)
+                           juwen.sendText(reportNumber, 'Error ytmp3 : '+ err)
+                           juwen.reply(from, mess.error.Yt3, id)
+                       }
+                       break 
                 /*    case prefix+'play':
                         if(isReg(obj)) return
                         if(cekumur(cekage)) return
@@ -7646,23 +7683,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
                         await limitAdd(serial)
                         break  */
 
-                    case prefix+'playvideo':
-                        if(isReg(obj)) return
-                        if(cekumur(cekage)) return
-                        if (isPrem) return juwen.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
-                        //if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                        if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
-                        juwen.reply(from, mess.wait, id)
-                        argz = body.trim().split(' ')
-                        var slicedArgs = Array.prototype.slice.call(argz, 1);
-                        const judulnye = await slicedArgs.join(' ')
-                        const playvid = await axios.get(`https://naufalhoster.xyz/dl/ytplayvideo?apikey=${naufalkey}&query=${judulnye}`)
-                        const { title, thumbnail, duration, viewCount, likeCount, dislikeCount, filesize, video } = await playvid.data.result
-                        await juwen.sendFileFromUrl(from, thumbnail, `awokako.jpg`, `*Title:* ${title}\n*Durasi:* ${duration}\n*Size:* ${filesize}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`, id)
-                        await juwen.sendFileFromUrl(from, video, `nyee.mp4`, `Video berhasil di download!`, id)
-                        break
-
-                        case prefix+'playmusic':
+                      /*  case prefix+'playmusic':
                             if(isReg(obj)) return
                             if(cekumur(cekage)) return
                             if (isPrem) return juwen.reply(`Maaf fitur ini hanya untuk user premium. Silahkan chat owner untuk mendaftar menjadi premium user.`, id)
@@ -7680,7 +7701,7 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
                             //await fs.writeFile(`./media/audio.mp3`, buffer2)
                             //await juwen.sendPtt(from,'./media/audio.mp3', `${dataaud.title}.mp3`, ``,  id)
                             await juwen.sendFileFromUrl(from, dataaud.audio, `${dataaud.title}.mp3`, ``, id)
-                            break
+                            break */
                         /*      case prefix+'play2':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -8850,65 +8871,19 @@ juwen.sendFileFromUrl(from, post.url, `Insta`, captig, id)
                 juwen.reply(from, `Maaf, Terjadi Kesalahan`, id)
             })
             break 
-            
 
-
-
-
-
-            case prefix+'igstory2':
-                if(isReg(obj)) return
-                if(cekumur(cekage)) return
-                if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}ig [ Link Instagram ]* untuk contoh silahkan kirim perintah *#readme*`)
+            //case prefix+'igdown': 
+            //case prefix+'instagramdown':
+            // THIS CASE REQUIMENTS XMAPP & DOWNLOADER-API BY ABEHBATRE
+            // STEP 1 - make sure xampp / lampp installed in your fucking machine .
+            // STEP 2 - clone project to ../../htdocs (htdocs folder) (https://github.com/abehbatre/instagram-downloader-api)
+            // STEP 3 - http://127.0.0.1/instagram-downloader-api/?url=https://www.instagram.com/p/Byy39R5FVUt/?utm_source=ig_web_copy_link
+                //if(isReg(obj)) return
+                //if(cekumur(cekage)) return
+                //if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+                //if (args.length === 1) return juwen.reply(from, `Kirim perintah *${prefix}ig Link Instagram*\n\nContoh:\n ${prefix}ig https://www.instagram.com/p/CHFhycxga-B/`, id)
                 //if (!args[1].match(isUrl) && !args[1].includes('instagram.com')) return juwen.reply(from, `Maaf, link yang kamu kirim tidak valid. [Invalid Link]`, id)
-                await juwen.reply(from, mess.wait, id);
-                const igstory2 = async (url) => new Promise(async (resolve, reject) => {
-                    const api = `https://api.vhtear.com/igstory?query=${url}&apikey=${vhtearkey}`
-                    axios.get(api).then(async(res) => {
-                        const st = res.data.result
-                        if(st.status === false){
-                            resolve(`Media Tidak Di Temukan`)
-                        }else{
-                            resolve(st)
-                        }
-                    }).catch(err => {
-                        console.log(err)
-                        resolve(`Maaf, Server Sedang Error`)
-                    })
-                })
-                igstory2(args[1]).then(async(res) => {
-                    for (let i = 0; i < res.post.length; i++) {
-                    if (res.itemlist[i].type == "image") {
-                            await juwen.sendFileFromUrl(from, res.itemlist[i].urlDownload, "ig.jpg", `*「 INSTAGRAM 」*\n\n*Tipe* : Image/Jpg`, id);
-                            limitAdd(serial)
-                        } else if (res.itemlist[i].type == "video") {
-                            await juwen.sendFileFromUrl(from, res.itemlist[i].urlDownload, "ig.mp4", `*「 INSTAGRAM 」*\n\n*Tipe* : Video/MP4`, id);
-                        }
-                    }
-                }).catch((err) => {
-                    console.log(err);
-                    juwen.reply(from, `Maaf, Terjadi Kesalahan`, id)
-                })
-                break 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                //await juwen.reply(from, mess.wait, id)
         case prefix+'fb':
             if(isReg(obj)) return
             if(cekumur(cekage)) return
