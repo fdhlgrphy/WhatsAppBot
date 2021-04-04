@@ -56,6 +56,7 @@ const ms = require('parse-ms')
 const toMs = require('ms')
 const yts = require('yt-search')
 const acrcloud = require("acrcloud")
+const ocrtess = require('node-tesseract-ocr')
 const { yta, ytv, buffer2Stream, ytsr, baseURI, stream2Buffer, noop } = require('./lib/ytdl')
 const { RemoveBgResult, removeBackgroundFromImageBase64, removeBackgroundFromImageFile } = require('remove.bg')
 
@@ -158,6 +159,13 @@ let state = {
 
 lolcatjs.options.seed = Math.round(Math.random() * 1000);
 lolcatjs.options.colors = true;
+
+
+const ocrconf = { 
+    lang: 'eng', 
+    oem: '1', 
+    psm: '3' 
+}
 
 const checkVIP = (userId) => {
     let id = false
@@ -1712,16 +1720,6 @@ case prefix+'p1':
             juwen.reply(from, mess.wait2, id)
              const mediaData = await decryptMedia(quotedMsg, uaOverride)
              await juwen.sendMp4AsSticker(from, mediaData, {crop: false, fps: 10, startTime: `00:00:00.0`, endTime : `00:00:10.0`,loop: 0}, { author: `${autorwm}`, pack: `${packnamewm}` })
-            
-            } else if  (quotedMsg.type == body.massage ) {
-            const alay3 = quotedMsg.type == 'chat' ? quotedMsg.body : quotedMsg.type == 'image' ? quotedMsg.caption : ''
-            //const alay4 = await axios.get(`https://api.terhambar.com/bpk?kata=${alay3}`)
-            const lttp2 = ["Orange","White","Green","Black","Purple","Red","Yellow","Blue","Navy","Grey","Magenta","Brown","Gold"]
-            const rttp2 = lttp2[Math.floor(Math.random() * (lttp2.length))]
-            await juwen.sendStickerfromUrl(from, `https://api.vhtear.com/textmaker?text=${alay3}&warna=${rttp2}&apikey=${vhtearkey}`)
-            //const alay5 = alay4.data.text
-            //juwen.reply(from, alay5, id)
-            limitAdd(serial)
             } 
         
         }catch(error) {
@@ -3136,7 +3134,28 @@ case prefix+'ytcomment':
     await limitAdd(serial)
     break
 
-
+    case prefix+'ocr': // by: VideFrelan
+    if(isReg(obj)) return
+    if(cekumur(cekage)) return
+    if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
+    if (isMedia && isImage || isQuotedImage || isQuotedSticker) {
+        await juwen.reply(from, mess.wait, id)
+        const encryptMedia = isQuotedImage || isQuotedSticker ? quotedMsg : message
+        const mediaData = await decryptMedia(encryptMedia, uaOverride)
+        fs.writeFileSync(`./temp/${sender.id}.jpg`, mediaData)
+        ocrtess.recognize(`./temp/${sender.id}.jpg`, ocrconf)
+            .then(async (text) => {
+                await juwen.reply(from, `*...:* *OCR RESULT* *:...*\n\n${text}`, id)
+                fs.unlinkSync(`./temp/${sender.id}.jpg`)
+            })
+            .catch(async (err) => {
+                console.error(err)
+                await juwen.reply(from, 'Error!', id)
+            })
+    } else {
+        await juwen.reply(from, ind.wrongFormat(), id)
+    }
+break
 case prefix+'photomath':
     if(isReg(obj)) return
     if(cekumur(cekage)) return
@@ -11016,13 +11035,17 @@ const pen = no.replace(' ','')
             break */
         case prefix+'setname':
             if (!isOwner) return juwen.reply(from, `Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!`, id)
-                const setnem = body.slice(9)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const setnem = await slicedArgs.join(' ')
                 await juwen.setMyName(setnem)
                 juwen.reply(from, `Berhasil memperbarui nama!`, id)
             break
         case prefix+'setstatus':
             if (!isOwner) return juwen.reply(from, `Perintah ini hanya bisa di gunakan oleh Owner ZXCBOT!`, id)
-                const setstat = body.slice(11)
+                argz = body.trim().split(' ')
+                var slicedArgs = Array.prototype.slice.call(argz, 1);
+                const setstat = await slicedArgs.join(' ')
                 await juwen.setMyStatus(setstat)
                 juwen.reply(from, `Berhasil memperbarui status!`, id)
             break
