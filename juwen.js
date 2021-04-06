@@ -463,7 +463,8 @@ module.exports = juwen = async (juwen, message) => {
         if (isBlocked && isCmd) return console.log(color('[BLOCKED]', 'red'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))
         if (isCmd && !isGroupMsg) {console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname))}
         if (isCmd && isGroupMsg) {console.log(color('[EXEC]'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color(`${command} [${args.length}]`), 'from', color(pushname), 'in', color(name || formattedTitle))}
-	   
+        await juwen.sendSeen(from) 
+
        
         // FUNCTION
         
@@ -1445,6 +1446,7 @@ function addMsgLimit(id){
         if (isBanned && isCmd) {
         return juwen.reply(from, `Maaf, anda telah dibanned untuk menggunakan command Bot!`, id)
         } 
+        await juwen.sendSeen(from) 
         if (isMuted(chatId) && banChat() && !isBlocked && !isBanned || isOwner ) {
         switch(command) {
 case prefix+'p1':
@@ -2191,7 +2193,7 @@ juwen.setGroupToAdminsOnly(groupId, true)
                         spawn('convert', [
                             './media/img/buku/sebelumkiri.jpg',
                             '-font',
-                            './lib/font/Zahraaa.ttf',
+                            './lib/font/juwen.ttf',
                             '-size',
                             '960x1280',
                             '-pointsize',
@@ -2499,6 +2501,34 @@ juwen.setGroupToAdminsOnly(groupId, true)
             await limitAdd(serial)
             await juwen.sendSeen(from) 
         break // BY MFARELS
+        case prefix+'nulismerah':
+            if (args.length === 1) return zahraaa.reply(from, 'Kirim Perintah */magernulis1c [text]*', id)
+            const diTulis3 = body.slice(14)
+            await juwen.reply(from, mess.wait, id)
+            const panjangKalimat3 = diTulis3.replace(/(\S+\s*){1,10}/g, '$&\n')
+            const panjangBaris3 = panjangKalimat3.split('\n').slice(0, 30).join('\n')
+            spawn('convert', [
+                './mager/magernulis/magernulis2.jpg',
+                '-fill',
+                '#8c1a00',
+                '-font',
+                './font/Zahraaa.ttf',
+                '-size',
+                '1024x784',
+                '-pointsize',
+                '20',
+                '-interline-spacing',
+                '-7.5',
+                '-annotate',
+                '+344+142',
+                panjangBaris3,
+                './mager/magernulis√/magernulis1√.jpg'
+            ])
+            .on('error', () => juwen.reply(from, menulis.errormagernulissatu, id))
+            .on('exit', () => {
+                juwen.sendImage(from, './mager/magernulis√/magernulis1√.jpg', 'aowkowa.jpg', '*Nih kak*', id)
+            })
+            break
         case prefix+'toimg':
             case prefix+'t':
             if(isReg(obj)) return
@@ -3145,12 +3175,12 @@ case prefix+'ytcomment':
         fs.writeFileSync(`./temp/${sender.id}.jpg`, mediaData)
         ocrtess.recognize(`./temp/${sender.id}.jpg`, ocrconf)
             .then(async (text) => {
-                await juwen.reply(from, `*...:* *OCR RESULT* *:...*\n\n${text}`, id)
+                await juwen.reply(from, `*[ OCR RESULT ]*\n\n${text}`, id)
                 fs.unlinkSync(`./temp/${sender.id}.jpg`)
             })
             .catch(async (err) => {
                 console.error(err)
-                await juwen.reply(from, 'Error!', id)
+                await juwen.reply(from, 'Ada yang error!', id)
             })
     } else {
         await juwen.reply(from, ind.wrongFormat(), id)
@@ -3855,7 +3885,6 @@ Timestamp: ${yhahah.timestamp}`)
             const sigot5 = sigo44.data
             juwen.reply(from, sigot5.jawaban, id)
             //console.log(sigot)
-            juwen.seen
             break
             case prefix+'wiki':
                 if(isReg(obj)) return
@@ -4405,7 +4434,7 @@ juwen.reply(from, cekapi9, id)
                 '1000x850+0+0',
                 './mager/pantek.jpg'
             ])
-            .on('error', () => zahraaa.reply(from, 'Error gan', id))
+            .on('error', () => juwen.reply(from, 'Error gan', id))
             .on('exit', () => {
                 juwen.sendImage(from, './mager/pantek.jpg', 'nulis.jpg', 'Nih mhank', id)  // YT : MFARELS CH
             })
@@ -4450,7 +4479,7 @@ juwen.reply(from, cekapi9, id)
             }
             await limitAdd(serial)
             break
-         case prefix+'searchig':
+       /*  case prefix+'searchig':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
                 if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
@@ -4469,7 +4498,7 @@ juwen.reply(from, cekapi9, id)
                     console.log(err)
                 }
                 await limitAdd(serial)
-                break
+                break */
             case prefix+'trendtwit':
 			if(isReg(obj)) return
             if(cekumur(cekage)) return
@@ -7578,7 +7607,7 @@ YHAHAHA KENA KICK ~ 👋`
                      if(isReg(obj)) return
                      if(cekumur(cekage)) return
                      if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                    if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                    //if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                     if (args.length === 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play [judul lagu]`, id)
                     try {
                     argz = body.trim().split(' ')
@@ -7592,10 +7621,9 @@ YHAHAHA KENA KICK ~ 👋`
                             const { dl_link, thumb, title, filesizeF, filesize } = res
                             axios.get(`https://tinyurl.com/api-create.php?url=${dl_link}`)
                             .then(async (a) => {
-                            if (Number(filesize) >= 30000) return juwen.sendFileFromUrl(from, thumb, `thumb.jpg`, `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${filesizeF}\n*Link* : ${a.data}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_`, id)
+                            if (Number(filesize) >= 20000) return juwen.sendFileFromUrl(from, thumb, `thumb.jpg`, `*Data Berhasil Didapatkan!*\n\n*Title* : ${title}\n*Ext* : MP3\n*Filesize* : ${filesizeF}\n*Link* : ${a.data}\n\n_Untuk durasi lebih dari batas disajikan dalam bentuk link_`, id)
                             const captions = `*「Data Berhasil Didapatkan 」*\n\n*Title* : ${title}\n*Ext* : MP3\n*Size* : ${filesizeF}\n\n_Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
                             juwen.sendFileFromUrl(from, thumb, `thumb.jpg`, captions, id)
-                            // INFOLOG(dl_link)
                             await juwen.sendFileFromUrl(from, dl_link, `${title}.mp3`, `Audio telah terkirim ${pushname}`, id).catch(() => juwen.reply(from, mess.error.Yt3, id))
                             await limitAdd(serial)
                             })
@@ -7611,13 +7639,12 @@ YHAHAHA KENA KICK ~ 👋`
                         if(cekumur(cekage)) return
                         //if (!isPrem) return juwen.reply(from, `Mohon maaf nih sebelumnya, karena jalur traffic bot yang sangat padat. Fitur ini khusus premium untuk sampe hari kedepan.\n\nUntuk mendaftar premium silahkan chat ke owner\n\nwa.me/6289635687240`, id)
                         if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                       if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
+                       //if (!isGroupMsg && !isAdmin) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group', id)
                        if (args.length === 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play [judul lagu]`, id)
                        try { 
                         argz = body.trim().split(' ')
                         var slicedArgs = Array.prototype.slice.call(argz, 1);
                         const yt3 = await slicedArgs.join(' ')
-                        juwen.reply(from, mess.wait, id)
                         const yt = await yts(yt3)
                         const mulaikah = yt.all[0].url
                            juwen.reply(from, mess.wait, id)
@@ -7751,33 +7778,6 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
             await juwen.sendPtt(from,'./media/play.mp3', id)
             await limitAdd(serial)
                 break */
-			case prefix+'premplay':
-            if(isReg(obj)) return
-            if(cekumur(cekage)) return
-           if (!isPrem) return juwen.reply(from, `Perintah ini hanya untuk user Premium *ZXCBOT*\n\nKetik* ${prefix}premmenu* untuk melihat menu premium`, id)
-            if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik #ceklimit Untuk Mengecek Kuota Limit Kamu`, id)
-            if (args.length == 1) return juwen.reply(from, `Untuk mencari lagu dari youtube\n\nPenggunaan: ${prefix}play judul lagu`, id)
-            try {
-                juwen.reply(from, 'Tunggu sebentar, permintaan sedang di proses', id)
-                const serplay = body.slice(6)
-                const webplay = await fetch(`https://api.vhtear.com/ytmp3?query=${serplay}&apikey=${vhtearkey}`)
-                if (!webplay.ok) throw new Error(`Error Get Video : ${webplay.statusText}`)
-                const webplay2 = await webplay.json()
-                 if (webplay2.status == false) {
-                    juwen.reply(from, `*Maaf Terdapat kesalahan saat mengambil data, mohon pilih media lain...*`, id)
-                } else {
-                    if (Number(webplay2.result.size.split(' MB')[0]) >= 20.00) return juwen.reply(from, 'Maaf durasi music sudah melebihi batas maksimal 20 MB!', id)
-                    const { image, mp3, size, ext, title, duration } = await webplay2.result
-                    const captplay = `*「 PREMIUM USER - PLAY 」*\n\n*Judul* : ${title}\n*Durasi* : ${duration}\n*Filesize* : ${size}\n*Exp* : ${ext}\n\n_*Music Sedang Dikirim*_`
-                    juwen.sendFileFromUrl(from, image, `thumb.jpg`, captplay, id)
-                    await juwen.sendFileFromUrl(from, mp3, `${title}.mp3`, '', id).catch(() => juwen.reply(from, mess.error.Yt4, id))
-                    await limitAdd(serial)
-                }
-            } catch (err) {
-                juwen.sendText(reportNumber, 'Error Play : '+ err)
-                juwen.reply(from, mess.error.Yt3, id)
-            }
-            break   
             case prefix+'ytmp3':
                     if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -7834,7 +7834,6 @@ _Silahkan tunggu file media sedang dikirim mungkin butuh beberapa menit_`
                         await juwen.reply(from, mess.error.Yt4, id)
                     }
                     break   
-                   
                 case prefix+'google2':
                 //if (!isRegistered) return await juwen.reply(from, ind.notRegistered(), id)
                 //if (!q) return await juwen.reply(from, ind.wrongFormat(), id)
@@ -8543,6 +8542,22 @@ ${cara}`
              juwen.sendText(reportNumber, 'Twitter Error : ' + err)
            }
           break
+          case prefix+'searchig':
+          await searchUser(args[1]).then((us) => {
+            let searchigcapt = `*Hasil pencarian insta from ${args[1]}*\n\n`
+            for (let i = 0; i < us.length; i++) {
+                searchigcapt += `
+◼️ *Urutan* : ${us[i].number}
+◼️ *Username* : ${us[i].username}
+◼️ *Nama Lengkap* : ${us[i].name}
+◼️ *Id Story Terbaru* : ${us[i].latest_reel}
+◼️ *Terverifikasi* : ${us[i].is_verified ? "✅" : "❌"}
+◼️ *Akun Private* : ${us[i].is_private ? "✅" : "❌"} \n\n`}
+
+juwen.sendFileFromUrl(from, us[0].pic, 'Profile.jpg', searchigcapt, id)
+        })
+            //limitAdd(sender, limit)
+            break
           case prefix+'igstalk':
         //if (!isGroupMsg) return juwen.reply(from, menuPriv, id)
         juwen.reply(from, mess.wait, id)
@@ -11254,6 +11269,873 @@ Status :
             if(isReg(obj)) return
             if(cekumur(cekage)) return
             if (args.length === 1) return juwen.reply(from, 'Kirim perintah *${prefix}bugreport [teks]*\ncontoh : *${prefix}bugreport Permisi Owner, Ada bug pada command ${prefix}nulis, Tolong diperbaiki*')
+            //const reportNumber = `6289635687240@c.us`
+            argz = body.trim().split(' ')
+            var slicedArgs = Array.prototype.slice.call(argz, 1);
+            const bug = await slicedArgs.join(' ')
+            if(!bug) return
+            if(isGroupMsg){
+                const reportNumber = '6289635687240@c.us'
+                juwen.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n*GROUP*: ${formattedTitle}\n\nPesan: ${bug}`)
+                juwen.reply(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.', id)
+            }else{
+                const reportNumber = '6289635687240@c.us'
+                juwen.sendTextWithMentions(reportNumber, `*[BUG REPORT]*\n\n*WAKTU* : ${time}\n*NO PENGIRIM*: @${serial.replace('@c.us', '')}\n\nPesan: ${bug}`)
+                juwen.reply(from, 'Masalah telah di laporkan ke owner BOT, laporan palsu/main2 tidak akan ditanggapi.', id)
+            }
+            break
+         case prefix+'profile':
+            if(isReg(obj)) return
+            if(cekumur(cekage)) return
+            if (isGroupMsg) {
+                if (!quotedMsg) {
+                     //let limitCounts = limitCount-lmt.limit
+                    var block = blockNumber.includes(author)
+                    var bend = banned.includes(author)
+                    var sts = await juwen.getStatus(author)
+                    var adm = isGroupAdmins
+                    var donate = isAdmin
+                    prema = isPrem
+                    
+                    var ctt = await juwen.getContact(author)
+                    const { status } = sts
+                    var found = false
+                    Object.keys(pendaftar).forEach((i) => {
+                        if(pendaftar[i].id == author){
+                            found = i
+                        }
+                    })
+                    if (found !== false) {
+                        pendaftar[found].id = author;
+                        var registe = 'Yes'
+                    } else {
+                        var registe = 'No'
+                    }
+                    if (ctt == null) {
+                    return await juwen.reply(from, `Nomor WhatsApp tidak valid [ Tidak terdaftar di WhatsApp ]`, id) 
+                    } else {
+                        const contact = ctt.pushname
+                        const dpd = await juwen.getProfilePicFromServer(author)
+                    if (dpd == undefined) {
+                        var pfp = errorurl
+                        } else {
+                            var pfp = dpd
+                        } 
+                    if (contact == undefined) {
+                        var namae = '*Tidak Ada Nama*' 
+                    } else {
+                        var namae = contact
+                    } 
+                        juwen.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username:* ${namae}\n• *User Info:* ${status}\n*• Block :* ${block}\n*• Banned :* ${bend}\n• *Admin Group:* ${adm}\n• *Admin ZXCBOT:* ${donate}\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}*\n`, id)
+                    }
+                } else if (quotedMsg) {
+                    var qmid = quotedMsgObj.sender.id
+                    var block = blockNumber.includes(qmid)
+                    var bend = banned.includes(qmid)
+                    var gpic = await juwen.getProfilePicFromServer(qmid)
+                    var namae = quotedMsgObj.sender.name
+                    var sts = await juwen.getStatus(qmid)
+                    var ctt = await juwen.getContact(qmid)
+                    var adm = isGroupAdmins
+                    var donate = isAdmin
+                    var prema = isPrem
+                    const { status } = sts
+                    Object.keys(pendaftar).forEach((i) => {
+                        if(pendaftar[i].id == qmid){
+                            found = i
+                        }
+                    })
+                    if (found !== false) {
+                        pendaftar[found].id = qmid;
+                        var registe = '✔'
+                    } else {
+                        var registe = '❌'
+                    }
+                    if (ctt == null) {
+                    return await juwen.reply(from, `Nomor WhatsApp tidak valid [ Tidak terdaftar di WhatsApp ]`, id) 
+                    } else {
+                        const contact = ctt.pushname
+                        const dpd = await juwen.getProfilePicFromServer(qmid)
+                    if (dpd == undefined) {
+                        var pfp = errorurl
+                        } else {
+                            var pfp = dpd
+                        } 
+                    if (contact == undefined) {
+                        var namae = '*Tidak Ada Nama*' 
+                    } else {
+                        var namae = contact
+                    }                                                   
+                    juwen.sendFileFromUrl(from, pfp, 'pfp.jpg', `*「 PROFILE 」*\n\n• *Username:* ${namae}\n• *User Info:* ${status}\n*• Block : ${block}*\n*• Banned : ${bend}*\n• *Admin Group: ${adm}*\n• *Admin ZXCBOT: ${donate}*\n• *Registered User :* ${registe}\n• *User* : *${prema ? 'Premium' : 'Free'}`)
+                    }
+                }
+            }
+            break
+/*✻  *${prefix}video [judul]*
+✻  *${prefix}getvideo [reply pesan bot]*
+✻  *${prefix}music [judul]*
+✻  *${prefix}getmusic [reply pesan bot]*
+contoh get video & music:
+✻  *${prefix}getvideo 1*
+✻  *${prefix}getmusic 1*
+*/
+	
+        // LIST MENU
+		
+        case 'tagme':
+       case prefix+'tagme':
+		juwen.sendTextWithMentions(from, `@${sender.id.replace('@c.us','')}`)
+		break
+		
+		case '@6283899530094':
+        console.log(color('[EXEC]', 'green'), color(moment(t * 1000).format('DD/MM/YY HH:mm:ss'), 'yellow'), color('~> CALLING BOT'), 'from', color(pushname))
+		juwen.reply(from, `Iya? Ada yang bisa dibantu?\nKetik *${prefix}help* untuk melihat commands`, id)
+        break
+
+        case prefix+'nsfwmenu':
+            if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+            if (!isNsfw) return juwen.reply(from, 'command/Perintah NSFW belum di aktifkan di group ini!', id)
+            juwen.reply(from, 
+ `✻  *${prefix}randombokep*
+✻  *${prefix}randomhentai*
+✻  *${prefix}randomnsfwneko*
+✻  *${prefix}randomtrapnime*
+
+
+
+*INGET DOSA YA BANG*`, id)
+break
+case prefix+'textkosong':
+juwen.reply(from, '‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‏‏‎ ‎‎‏‏‎ ‎‏‏‎‎‏‏‎ ‎‏‏‎ ‎', id)
+break
+case prefix+'animemenu':
+        juwen.reply(from,
+` 
+┌「 *ANIME MENU* 」 
+│
+├ *${prefix}loli*
+├ *${prefix}shota*
+├ *${prefix}waifu*
+├ *${prefix}husbu*
+├ *${prefix}randomNekoNime*
+├ *${prefix}randomTrapNime*
+├ *${prefix}randomAnime*
+├ *${prefix}quotesnime*
+├ *${prefix}malanime [optional]*
+├ *${prefix}malcharacter [optional]*
+├ *${prefix}kusonime [optional]*
+├ *${prefix}otakudesu [optional]*
+├ *${prefix}dewabatch [optional]*
+├ *${prefix}animesearch [query]*
+│
+└─────────────────`, id)
+case prefix+'menu':
+    case prefix+'help':
+    if(isReg(obj)) return
+     if(cekumur(cekage)) return
+     const userLevel2 = level.getLevelingLevel(sender.id, _level)
+     const userXp2 = level.getLevelingXp(sender.id, _level)
+     const ramadhan   = new Date('2021-04-12') - new Date('2021-03-31')
+     const result_ramdhan = ramadhan / (1000 * 60 * 60 * 24);
+     //console.log(`${result} hari menuju Ramadhan 1442 H`)
+     var prema = isAdmin
+
+/* if (isGroupMsg) {  ├ *${prefix}gtav*
+├ *${prefix}pencil*
+├ *${prefix}fbpg*
+
+│
+├─「 *NULIS MENU* 」
+├ *${prefix}nulis [teks]*
+├ *${prefix}nulis2 [|Nama|Kelas|Teks]*
+├ *${prefix}nuliskiri [teks]*
+├ *${prefix}nuliskanan [teks]*
+├ *${prefix}foliokanan [teks]*
+├ *${prefix}foliokiri [teks]*
+│*/ 
+const menubot = 
+`*Selamat Datang Di ZXCBOT*
+*${result_ramdhan} Hari lagi menuju Ramadhan 1442 H*
+
+*Telpon = Blocked!*
+*Spam = Banned!*
+
+*Perintah tidak memakai tanda [ ]*
+
+┌──
+│ *~> Nama*  : ${pushname}
+│ *~> User*  :  *${prema ? 'VIP' : 'Free'}*
+│ *~> Level/Xp* : ${userLevel2} / ${userXp2} 
+│ *~> Link*  : wa.me/${serial.replace('@c.us', '')}
+└────────────────────
+
+┌───│ ＺＸＣＢＯＴ
+│
+├── *PREFIX:* *「 MULTI PREFIX 」*
+├── *Total Pengguna : ${pendaftar.length}*
+├────────────────────
+│
+│
+├─「 *BASIC MENU* 」
+├ *${prefix}sticker*
+├ *${prefix}sticker2 (rasio 1:1)*
+├ *${prefix}snobg*
+├ *${prefix}snobg2*
+├ *${prefix}toimg*
+├ *${prefix}tomp3*
+├ *${prefix}bass*
+├ *${prefix}imgtourl*
+├ *${prefix}emojisticker 😁*
+├ *${prefix}reminder |waktu|alasan*
+│
+│
+├─「 *MAKER MENU* 」
+├ *${prefix}ttp [teks]*
+├ *${prefix}ttp2 [teks]*
+├ *${prefix}attp [teks]*
+├ *${prefix}tahta [teks]*
+├ *${prefix}silk [teks]*
+├ *${prefix}sarah [teks]*
+├ *${prefix}cosplay [teks]*
+├ *${prefix}sliding [teks]*
+├ *${prefix}qrcode [optional]*
+├ *${prefix}glitch |teks1|teks2*
+├ *${prefix}logoml |caracter|teks*
+├ *${prefix}tts [kode bhs] [teks]*
+├ *${prefix}tahtacs |teks1|teks2|teks3*
+├ *${prefix}quotemaker |teks|author|theme*
+│
+│
+├─「 *MANIPULATION* 」
+├ *${prefix}blurr*
+├ *${prefix}wasted*
+├ *${prefix}televisi*
+├ *${prefix}nightvis*
+├ *${prefix}dellfile*
+├ *${prefix}fisheye*
+├ *${prefix}firee*
+├ *${prefix}scomic*
+├ *${prefix}zoomy*
+├ *${prefix}trash*
+├ *${prefix}hitler*
+├ *${prefix}trigger*
+├ *${prefix}ytcomment [gambar|username|comment|thema]*
+├ *${prefix}phcomment [@tag|username|comment]*
+├ *${prefix}phcomment2 [gambar|username|comment]*
+├ *${prefix}memecustom [|teks atas|teks bawah]*
+│
+│
+├─「 *KERANG MENU* 」
+├ *${prefix}apakah [optional]*
+├ *${prefix}rate [optional]*
+├ *${prefix}bisakah [optional]*
+├ *${prefix}brppersen [optional]*
+├ *${prefix}kapankah [optional]*
+│
+│
+├─「 *FUN MENU / GROUP* 」    
+├ *${prefix}caklontong*
+├ *${prefix}family100*
+├ *${prefix}tebakgambar*
+├ *${prefix}ramalpasangan [kamu|pasangan]*
+├ *${prefix}zodiak [zodiak kamu]*
+├ *${prefix}artinama [nama]*
+├ *${prefix}artimimpi [mimpi]*
+├ *${prefix}randomtag [pesan]*
+├ *${prefix}cocok*
+├ *${prefix}hug [tag]*
+├ *${prefix}dadu*
+├ *${prefix}koin*
+├ *${prefix}flip*
+├ *${prefix}tod* *[TRUTH OR DARE]*
+├ *${prefix}igprofile [@username]*
+├ *${prefix}heroml [nama hero]*
+│
+│
+├─「 *DOWNLOADER MENU* 」    
+├ *${prefix}ytmp3 [linkYt]*
+├ *${prefix}ytmp4 [linkYt]*
+├ *${prefix}ig [linkIg]*
+├ *${prefix}fb [linkFb]* [ERROR!]
+├ *${prefix}twitter [link vid Twtr]* 
+├ *${prefix}tiktok [linkTiktok]*
+├ *${prefix}tiktok2 [linkTiktok]*
+├ *${prefix}ttnowm [linkTiktok]*
+├ *${prefix}lk21 [judul film]*
+├ *${prefix}joox [lagu]*
+├ *${prefix}play [judul lagu]*
+├ *${prefix}music [judul lagu]*
+├ *${prefix}video [judul video]*
+│
+│
+├─「 *EDUKASI MENU* 」
+├ *${prefix}brainly [pertanyaan] [.jumlah]*
+├ *${prefix}resepmasakan [optional]*
+├ *${prefix}kbbi [query]*
+├ *${prefix}wiki [query]*
+│
+│
+├─「 *RANDOM MENU* 」
+├ *${prefix}quotes*
+├ *${prefix}fakta*
+├ *${prefix}katabijak*
+├ *${prefix}pantun*
+├ *${prefix}alay [teks]*
+├ *${prefix}bucin [teks]*
+├ *${prefix}bacot*
+├ *${prefix}cerpen*
+├ *${prefix}puisi*
+├ *${prefix}addbacot*
+├ *${prefix}hilih [teks] / reply pesan*
+├ *${prefix}halah [teks] / reply pesan*
+├ *${prefix}holoh [teks] / reply pesan*
+│
+│
+├─「 *HELPER MENU* 」
+├ *${prefix}lirik [optional]*
+├ *${prefix}chord [optional]*
+├ *${prefix}covid [negara]*
+├ *${prefix}shorturl [linkWeb]*
+├ *${prefix}ssphone [linkWeb]* 
+├ *${prefix}sspc [linkWeb]* 
+├ *${prefix}checkip [ipaddress]*
+├ *${prefix}maps [optional]*
+├ *${prefix}translate [bahasa] [teks]*
+├ *${prefix}jadwalbola [query]*
+├ *${prefix}distance [query]*
+├ *${prefix}playstore [query]*
+├ *${prefix}gdrive [ BAYPASS ]*
+├ *${prefix}ytsearch*
+├ *${prefix}infoGempa*
+├ *${prefix}news*
+├ *${prefix}shopee*
+├ *${prefix}wame*
+│
+│
+├─「 *GROUP MENU* 」
+├ *${prefix}sider*
+├ *${prefix}wame*
+├ *${prefix}groupinfo*
+├ *${prefix}add 62858xxxxx*
+├ *${prefix}kick @tagmember*
+├ *${prefix}promote @tagmember*
+├ *${prefix}demote @tagadmin*
+├ *${prefix}edotensei @tagmember*
+├ *${prefix}getpic @tagsomeone* 
+├ *${prefix}tagall [pesan]*
+├ *${prefix}afk [reason]*
+├ *${prefix}adminList*
+├ *${prefix}ownerGroup*
+├ *${prefix}leave*
+├ *${prefix}setgroup close/open [waktu|alasan]*
+├ *${prefix}setgroupname [teks]*
+├ *${prefix}setgroupicon [reply]*
+├ *${prefix}delete [replyChatBot]*
+├ *${prefix}group [open|close]*
+├ *${prefix}autosticker [enable|disable]*
+├ *${prefix}autovn [enable/disable]* *[BETA!]*
+├ *${prefix}leveling [enable|disable]*
+├ *${prefix}NSFW [enable|disable]*
+├ *${prefix}left [enable|disable]*
+├ *${prefix}welcome [enable|disable]*
+├ *${prefix}simi [enable|disable]*
+├ *${prefix}antilink [enable|disable]*
+├*${prefix}antiIG [enable|disable]* *[BETA!]*
+│
+│
+├─「 *OTHER* 」
+├ *${prefix}iklan*
+├ *${prefix}info*
+└ *${prefix}owner*
+ 
+
+
+*「 SET WELCOME BETA! 」*
+
+- *${prefix}setwelcome @nama @grup*
+- *${prefix}setleft @nama @grup*
+- *${prefix}delwelcome*
+- *${prefix}delldeft*
+
+*Contoh atur set welcome:*
+*${prefix}setwelcome Haii @nama selamat datang di @grup*
+
+*Contoh atur set left:*
+*${prefix}setleft Bayy @nama selamat tinggal dari @grup*
+
+*@nama - Mention User*
+*@grup - Nama Grup*
+
+
+Ada fitur yang error?, PC OWNER!
+
+
+ _*zxcbot by @juwenajaa*_` 
+
+/* const updatebot = 
+`┌「 *NEW FITUR* 」
+├ *${prefix}autovn [enable/disable]*
+├ *${prefix}igstory*
+└ *${prefix}*` */
+const linkbot = monospace(
+`Jangan lupa kunjungi website kami
+
+http://juwenajaa.my.id/zxcbot.html`)
+ juwen.reply(from, menubot, id)
+ //juwen.sendLinkWithAutoPreview(from, linkbot)
+ //await sleep(900)
+ //juwen.reply(from, updatebot, id)
+ 
+break
+
+case prefix+'adminmenu':
+if (!isAdmin) return juwen.reply(from, 'Perintah ini hanya untuk Admin ZXCBOT', id)
+juwen.reply(from,
+`*「  ADMINBOT  MENU  」*
+
+✻  *${prefix}mute*
+✻  *${prefix}unmute*
+✻  *${prefix}ban @tagmember*
+✻  *${prefix}unban @tagmember*
+✻  *${prefix}daftarulang @tagmember umur*
+✻  *${prefix}spamtag @tagsomeone*
+✻  *${prefix}spamcall [81273xxxx]*
+✻  *${prefix}oadd 62813xxxxx*
+✻  *${prefix}otagall*
+
+
+_*zxcbot by @juwenajaa*_`, id)
+break
+
+case prefix+'ownermenu':
+if (!isOwner) return juwen.reply(from, 'Perintah ini hanya untuk Owner ZXCBOT', id)
+juwen.reply(from, 
+`*「  OWNER MENU  」*
+
+~>  *${prefix}block 62858xxxxx*
+~>  *${prefix}unblock 62858xxxxx*
+~>  *${prefix}addadmin @tagmember*
+~>  *${prefix}deladmin @tagmember*
+~>  *${prefix}spamtag @tagmember*
+~>  *${prefix}restart*
+~>  *${prefix}ekickall*
+~>  *${prefix}banchat*
+~>  *${prefix}unbanchat*
+~>  *${prefix}eval*[case]
+~>  *${prefix}setname [teks]*
+~>  *${prefix}setstatus [teks]*
+~>  *${prefix}setprofilepic*
+~>  *${prefix}getss*
+~>  *${prefix}shutdown*
+
+
+_*zxcbot by @juwenajaa*_`, id)
+break
+    // INFORMATION
+    case prefix+'donate':
+    case prefix+'donasi':
+    
+juwen.sendFileFromUrl(from, donasiimage, 'donasi.png', 
+
+`DONASI JUWEN YUK, BIAR DIA GA MISKIN. 
+
+Kamu bisa membantu juwen dengan cara 
+
+┌─┤ *GOPAY / PULSA*
+│
+└─┤ *085155078806*
+
+
+┌─┤ *OVO*
+│
+└─┤ *089635687240*
+
+
+*FOLLOW INSTAGRAM :*
+*instagram.com/juwendy_s*
+
+
+*TERIMA KASIH BANYAK YANG SUDAH MAU DONASI*`, id)
+        break
+    case prefix+'readme':
+        juwen.sendText(from, readme, id)
+        break
+    case prefix+'sewa':
+    case prefix+'iklan':
+    juwen.reply(from, 
+`LIST HARGA *ZXCBOT*
+
+*ZXCBOT PREMIUM*
+Nikmati akses tanpa batas dari ZXCBOT, dan tidak perlu khawatir takut limit habis.
+
+Harga:
+5 Hari - 7k
+15 Hari - 14k
+1 Bulan - 20k
+1 Bulan with join 1 gc - 25k
+
+*ZXCBOT ADMIN*
+Nikmati akses zxcbot dengan adminban, adminban ialah akses" bot yang sama dengan owner.
+
+Fitur:
+- Limit unlimitied
+- Bisa akses fitur premium tanpa jadi premium lagi
+- Bisa join gc sampe 3
+- Bisa ban orang
+- Bisa mendapatkan akses terbaru dari admin.
+
+Harga:
+1 Bulan - 35k
+
+Nb: Bisa menambahkan limit teman / gift limit ke teman jika kamu seorang adminban ZXCBOT
+
+
+Cuman mau masukin ke GC?
+Bisa banget, nikmati akses nya juga.
+
+Harga:
+2 Hari - Free (Trial)
+14 Hari - 5k
+1 Bulan - 14k
+
+
+*ZXCBOT CLONE*
+Ingin no kamu jadi clone ZXCBOT? Apasih clone itu, clone ada lah cloningan ZXCBOT, jadi kamu akan menjadikan no bot kamu menjadi clone ZXCBOT. Nama bot bisa sesuai kamu mau, dan bisa atur limit dan juga bisa joinin gc sesuka kamu.
+
+Harga:
+1 Bulan - 70k 
+
+Terima kasih sudah memakai layanan ZXCBOT`, id)
+break
+  /*  case prefix+'info':
+     if(isReg(obj)) return
+        if(cekumur(cekage)) return
+        juwen.sendTextWithMentions(from,
+`*TENTANG ZXCBOT*
+
+Hai 👋 @${sender.id.replace('@c.us','')}, sebelumnya terima kasih ya telah menggunakan *ZXCBOT*. Bot ini merupakan free pubic bot atau bot gratis. Bot ini di recode oleh *juwennn*, kalian bisa menggunakan bot ini kapan saja dan dimanapun, ya tapi tetap saja ada limit nya ya kak. Bila kalian ingin *ZXCBOT* berkembang kalian bisa donasi owner bot ini biar dia semangat jalanin botnya.
+
+Terima kasih juga yang sudah membantu mengembangkan *ZXCBOT*
+
+*Big Thanks To:*
+
+>   Aqulzz  
+| instagram.com/a_muhammad_f15
+
+>   Pipiy   
+| instagram.com/pitrirr_
+
+
+>   Dhanu 
+| instagram.com/alfijulian.07
+
+>   Jeniii 
+| instagram.com/oowl.jeniar
+
+
+Kalian bisa sewa *ZXCBOT*, chat dengan ownernya aja ya. 
+*Ketik ${prefix}owner*, utamakan salam biar adem.
+Jangan lupa beri kita donasi yaa biar kita semangat jalanin nih bot.`, id)
+        break */
+    case prefix+'bahasa':
+juwen.reply(from,
+`*Code       Bahasa*
+
+sq        Albanian
+ar        Arabic
+hy        Armenian
+ca        Catalan
+zh        Chinese
+zh-cn     Chinese (China)
+zh-tw     Chinese (Taiwan)
+zh-yue    Chinese (Cantonese)
+hr        Croatian
+cs        Czech
+da        Danish
+nl        Dutch
+en        English
+en-au     English (Australia)
+en-uk     English (United Kingdom)
+en-us     English (United States)
+eo        Esperanto
+fi        Finnish
+fr        French
+de        German
+el        Greek
+ht        Haitian Creole
+hi        Hindi
+hu        Hungarian
+is        Icelandic
+id        Indonesian
+it        Italian
+ja        Japanese
+ko        Korean
+la        Latin
+lv        Latvian
+mk        Macedonian
+no        Norwegian
+pl        Polish
+pt        Portuguese
+pt-br     Portuguese (Brazil)
+ro        Romanian
+ru        Russian
+sr        Serbian
+sk        Slovak
+es        Spanish
+es-es     Spanish (Spain)
+es-us     Spanish (United States)
+sw        Swahili
+sv        Swedish
+ta        Tamil
+th        Thai
+tr        Turkish
+vi        Vietnamese
+cy        Welsh`, id)
+        break
+        case prefix+'listaudio':
+        juwen.reply(from, 'List - List Sound\n\n- fbi\n- yamate\n- tapiboong\n- pp')
+        break
+        
+        case 'makanyaganteng': 
+        juwen.sendPtt(from, './media/sound/makanyaganteng.mp3', id) 
+        break
+            
+        case 'makasihh': 
+        juwen.sendPtt(from, './media/sound/makasih.mp3', id) 
+        break
+        
+        case 'gantengdoang': 
+        juwen.sendPtt(from, './media/sound/gantengdoang.mp3', id) 
+        break
+        
+        case 'bebernyanyi': 
+        juwen.sendPtt(from, './media/sound/bebernyanyi.mp3', id) 
+        break
+        
+        case 'anakngentot': 
+        juwen.sendPtt(from, './media/sound/anakngentot.mp3', id) 
+        break
+        
+        case 'iri': 
+        juwen.sendPtt(from, './media/sound/iri.mp3', id) 
+        break
+        
+        case 'makanyacantik': 
+        juwen.sendPtt(from, './media/sound/makanyacantik.mp3', id) 
+        break
+        
+        case 'hadapiboy': 
+        juwen.sendPtt(from, './media/sound/hadapiboy.mp3', id) 
+        break
+        
+        case 'ngentotsong': 
+        juwen.sendPtt(from, './media/sound/ngentotsong.mp3', id) 
+        break
+        
+        case 'yamate': 
+        juwen.sendPtt(from, './media/sound/yamate.mp3', id) 
+        break
+        
+        case 'fbi': 
+        juwen.sendPtt(from, './media/sound/fbi.mp3', id) 
+        break
+        
+        case 'tapiboong': 
+        juwen.sendPtt(from, './media/sound/tapiboong.mp3', id) 
+        break
+        
+        case 'pp': 
+        juwen.sendPtt(from, './media/sound/pp.mp3', id) 
+        break
+
+            case prefix+'igjuwen':
+            juwen.sendLinkWithAutoPreview(from, '*@juwenajaa|@eejsxx*\n*> https://www.instagram.com/juwendy_s*\n\nmending follow ig gue', ``, ``, id)
+            break
+			
+			case prefix+'igmejaa':
+            juwen.reply(from, 'FOLLOW IG *@MZLNECHA_*\n*> www.instagram.com/mzlnecha_*\n\nNanti di follback kok', id)
+            break
+			
+			case prefix+'iggilangg':
+            juwen.reply(from, 'FOLLOW IG *@MHMDGLNG._*\n*> www.instagram.com/mhmdglng._*\n\nodading mang oleh, rasanya anjing banget', id)
+            break
+			
+			case prefix+'ighkm':
+            juwen.reply(from, '*Polow ya cntip*\n*> www.instagram.com/mhdhkimm*', id)
+            break
+			
+			case prefix+'ighelen':
+            juwen.reply(from, '*polow ya*\n*> www.instagram.com/helenyhns_*', id)
+            break
+			
+			case prefix+'igrepaa':
+            juwen.reply(from, '*fllw nnti fllbck*\n*> www.instagram.com/rplia_*', id)
+            break
+			
+			case prefix+'igmikhail':
+            juwen.reply(from, '*Punten, di followan teh*\n*> www.instagram.com/khasaav*', id)
+            break
+			
+			case prefix+'igquila':
+            juwen.reply(from, '*ga polow ga asik*\n*> www.instagram.com/quillaaulia*', id)
+            break
+			
+			case prefix+'igarmin':
+            juwen.reply(from, '*Follow 1jt followers give alok*\n*> www.instagram.com/_aaaarrmin*', id)
+            break
+			
+			case prefix+'igmujidin':
+            juwen.reply(from, '*follow ajg*\n*> www.instagram.com/urifpratama*', id)
+            break
+			
+			case prefix+'ighaddad':
+            juwen.reply(from, '*coba*\n*> www.instagram.com/haddad_ar*', id)
+            break
+			
+			case prefix+'igcecil':
+            juwen.reply(from, '*fllw dong*\n*> www.instagram.com/ceciliaelviera*', id)
+            break
+			
+			case prefix+'igbot':
+            juwen.reply(from, '*KALAU ADA MASALAH SAMA BOT, LAPOR DM AJAA*\n*> www.instagram.com/bot_ajaa*', id)
+            break
+			
+			case prefix+'igmarthin':
+            juwen.reply(from, '*follow dong*\n*> www.instagram.com/marthinsamuel25*', id)
+            break
+			
+			case prefix+'igowen':
+            juwen.reply(from, '*follow orang gamtenk*\n*> www.instagram.com/owenizer*', id)
+            break
+			
+			case prefix+'igpipiy':
+            juwen.reply(from, '*@pitrirr_*\n*> www.instagram.com/pitrirr_*\n\nmending follow ig gue', id)
+            break
+			
+			case prefix+'igagungg':
+            juwen.reply(from, '*@agnd2_|follow second akun gw*\n*> https://www.instagram.com/agnd2_*', id)
+            break
+			
+			case prefix+'igdhanu':
+            juwen.sendLinkWithAutoPreview(from, '𝐤𝐚𝐥𝐨 𝐝𝐢𝐬𝐮𝐫𝐮𝐡 𝐦𝐚𝐣𝐢𝐤𝐚𝐧 𝐟𝐥𝐥𝐰 𝐲𝐚 𝐟𝐥𝐥𝐰!\n*> https://www.instagram.com/alfijulian.07*', ``, ``, id)
+            break
+			
+			case prefix+'igpuat':
+            juwen.reply(from, '*follow ig gw nih*\n*> www.instagram.com/puubat*', id)
+            break
+			
+			case prefix+'igrisky':
+            juwen.reply(from, '*follow ig gw nih*\n*> www.instagram.com/@rizky.afs17*', id)
+            break
+			
+			case prefix+'iganggit':
+            juwen.reply(from, '*follow ig gw nih*\n*> http://www.instagram.com/ag.anggita*', id)
+            break
+			
+			case prefix+'iganggit':
+            juwen.reply(from, '*follow ig gw nih*\n*> http://www.instagram.com/ag.anggita*', id)
+            brea
+            
+// By Gimenz
+case prefix+'wame':
+    if(isReg(obj)) return
+    if(cekumur(cekage)) return
+    const pesann1 = body.slice(6)
+    const pesannn = (pesann1.replace(/ /g, '+'))
+    const pesann = ('?text='+ pesannn)
+    await juwen.sendTextWithMentions(from, `No @${sender.id.replace('@c.us','')} dan pesan dari @${sender.id.replace('@c.us','')} \n\n*wa.me/${sender.id.replace(/[@c.us]/g, '')}${pesann}*`, id)
+    break
+			// By juwen
+			case prefix+'spamtag':
+			if (!isGroupMsg) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan dalam group!', id)
+			if (!isOwner) return juwen.reply(from, 'Perintah ini hanya bisa di gunakan oleh admin ZXCBOT!', id)
+			if (mentionedJidList.length === 0) return juwen.reply(from, 'Tag orang yang ingin di spam!', id)
+			const arg = body.trim().split(' ')
+			const janjingg = (` @${sender.id.replace('@c.us','')}`)
+			juwen.sendText(from, '*WARNING!*', id)
+			juwen.sendText(from, '*SPAM TAG STARTING!...*', id)
+			juwen.sendTextWithMentions(from, arg[1] + ' anda di spam oleh ' + janjingg)
+			juwen.sendTextWithMentions(from, arg[1])	//1
+			juwen.sendTextWithMentions(from, arg[1])	//2
+			juwen.sendTextWithMentions(from, arg[1])	//3
+			juwen.sendTextWithMentions(from, arg[1])	//4
+			juwen.sendTextWithMentions(from, arg[1]) //5
+			juwen.sendTextWithMentions(from, arg[1]) //6
+			juwen.sendTextWithMentions(from, arg[1]) //7
+			juwen.sendTextWithMentions(from, arg[1]) //8
+			juwen.sendTextWithMentions(from, arg[1]) //9
+			juwen.sendTextWithMentions(from, arg[1]) //10
+			juwen.sendTextWithMentions(from, arg[1]) //11
+			juwen.sendTextWithMentions(from, arg[1]) //12
+			juwen.sendTextWithMentions(from, arg[1]) //13
+			juwen.sendTextWithMentions(from, arg[1]) //14
+			juwen.sendTextWithMentions(from, arg[1]) //15
+			juwen.sendTextWithMentions(from, arg[1]) //16
+			juwen.sendTextWithMentions(from, arg[1]) //17
+			juwen.sendTextWithMentions(from, arg[1]) //18
+			juwen.sendTextWithMentions(from, arg[1]) //19
+			juwen.sendTextWithMentions(from, arg[1]) //20
+			juwen.sendTextWithMentions(from, arg[1])  //21
+			juwen.sendTextWithMentions(from, arg[1])  //22
+			juwen.sendTextWithMentions(from, arg[1])  //23
+			juwen.sendTextWithMentions(from, arg[1])  //24
+			juwen.sendTextWithMentions(from, arg[1])  //25
+			juwen.sendTextWithMentions(from, arg[1])  //26
+			juwen.sendTextWithMentions(from, arg[1])  //27
+			juwen.sendTextWithMentions(from, arg[1])  //28
+ 			juwen.sendTextWithMentions(from, arg[1])  //29
+			juwen.sendTextWithMentions(from, arg[1])  //30
+			juwen.sendTextWithMentions(from, '*SPAM TAG DONE TO* ' + arg[1]  )
+			break
+        case prefix+'snk':
+            juwen.reply(from, snk, id)
+            break
+            case 'p':
+        await juwen.sendSeen(from) 
+        if (isGroupMsg)
+        juwen.reply(from, `Apa bang`, id)
+        break
+;
+
+        // DEFAULT
+        default:
+        /*    if (command.startsWith(`${prefix}`)) {
+                if (isBanned) return juwen.reply(from, `Maaf anda di banned, anda tidak dapat memakai bot!`, id)
+            } */
+            if (command.startsWith('b1ottttt')) {
+                if (!isGroupMsg)
+                juwen.sendTextWithMentions(from, `Hai *@${sender.id.replace('@c.us','')}* ada yang bisa dibantu? ketik *${prefix}help* untuk melihat commands`, id)
+        
+            }
+          	if (command.startsWith('savegw')) {
+                juwen.reply(from, `api.whatsapp.com/send?phone=${serial.match(/\d+/g)}&text=${args[0]}`, id)
+                console.log(from, 'WAS MAKE A NUMBER / WA.ME')
+        
+            }
+			if (command.startsWith('bot')) {
+				if(isReg(obj)) return
+                if(cekumur(cekage)) return
+                if (!isGroupMsg) {
+                juwen.sendTextWithMentions(from, `Hai *@${sender.id.replace('@c.us','')}* ada yang bisa dibantu? ketik *${prefix}help* untuk melihat commands`, id)
+                }
+                if (isGroupMsg) {
+                    juwen.reply(from, `Iya? Ada yang bisa dibantu?\nKetik *${prefix}help* untuk melihat commands`, id)
+                }
+
+                
+            }
+            await juwen.sendSeen(from) 
+            }
+        }
+			
+    } catch (err) {
+        console.log(color('[ERROR]', 'red'), err)
+        //juwen.kill().then(a => console.log(a))
+    }
+}
+
+
+length === 1) return juwen.reply(from, 'Kirim perintah *${prefix}bugreport [teks]*\ncontoh : *${prefix}bugreport Permisi Owner, Ada bug pada command ${prefix}nulis, Tolong diperbaiki*')
             //const reportNumber = `6289635687240@c.us`
             argz = body.trim().split(' ')
             var slicedArgs = Array.prototype.slice.call(argz, 1);
