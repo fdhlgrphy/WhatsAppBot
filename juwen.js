@@ -2924,14 +2924,8 @@ await juwen.sendFileFromUrl(from,  getUrli, `facetrack.jpg`, `${jawabannya}`, id
                 if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
                 try {
                 juwen.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
-                if (isMedia && type === 'image') {
+                if (isImage && quotedMsg && quotedMsg.type == 'image') {
                     const mediaData = await decryptMedia(message, uaOverride)
-                    const getUrli = await uploadImages(mediaData, false)
-                    const imgnya = await axios.get(`https://naufalhoster.xyz/tools/falling_hearts?apikey=${naufalkey}&url=${encodeURIComponent(getUrli)}`)
-                    const slove = imgnya.data.result.media
-                    await juwen.sendStickerfromUrl(from, slove)
-                } else if (quotedMsg && quotedMsg.type == 'image') {
-                    const mediaData = await decryptMedia(quotedMsg, uaOverride)
                     const getUrli = await uploadImages(mediaData, false)
                     const imgnya = await axios.get(`https://naufalhoster.xyz/tools/falling_hearts?apikey=${naufalkey}&url=${encodeURIComponent(getUrli)}`)
                     const slove = imgnya.data.result.media
@@ -3062,33 +3056,6 @@ await juwen.sendFileFromUrl(from,  getUrli, `facetrack.jpg`, `${jawabannya}`, id
             }
                 await limitAdd(serial)
                 break
-                case prefix+'fisheye':
-                if(isReg(obj)) return
-                if(cekumur(cekage)) return
-                if (isLimit(serial)) return juwen.reply(from, `Maaf ${pushname}, Kuota Limit Kamu Sudah Habis, Ketik ${prefix}limit Untuk Mengecek Kuota Limit Kamu`, id)
-                try {
-                juwen.reply(from, `Sedang di proses, silahkan tunggu sekitar ± 1 min!`, id)
-                if (isMedia && type === 'image') {
-                    const mediaData = await decryptMedia(message, uaOverride)
-                    const getUrli = await uploadImages(mediaData, false)
-                    const imgnya = await sfisheye(getUrli)
-                    const sfish = imgnya.result.image
-                    await juwen.sendFileFromUrl(from, sfish, `akwokwa.jpg`, `Nih ngab`, id)
-                } else if (quotedMsg && quotedMsg.type == 'image') {
-                    const mediaData = await decryptMedia(quotedMsg, uaOverride)
-                    const getUrli = await uploadImages(mediaData, false)
-                    const imgnya = await sfisheye(getUrli)
-                    const sfish = imgnya.result.image
-                    await juwen.sendFileFromUrl(from, sfish, `akwokwa.jpg`, `Nih ngab`, id)
-                } else {
-                    await juwen.reply(from, `Wrong Format!\n⚠️ Harap Kirim Gambar Dengan ${prefix}fisheye`, id)
-                }
-            }catch(error) {
-                console.log(error)
-                juwen.reply(from, `Silahkan kirim gambar dengan caption ${prefix}fisheye, karena kalau di reply sedang error dari server open wa.`, id)
-            }
-                await limitAdd(serial)
-                break
                 case prefix+'scomic':
                 if(isReg(obj)) return
                 if(cekumur(cekage)) return
@@ -3111,7 +3078,6 @@ await juwen.sendFileFromUrl(from,  getUrli, `facetrack.jpg`, `${jawabannya}`, id
                 }
                 await limitAdd(serial)
                 break
-//https://naufalhoster.xyz/tools/imagepdf?apikey=YOUR_API_KEY&url=URL
                 case prefix+'memecustom':
                     if(isReg(obj)) return
                     if(cekumur(cekage)) return
@@ -3225,9 +3191,7 @@ Timestamp: ${yhahah.timestamp}`)
     await limitAdd(serial)
     break
     case prefix+'getmed':
-        //if (isMedia && type === 'image') {
             const mediaData2 = await decryptMedia(message, uaOverride)
-            //const getUrli2 = await uploadImages(mediaData, false)
             juwen.reply(from, mediaData2, id)
             break
                         case prefix+'pixel':
@@ -11441,26 +11405,13 @@ case prefix+'menu':
      if(cekumur(cekage)) return
      const userLevel2 = level.getLevelingLevel(sender.id, _level)
      const userXp2 = level.getLevelingXp(sender.id, _level)
-     const ramadhan   = new Date('2021-04-12') - new Date('2021-03-31')
-     const result_ramdhan = ramadhan / (1000 * 60 * 60 * 24);
-     //console.log(`${result} hari menuju Ramadhan 1442 H`)
      var prema = isAdmin
-
-/* if (isGroupMsg) {  ├ *${prefix}gtav*
-├ *${prefix}pencil*
-├ *${prefix}fbpg*
-
-│
-├─「 *NULIS MENU* 」
-├ *${prefix}nulis [teks]*
-├ *${prefix}nulis2 [|Nama|Kelas|Teks]*
-├ *${prefix}nuliskiri [teks]*
-├ *${prefix}nuliskanan [teks]*
-├ *${prefix}foliokanan [teks]*
-├ *${prefix}foliokiri [teks]*
-│*/ 
+     const countdowntogone = new Date('2021-04-5') - new Date('2021-03-31')
+     const bayyy = countdowntogone / (1000 * 60 * 60 * 24);
 const menubot = 
 `*Selamat Datang Di ZXCBOT*
+
+*${bayyy} Hari lagi*, layanan ZXCBOT akan berhenti untuk sementara atau bisa selamanya. Terima kasih telah menggunakan layanan *ZXCBOT*
 
 *Telpon = Blocked!*
 *Spam = Banned!*
@@ -11765,6 +11716,27 @@ Kamu bisa membantu juwen dengan cara
     case prefix+'readme':
         juwen.sendText(from, readme, id)
         break
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        case prefix+'hack':
+    juwen.reply(from, `*zxcbot sedang di hack oleh hengker agunk*`,id)
+    break
+
     case prefix+'sewa':
     case prefix+'iklan':
     juwen.reply(from, 
