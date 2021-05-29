@@ -13,7 +13,6 @@
 
 ## Information
 
-#### Makasih udah belii :D
 - [Cara Penginstallan Bot](https://youtu.be/41Xj_Kg4DCM)
 - Change [ownerNumber](https://github.com/juwenaja/Bot-We-A/blob/6f50edb25acba2b2e7372b47e5f0ef6d2dfbf0af/tobz.js#L273) in tobz.js to be your number
 ownerNumber = "6213xxxxxx@c.us"
